@@ -1,0 +1,24 @@
+.main-text {
+    color: #555555;
+    font-family: 'Inter', sans-serif;
+    font-size: 2.4vh;
+    padding: 12px;
+    line-height: 0.6em;
+    letter-spacing: -1px;
+    position: relative;
+}
+
+.main-text h1 {
+    font-family: 'Inclusive Sans', sans-serif;
+    font-size: 4vh;
+    color: rgb(32, 96, 148);
+    padding-top: 3vh;
+    line-height: 1.2em;
+    position: relative;
+}
+
+@media screen and (max-width:768px) {
+    .main-text {
+        line-height: 1em!important;
+    }
+}

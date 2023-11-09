@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+      <!-- Website icon -->
+      <link rel="icon" href="/static/images/logo_icon.png">
+
+      <!-- Include Bootstrap's CSS -->
+      <link rel="stylesheet" href="/static/js/node_modules/bootstrap/dist/css/bootstrap.min.css">
+
+      <!-- Include Bootstrap's Js -->
+      <script src="/static/js/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+      <link rel="stylesheet" href="/static/js/node_modules/bootstrap/dist/css/bootstrap.min.css">
+
+      <!-- Styling navbar, the Js and Css are directly on the page since they aren't too complex -->
+      <style>
+        .navbar-nav li.nav-item a.nav-link:hover {
+            color: rgb(59, 163, 248);
+            background-color: rgb(231, 229, 229);
+        }
+
+        .bg-dark-grey {
+            background: linear-gradient(90deg, #f0f0f0, #ebebeb);
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        #dropdown-menu {
+            background: linear-gradient(90deg, #f0f0f0, #ebebeb);
+        }
+
+        ::selection {
+            background: rgb(68, 138, 196);
+        }
+      </style>
+
+      <!-- Small script for dynamism when hovering buttons  -->
+      <script>
+         function addHoverEffects() {
+          const nav_elements = document.querySelectorAll(".nav-item a.nav-link");
+
+          nav_elements.forEach(link => {
+              link.addEventListener("mouseover", function() {
+                  link.computedStyleMap.color = "#ff0000";
+              });
+
+              link.addEventListener("mouseout", function() {
+                  link.computedStyleMap.color = "";
+              });
+          });
+      }
+
+    document.addEventListener("DOMContentLoaded", addHoverEffects);
+    
+      </script>
+
+      <!-- Linking fonts -->
+
+      <!-- Inter -->
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap" rel="stylesheet">
+        
+      <!-- Inclusive Sans -->
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Inclusive+Sans&display=swap" rel="stylesheet">
+
+      <title>{% block title %}{% endblock %}</title>
+        
+    </head>
+
+    <body>
+        <nav class="navbar navbar-expand-lg bg-dark-grey">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="/">Home</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">    
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Tools
+                    </a>
+                    <ul class="dropdown-menu" id="dropdown-menu">
+                      <li><a class="dropdown-item" href="/pomodoro">Pomodoro Timer</a></li>
+                      <li><a class="dropdown-item" href="#">Another action</a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                  </li>
+                    <li class="nav-item">
+                      <a class="nav-link active" aria-current="page" href="/about">About</a>
+                    </li>
+                </ul>
+              </div>
+            </div>
+          </nav>
+    </body>
+
+    <main>
+        {% block main %}{% endblock %}
+    </main>
+</html>

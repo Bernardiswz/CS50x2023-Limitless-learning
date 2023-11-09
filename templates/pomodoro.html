@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Pomodoro Timer
+{% endblock %}
+
+{% block main %}
+    <link rel="stylesheet" href="/static/css/pomodoro.css">
+    <script src="/static/js/pomodoro/pomodoro.js"></script>
+    <script src="/static/js/pomodoro/settings.js"></script>
+
+    <div class="container timer-container">
+        <div class="timer-box">
+            <button id="settings-button" type="button">
+                <img src="/static/images/settings-icon.png" alt="Button Image" id="settings-icon">
+            </button>
+            <div id="timer">25:00</div>
+            <button class="btn btn-light" id="start-button">Start</button>
+        </div>
+
+        <audio id="button-sound">
+            <source src="/static/audio/button_press.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+
+        <audio id="timeup-sound">
+            <source src="/static/audio/time_up.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+    </div>
+
+    <!-- Handle form submission of settings -->
+    <div class="container" id="settings-dialog" style="display: none;">
+        <form>
+            <div>Settings</div>
+            <hr id="settings-thematic-break">
+
+            <button id="close-button" type="submit">
+                <img src="/static/images/close-button.png" alt="Button Image" id="close-button-icon">
+            </button>
+            <input autocomplete="off" placeholder="Minutes">
+        </form>
+    </div> 
+{% endblock %}
