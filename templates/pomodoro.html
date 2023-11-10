@@ -29,16 +29,36 @@
         </audio>
     </div>
 
-    <!-- Handle form submission of settings -->
+    <!-- Settings overlay -->
+    <div id="overlay" style="display: none;"></div>
+
     <div class="container" id="settings-dialog" style="display: none;">
         <form>
-            <div>Settings</div>
+            <div id="settings-text">Settings</div>
             <hr id="settings-thematic-break">
 
+            <!-- Exit button -->
             <button id="close-button" type="submit">
                 <img src="/static/images/close-button.png" alt="Button Image" id="close-button-icon">
             </button>
-            <input autocomplete="off" placeholder="Minutes">
+
+            <!-- Input titles -->
+            <div class="input-names-container" id="inputs-text">
+                <div class="input-names" id="input-names">
+                    <div>Minutes</div>
+                    <div>Break</div>
+                    <div>Long break</div>
+                </div>
+            </div>
+
+            <!-- User input area -->
+            <div class="input-container" id="inputs">
+                <input autocomplete="off" value="25" class="settings-input" type="number" id="minutes-input">
+                <input autocomplete="off" value="5" class="settings-input" type="number" id="break-input">
+                <input autocomplete="off" value="15" class="settings-input" type="number" id="long-break-input">
+            </div>
+            
+            
         </form>
     </div> 
 {% endblock %}
