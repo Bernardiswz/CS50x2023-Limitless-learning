@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Pomodoro Timer
+{% endblock %}
+
+{% block main %}
+    <link rel="stylesheet" href="/static/css/pomodoro.css">
+    <script src="/static/js/pomodoro/pomodoro.js"></script>
+    <script src="/static/js/pomodoro/settings.js"></script>
+
+    <!-- Variables of time, break and long break -->
+    <div id="timer-minutes" style="display: none;">{{ minutes }}</div>
+    <div id="timer-break" style="display: none;">{{ timer_break }}</div>
+    <div id="timer-long-break" style="display: none;">{{ long_break }}</div>
+
+    <!-- Timer structure -->
+    <div class="container timer-container">
+        <div class="timer-box">
+            <button id="settings-button" type="button">
+                <img src="/static/images/settings-icon.png" alt="Button Image" id="settings-icon">
+            </button>
+            <div id="timer">{{ minutes }}:00</div>
+            <button class="btn btn-light" id="start-button">Start</button>
+        </div>
+
+        <audio id="button-sound">
+            <source src="/static/audio/button_press.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+
+        <audio id="timeup-sound">
+            <source src="/static/audio/time_up.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+    </div>
+
+    <!-- Settings overlay -->
+    <div id="overlay" style="display: none;"></div>
+
+    <div class="container" id="settings-dialog" style="display: none;">
+        <form action="/pomodoro", method="post">
+            <div id="settings-text">Settings</div>
+            <hr id="settings-thematic-break">
+
+            <!-- Exit button -->
+            <button id="close-button" type="submit">
+                <img src="/static/images/close-button.png" alt="Button Image" id="close-button-icon">
+            </button>
+
+            <!-- Input titles -->
+            <div class="input-names-container" id="inputs-text">
+                <div class="input-names" id="input-names">
+                    <div>Minutes</div>
+                    <div>Break</div>
+                    <div>Long break</div>
+                </div>
+            </div>
+
+            <!-- User input area -->
+            <div class="input-container" id="inputs">
+                <input autocomplete="off" value="{{ minutes }}" class="settings-input" name="minutes" type="number" id="minutes-input">
+                <input autocomplete="off" value="{{ timer_break }}" class="settings-input" name="break" type="number" id="break-input">
+                <input autocomplete="off" value="{{ long_break }}" class="settings-input" name="long_break" type="number" id="long-break-input">
+            </div>
+        </form>
+    </div> 
+{% endblock %}
