@@ -1,11 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- Include Bootstrap's CSS -->
+        <link rel="stylesheet" href="/static/js/node_modules/bootstrap/dist/css/bootstrap.min.css">
+
+        <!-- Include Bootstrap's Js -->
+        <script src="/static/js/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <link rel="stylesheet" href="/static/js/node_modules/bootstrap/dist/css/bootstrap.min.css">
+        <title>Register</title>
+
+        <!-- Linking fonts -->
+
+        <!-- Inter -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap" rel="stylesheet">
+            
+        <!-- Inclusive Sans -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inclusive+Sans&display=swap" rel="stylesheet">
+
+        <!-- Linking external files -->
+        <link rel="stylesheet" href="../static/css/register.css">
+
+    </head>
+
+    <body>
+        <nav class="navbar navbar-expand-lg bg-dark-grey" id="navbar"></nav>
+        <form action="/register" method="post">
+            <div class="mb-3">
+                <input 
+                autocomplete="off" autofocus class="form-control mx-auto w-auto" 
+                id="username" name="username" placeholder="Username" type="text"
+                >
+
+                <input
+                autocomplete="off" autofocus class="form-control mx-auto w-auto"
+                id="password" name="password" placeholder="Password" type="password"
+                >
+
+                <input
+                autocomplete="off" autofocus class="form-control mx-auto w-auto"
+                id="cf_password" name="cf_password" placeholder="Confirm Password" type="password"
+                >
+
+            </div>
+        </form>
+    </body>
 </html>
