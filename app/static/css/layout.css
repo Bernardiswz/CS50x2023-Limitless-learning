@@ -1,0 +1,35 @@
+.navbar-elements, .dropdown-item {
+    color: #dff5f1;
+}
+
+/* Styling for the navbar background */
+.bg-navy {
+    background: linear-gradient(90deg, #234d66, #163c52);
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling for the hover state */
+.navbar-elements:hover {
+    color: #FFECCC;
+    background-color: #007488c0;
+}
+
+/* Styling for the active state */
+.navbar-nav .nav-item.active .nav-link,
+.dropdown-menu .dropdown-item.active {
+    background-color: #007488c0;
+}
+
+.dropdown-item:hover {
+    color: #FFECCC;
+    background-color: #007488c0;
+}
+
+/* Styling for the dropdown menu */
+#dropdown-menu {
+    background: #305b76;
+}
+
+::selection {
+    background:#577E99;
+}

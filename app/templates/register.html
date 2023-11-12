@@ -10,6 +10,10 @@
         <!-- Include Bootstrap's Js -->
         <script src="/static/js/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
         <link rel="stylesheet" href="/static/js/node_modules/bootstrap/dist/css/bootstrap.min.css">
+
+        <!-- Including zxcvbn to check password security -->
+        <script src="../static/js/node_modules/zxcvbn/dist/zxcvbn.js"></script>
+
         <title>Register</title>
 
         <!-- Linking fonts -->
@@ -26,28 +30,28 @@
 
         <!-- Linking external files -->
         <link rel="stylesheet" href="../static/css/register.css">
+        <script src="../static/js/register/register.js"></script>
 
     </head>
 
     <body>
-        <nav class="navbar navbar-expand-lg bg-dark-grey" id="navbar"></nav>
+        <nav class="navbar bg-navy" id="navbar"></nav>
         <form action="/register" method="post">
-            <div class="mb-3">
-                <input 
-                autocomplete="off" autofocus class="form-control mx-auto w-auto" 
-                id="username" name="username" placeholder="Username" type="text"
-                >
+            <div class="body-container">
+                <div id="register-title">Register</div>
 
-                <input
-                autocomplete="off" autofocus class="form-control mx-auto w-auto"
-                id="password" name="password" placeholder="Password" type="password"
-                >
+                <!-- Element to check password strength -->
+                <div id="password-index" style="display: none;">Strong</div>
 
-                <input
-                autocomplete="off" autofocus class="form-control mx-auto w-auto"
-                id="cf_password" name="cf_password" placeholder="Confirm Password" type="password"
-                >
+                <div class="input-form">
+                    <input autocomplete="off" autofocus class="form-control" id="username" name="username" placeholder="Username" type="text">
 
+                    <input autocomplete="off" class="form-control" id="password" name="password" 
+                    placeholder="Password" type="password" oninput="checkPassword()">
+
+                    <input autocomplete="off" class="form-control" id="cf_password" name="cf_password" 
+                    placeholder="Confirm Password" type="password">
+                </div>
             </div>
         </form>
     </body>
