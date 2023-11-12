@@ -36,7 +36,7 @@
 
     <body>
         <nav class="navbar bg-navy" id="navbar"></nav>
-        <form action="/register" method="post">
+        <form action="/register" method="post" onsubmit="return checkInputs()">
             <div class="body-container">
                 <div id="register-title">Register</div>
 
@@ -44,14 +44,13 @@
                 <div id="password-index" style="display: none;">Strong</div>
 
                 <div class="input-form">
-                    <input autocomplete="off" autofocus class="form-control" id="username" name="username" placeholder="Username" type="text">
-
-                    <input autocomplete="off" class="form-control" id="password" name="password" 
-                    placeholder="Password" type="password" oninput="checkPassword()">
-
-                    <input autocomplete="off" class="form-control" id="cf_password" name="cf_password" 
-                    placeholder="Confirm Password" type="password">
+                    <input autocomplete="off" autofocus class="form-control" id="username" name="username" placeholder="Username" type="text" required>
+                    <input autocomplete="off" class="form-control" id="password" name="password" placeholder="Password" type="password" required>
+                    <input autocomplete="off" class="form-control" id="confirm-password" name="confirm_password" 
+                    placeholder="Confirm Password" type="password" required>
                 </div>
+
+                <button class="btn btn-secondary" id="submit-button" type="submit">Submit</button>
             </div>
         </form>
     </body>

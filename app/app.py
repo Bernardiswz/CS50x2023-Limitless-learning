@@ -2,9 +2,9 @@
 Hello! This is a Flask web application that providdes information about the importance of learning
 and offers various learning resources. See the README for more information.
 """
-from flask import Flask, redirect, render_template, request, session
+from flask import Flask, redirect, render_template, request, session, g
 from flask_session import Session
-from helpers import login_required
+from helpers import login_required, is_valid_password, is_valid_username
 import sqlite3
 
 
@@ -16,9 +16,13 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-# Connecting to database file and creating a cursor to run commands
-db = sqlite3.connect("learning.db")
-cursor = db.cursor()
+# Connecting to database
+def get_db():
+    db = getattr(g, "_database", None)
+    if db is None:
+        db = g._database = sqlite3.connect("../db/test.db")
+    return db
+
 
 @app.after_request
 def after_request(response):
@@ -34,13 +38,41 @@ def after_request(response):
 def index():
     return render_template("index.html")
 
-@app.route("/register")
+
+@app.route("/register", methods=["GET", "POST"])
 def register():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        confirm_password = request.form.get("confirm_password")
+
+        if not username or not password or not confirm_password:
+            return 403
+
+        check_password = is_valid_password(password)
+        check_username = is_valid_username(username)
+
+        if not check_password or password != confirm_password:
+            return 404
+
+
+        db = get_db()
+        cursor = db.cursor()
+
+        cursor.execute("INSERT INTO test (number) VALUES (?);", (5,))
+        db.commit()
+        cursor.close()
+
+
+        return 0
+    
     return render_template("register.html")
+
 
 @app.route("/login")
 def login():
     return render_template("login.html")
+
 
 @app.route("/pomodoro", methods=["GET", "POST"])
 # @login_required

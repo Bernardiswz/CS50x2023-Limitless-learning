@@ -49,9 +49,17 @@
     transform: translateY(-50%);
     text-align: center;
     font-family: 'Inter', sans-serif;
-    font-size: 2.6vh;
+    font-size: 2.2vh;
     line-height: 1;
     max-width: 40%;
+}
+
+#submit-button {
+    background-color: #384955;
+}
+
+#submit-button:hover {
+    background-color : #234D66;
 }
 
 @media (max-width: 768px) {
