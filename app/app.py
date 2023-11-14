@@ -36,6 +36,7 @@ def after_request(response):
 
 # Homepage
 @app.route("/")
+@login_required
 def index():
     return render_template("index.html")
 
@@ -62,7 +63,7 @@ def register():
         cursor = db.cursor()
 
         # Check for whether the same username already exists in the database
-        cursor.execute("SELECT username FROM users WHERE username = ?", (username, ))
+        cursor.execute("SELECT username FROM users WHERE username = ?", (username,))
         existing_username = cursor.fetchone()
 
         if existing_username:
@@ -83,20 +84,64 @@ def register():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    # Forget any user_id
+    session.clear()
+
     if request.method == "POST":
-        pass
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        # Validate user input
+        if not username or not password:
+            return 403
+
+        check_password = is_valid_password(password)
+        check_username = is_valid_username(username)
+
+        if not check_password or not check_username:
+            return 404
+
+        # Instantiate db
+        db = get_db()
+        cursor = db.cursor()
+
+        # Query db to check if username exists
+        cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
+        user_data = cursor.fetchone()
+
+        if not user_data:
+            return 405
+
+        # Check if password matches password hash
+        if not check_password_hash(user_data[2], password):
+            return 406
+        
+        # If matches update user id to match user id from db
+        session["user_id"] = user_data[0]
+
+        return redirect("/")
 
     else:
         return render_template("login.html")
 
 
+@app.route("/logout")
+def logout():
+    session.clear()
+
+    return redirect("/")
+
+
 @app.route("/pomodoro", methods=["GET", "POST"])
-# @login_required
+@login_required
 def pomodoro():
+    user = session.get("user_id")
+
     if request.method == "POST":
         minutes = request.form.get("minutes")
         timer_break = request.form.get("break")
         long_break = request.form.get("long_break")
+        lb_interval = 4
 
         # Assigning default values to the timer elements
         default_minutes = 25
@@ -124,17 +169,28 @@ def pomodoro():
         if not is_valid_element(long_break):
             long_break = default_long_break
 
-        redirect("/")
+        # Update current user's preferences on database
+        db = get_db()
+        cursor = db.cursor()
+
+        cursor.execute("INSERT OR REPLACE INTO preferences \
+                        (user_id, minutes, break, long_break, lb_interval)\
+                        VALUES(?, ?, ?, ?, ?)", 
+                        (user, minutes, timer_break, long_break, lb_interval))
+        
+
+        return render_template("pomodoro.html")
                   
-    
     else:
-        timer_minutes = 25
+        # Default configurations in case no valid user input
+        timer_minutes = 25 # Can change here later to values retrieved directly from the db, set default sql query to values
         timer_break = 5
-        long_break = 5
+        long_break = 15
 
         return render_template("pomodoro.html", minutes=timer_minutes, timer_break=timer_break, long_break=long_break)
 
 
 @app.route("/about")
+@login_required
 def about():
     return render_template("about.html")
