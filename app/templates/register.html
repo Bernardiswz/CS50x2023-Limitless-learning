@@ -1,57 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "form_layout.html" %}
 
-        <!-- Include Bootstrap's CSS -->
-        <link rel="stylesheet" href="/static/js/node_modules/bootstrap/dist/css/bootstrap.min.css">
+{% block title %}
+    Register
+{% endblock %}
 
-        <!-- Include Bootstrap's Js -->
-        <script src="/static/js/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-        <link rel="stylesheet" href="/static/js/node_modules/bootstrap/dist/css/bootstrap.min.css">
+{% block element %}
+<a class="navbar-elements navbar-brand" href="/login">Login</a>
+{% endblock %}
 
-        <!-- Including zxcvbn to check password security -->
-        <script src="../static/js/node_modules/zxcvbn/dist/zxcvbn.js"></script>
+{% block main %}
+<!-- Linking external files -->
+    <script src="../static/js/register/register.js"></script>
 
-        <title>Register</title>
+    <form id="register-form" action="/register" method="post" onsubmit="return checkInputs()">
+        <div class="body-container">
+            <div id="form-title">Register</div>
+            <!-- Element to check password strength -->
+            <div id="password-index" style="display: none;">Strong</div>
 
-        <!-- Linking fonts -->
-
-        <!-- Inter -->
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap" rel="stylesheet">
-            
-        <!-- Inclusive Sans -->
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inclusive+Sans&display=swap" rel="stylesheet">
-
-        <!-- Linking external files -->
-        <link rel="stylesheet" href="../static/css/register.css">
-        <script src="../static/js/register/register.js"></script>
-
-    </head>
-
-    <body>
-        <nav class="navbar bg-navy" id="navbar"></nav>
-        <form action="/register" method="post" onsubmit="return checkInputs()">
-            <div class="body-container">
-                <div id="register-title">Register</div>
-
-                <!-- Element to check password strength -->
-                <div id="password-index" style="display: none;">Strong</div>
-
-                <div class="input-form">
-                    <input autocomplete="off" autofocus class="form-control" id="username" name="username" placeholder="Username" type="text" required>
-                    <input autocomplete="off" class="form-control" id="password" name="password" placeholder="Password" type="password" required>
-                    <input autocomplete="off" class="form-control" id="confirm-password" name="confirm_password" 
-                    placeholder="Confirm Password" type="password" required>
-                </div>
-
-                <button class="btn btn-secondary" id="submit-button" type="submit">Submit</button>
+            <div class="input-form">
+                <input autocomplete="off" autofocus class="form-control" id="username" name="username" placeholder="Username" type="text" required>
+                <input autocomplete="off" class="form-control" id="password" name="password" placeholder="Password" type="password" required>
+                <input autocomplete="off" class="form-control" id="confirm-password" name="confirm_password" 
+                placeholder="Confirm Password" type="password" required>
             </div>
-        </form>
-    </body>
-</html>
+            <button class="btn btn-secondary" id="submit-button" type="submit">Submit</button>
+        </div>
+    </form>
+{% endblock %}

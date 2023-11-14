@@ -1,11 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-</body>
-</html>
+{% extends "form_layout.html" %}
+
+{% block title %}
+    Login
+{% endblock %}
+
+{% block element %}
+    <a class="navbar-elements navbar-brand" href="/register">Register</a>
+{% endblock %}
+
+{% block main %}
+    <!-- Linking external files -->
+    <script src="../static/js/login/login.js"></script>
+
+    <form id="login-form" action="/login" method="post">
+        <div class="body-container">
+            <div id="form-title">Login</div>
+
+            <!-- Index to user feedback -->
+            <div id="password-index" style="display: none;">Test</div>
+
+            <div class="input-form">
+                <input autocomplete="off" autofocus class="form-control" id="username" name="username" placeholder="Username" type="text" required>
+                <input autocomplete="off" class="form-control" id="password" name="password" placeholder="Password" type="password" required>
+            </div>
+            <button class="btn btn-secondary" id="submit-button" type="submit">Submit</button>
+        </div>
+    </form>
+{% endblock %}

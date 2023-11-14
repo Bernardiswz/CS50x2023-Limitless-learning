@@ -1,33 +1,15 @@
-/* Const variables of minimum password length and the minimum and maximun username lengths */
-const minPasswordLen = 10;
-const validMinLength = 6;
-const validMaxLength = 25;
-
-// Check password client side
 function checkPassword() {
-    // Variables to handle the password strength verification
+    const minPasswordLen = 10;
     const passwordIndex = document.getElementById("password-index");
-    var passwordInput = document.getElementById("password");
-    var password = passwordInput.value;
-    var passwordValid = passwordHasSpace(password);
+    const passwordInput = document.getElementById("password");
+    const password = passwordInput.value;
+    const passwordValid = !passwordHasSpace(password);
     const sanitizedPassword = sanitizePassword(password);
-    var result = zxcvbn(password);
+    const result = zxcvbn(password);
     
     // Dynamically display password feedback
-    if (!passwordValid) {
-        if (password && result.score >= 3) {
-            passwordIndex.textContent = "Strong password"
-            passwordIndex.style.display = "block";
-            passwordIndex.style.color = "#4dc959";
-        } else if (password && result.score === 2) {
-            passwordIndex.textContent = `Average password. ${result.feedback.suggestions.join(", ")}`
-            passwordIndex.style.display = "block";
-            passwordIndex.style.color = "#E99A27";
-        } else if (password && result.score === 1) {
-            passwordIndex.textContent = `Weak password. ${result.feedback.suggestions.join(", ")}`
-            passwordIndex.style.display = "block";
-            passwordIndex.style.color = "#b31010";
-        } else if (password && password.length < minPasswordLen) {
+    if (passwordValid) {
+        if (password && password.length < minPasswordLen) {
             passwordIndex.textContent = "Minimum length for passwords is 10 characters";
             passwordIndex.style.display = "block";
         } else {
@@ -45,10 +27,12 @@ function checkPassword() {
 
 // Check for special characters input in username and set minimum length
 function checkUsername() {
+    const validMinLength = 6;
+    const validMaxLength = 25;
     const passwordIndex = document.getElementById("password-index");
-    var nameInput = document.getElementById("username");
-    var username = nameInput.value;
-    var nameValid = !hasSpecialCharacter(username);
+    const nameInput = document.getElementById("username");
+    const username = nameInput.value;
+    const nameValid = !hasSpecialCharacter(username);
     const sanitizedUsername = sanitizeInput(username);
 
     if (username && !nameValid) {
@@ -67,78 +51,68 @@ function checkUsername() {
     }
 }
 
-// Checks for whether password and confirm password match
-function confirmPassword() {
-    const password = document.getElementById("password").value;
-    const confirmPassword = document.getElementById("confirm-password").value;
-
-    if (password === confirmPassword) {
-        return true;
-    } else {
-        alert("Passwords must match.")
-        return false;
-    }
-}
-
-// Checks for space in passwords
-function passwordHasSpace(password) {
-    var space = /\s/;
-    return space.test(password);
-}
-
-// Sanitizes passwords from spaces
-function sanitizePassword(password) {
-    var sanitizePassword = password.replace(/\s/, "");
-    return sanitizePassword;
-}
-
-// Sanitizes user input server side to remove special characters
-function sanitizeInput(inputString) {
-    var sanitizedValue = inputString.replace(/[!@#$%^&*()+{}\[\]:;<>,.?~\\/\-\s]/g, "");
-    return sanitizedValue;
-}
-
-// Checks for special not valid characters on user input
+// Checks for special characters in username
 function hasSpecialCharacter(userInput) {
     var specialCharacterRegex = /[!@#$%^&*()+{}\[\]:;<>,.?~\\/\-\s]/;
     return specialCharacterRegex.test(userInput);
 }
 
+// Checks for space in password
+function passwordHasSpace(password) {
+    const space = /\s/;
+    return space.test(password);
+}
+
+// Sanitizes passwords from spaces
+function sanitizePassword(password) {
+    const sanitizePassword = password.replace(/\s/, "");
+    return sanitizePassword;
+}
+
+// Sanitizes user input server side to remove special characters
+function sanitizeInput(inputString) {
+    const sanitizedValue = inputString.replace(/[!@#$%^&*()+{}\[\]:;<>,.?~\\/\-\s]/g, "");
+    return sanitizedValue;
+}
+
+
 // Compact functions to check user input
 function checkInputs(event) {
     const nameInput = document.getElementById("username");
     const passwordInput = document.getElementById("password");
-    const passwordIndex = document.getElementById("password-index");
+    const passwordIndex = document.getElementById("password-index"); // Ensure you get passwordIndex here
+    const validMinLength = 6; // Define validMinLength here
+    const validMaxLength = 25; // Define validMaxLength here
+    const minPasswordLen = 10; // Define minPasswordLen here
+
     const isUsernameValid = !hasSpecialCharacter(nameInput.value);
-    const matchingPasswords = confirmPassword();
     const validationExpression = (
         nameInput.value.length >= validMinLength &&
         nameInput.value.length <= validMaxLength &&
         passwordInput.value.length >= minPasswordLen
     );
 
-    // Perform validation checks
-    const isValid = isUsernameValid && matchingPasswords && validationExpression;
-
-    if (!isValid) {
+    if (!(isUsernameValid && validationExpression)) {
         event.preventDefault();
-        passwordIndex.textContent = "Invalid input, please check username and password."
+        passwordIndex.style.display = "block";
+        passwordIndex.textContent = "Invalid input. Please check your username and password.";
+    } else {
+        passwordIndex.style.display = "none";
+        passwordIndex.textContent = "";
     }
-
-    return isValid;
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function() {
     // Add initial event listeners
-    const passwordIndex = document.getElementById("password-index");
     const nameInput = document.getElementById("username");
     const passwordInput = document.getElementById("password");
     nameInput.addEventListener("input", checkUsername);
     passwordInput.addEventListener("input", checkPassword);
 
     // Add event listener directly to form's onsubmit attribute
-    const registerForm = document.getElementById("register-form");
-    if (registerForm) {
-        registerForm.addEventListener("submit", checkInputs);
+    const loginForm = document.getElementById("login-form");
+    if (loginForm) {
+        loginForm.addEventListener("submit", checkInputs);
     }
 });
+

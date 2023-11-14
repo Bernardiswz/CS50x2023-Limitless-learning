@@ -1,3 +1,12 @@
+.navbar-elements, .dropdown-item {
+    color: #dff5f1;
+}
+
+.navbar-elements:hover {
+    color: #FFECCC;
+    background-color: #007488c0;
+}
+
 .bg-navy {
     background: linear-gradient(90deg, #234d66, #163c52);
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
@@ -34,7 +43,7 @@
     box-shadow: 0 0 0 0.2rem #b5ddfb8f;
 }
 
-#register-title {
+#form-title {
     text-align: center;
     font-family: 'Inclusive Sans', sans-serif;
     font-size: 8vh;

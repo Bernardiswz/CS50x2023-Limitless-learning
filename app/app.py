@@ -5,6 +5,7 @@ and offers various learning resources. See the README for more information.
 from flask import Flask, redirect, render_template, request, session, g
 from flask_session import Session
 from helpers import login_required, is_valid_password, is_valid_username
+from werkzeug.security import check_password_hash, generate_password_hash
 import sqlite3
 
 
@@ -20,7 +21,7 @@ Session(app)
 def get_db():
     db = getattr(g, "_database", None)
     if db is None:
-        db = g._database = sqlite3.connect("../db/test.db")
+        db = g._database = sqlite3.connect("../db/learning.db")
     return db
 
 
@@ -46,32 +47,47 @@ def register():
         password = request.form.get("password")
         confirm_password = request.form.get("confirm_password")
 
+        # Validate user input
         if not username or not password or not confirm_password:
             return 403
 
         check_password = is_valid_password(password)
         check_username = is_valid_username(username)
 
-        if not check_password or password != confirm_password:
+        if not check_password or password != confirm_password or not check_username:
             return 404
 
-
+        # Instantiate database
         db = get_db()
         cursor = db.cursor()
 
-        cursor.execute("INSERT INTO test (number) VALUES (?);", (5,))
+        # Check for whether the same username already exists in the database
+        cursor.execute("SELECT username FROM users WHERE username = ?", (username, ))
+        existing_username = cursor.fetchone()
+
+        if existing_username:
+            return 409
+        
+        # Generate password hash and insert it in database with the registered user data
+        password_hash = generate_password_hash(password)
+        
+        cursor.execute("INSERT INTO users (username, hash) VALUES(?, ?)", (username, password_hash))
         db.commit()
         cursor.close()
 
-
-        return 0
+        return redirect("/login")
     
-    return render_template("register.html")
+    else:
+        return render_template("register.html")
 
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
-    return render_template("login.html")
+    if request.method == "POST":
+        pass
+
+    else:
+        return render_template("login.html")
 
 
 @app.route("/pomodoro", methods=["GET", "POST"])
