@@ -5,7 +5,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
       <!-- Website icon -->
-      <link rel="icon" href="/static/images/icon.png" type="image/x-icon">
+      <link rel="icon" href="../static/images/page_icon.png">
 
       <!-- Include Bootstrap's CSS -->
       <link rel="stylesheet" href="/static/js/node_modules/bootstrap/dist/css/bootstrap.min.css">
@@ -16,26 +16,6 @@
 
       <!-- External css -->
       <link rel="stylesheet" href="../static/css/layout.css">
-
-      <!-- Small script for dynamism when hovering buttons  -->
-      <script>
-         function addHoverEffects() {
-          const navElements = document.querySelectorAll(".nav-item a.nav-link");
-
-          navElements.forEach(link => {
-              link.addEventListener("mouseover", function() {
-                  link.computedStyleMap.color = "#000000";
-              });
-
-              link.addEventListener("mouseout", function() {
-                  link.computedStyleMap.color = "";
-              });
-          });
-      }
-
-    document.addEventListener("DOMContentLoaded", addHoverEffects);
-    
-      </script>
 
       <!-- Linking fonts -->
 

@@ -21,6 +21,7 @@ function main() {
     let timerRunning = false;
     let waiting = false;
     let timeBreak = false;
+    let pomodoros = 0;
 
     // Update the timer element on page load
     timerElement.textContent = `${minutes}:00`;
@@ -67,16 +68,21 @@ function main() {
             timeupSound.play();
 
             // Automatically start the break timer
+            if (!timeBreak) {
+                pomodoros++;
+            }
+            
             startBreak();
         }
     }
 
     function startBreak() {
         // Set break or long break based on your conditions
-        if (timerBreak) {
+        if (timerBreak && pomodoros < 4) {
             time = timerBreak * 60;
-        } else {
+        } else if (timerBreak && pomodoros === 4) {
             time = longBreak * 60;
+            pomodoros = 0;
         }
         timeBreak = !timeBreak;
         resetTimer(); // Reset the timer before updating the button text

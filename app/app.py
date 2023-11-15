@@ -1,12 +1,10 @@
 """
-Hello! This is a Flask web application that providdes information about the importance of learning
+This is a Flask web application that providdes information about the importance of learning
 and offers various learning resources. See the README for more information.
 """
 from flask import Flask, redirect, render_template, request, session, g
 from flask_session import Session
-from helpers import login_required, is_valid_password, is_valid_username
-from werkzeug.security import check_password_hash, generate_password_hash
-import sqlite3
+from helpers import login_required, is_valid_password, is_valid_username, get_db, register_user, authenticate_user, render_error
 
 
 # Configure app
@@ -16,14 +14,6 @@ app = Flask(__name__)
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
-
-# Connecting to database
-def get_db():
-    db = getattr(g, "_database", None)
-    if db is None:
-        db = g._database = sqlite3.connect("../db/learning.db")
-    return db
-
 
 @app.after_request
 def after_request(response):
@@ -58,24 +48,11 @@ def register():
         if not check_password or password != confirm_password or not check_username:
             return 404
 
-        # Instantiate database
-        db = get_db()
-        cursor = db.cursor()
+        user_id = register_user(username, password)
 
-        # Check for whether the same username already exists in the database
-        cursor.execute("SELECT username FROM users WHERE username = ?", (username,))
-        existing_username = cursor.fetchone()
-
-        if existing_username:
+        if user_id is None:
             return 409
         
-        # Generate password hash and insert it in database with the registered user data
-        password_hash = generate_password_hash(password)
-        
-        cursor.execute("INSERT INTO users (username, hash) VALUES(?, ?)", (username, password_hash))
-        db.commit()
-        cursor.close()
-
         return redirect("/login")
     
     else:
@@ -101,23 +78,13 @@ def login():
         if not check_password or not check_username:
             return 404
 
-        # Instantiate db
-        db = get_db()
-        cursor = db.cursor()
+        user_id = authenticate_user(username, password)
 
-        # Query db to check if username exists
-        cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
-        user_data = cursor.fetchone()
-
-        if not user_data:
-            return 405
-
-        # Check if password matches password hash
-        if not check_password_hash(user_data[2], password):
-            return 406
+        if not user_id:
+            return 404
         
         # If matches update user id to match user id from db
-        session["user_id"] = user_data[0]
+        session["user_id"] = user_id
 
         return redirect("/")
 
@@ -135,7 +102,26 @@ def logout():
 @app.route("/pomodoro", methods=["GET", "POST"])
 @login_required
 def pomodoro():
+    # Get default options from current user if no form is submitted
     user = session.get("user_id")
+
+    # Initialize variables to hold the values of the database query
+    minutes = None
+    timer_break = None
+    long_break = None
+    lb_interval = None
+
+    """Querying database to retreive user's preferences of the pomodoro timer"""
+    with get_db() as db:
+        cursor = db.cursor()
+        cursor.execute("SELECT minutes, break, long_break, lb_interval FROM preferences WHERE user_id = ?", (user,))
+        user_data = cursor.fetchone()
+
+        if user_data:
+            minutes, timer_break, long_break, lb_interval = user_data
+
+        else:
+            return None
 
     if request.method == "POST":
         minutes = request.form.get("minutes")
@@ -144,53 +130,50 @@ def pomodoro():
         lb_interval = 4
 
         # Assigning default values to the timer elements
-        default_minutes = 25
-        default_break = 5
-        default_long_break = 15 # Long break interval
-        default_lb_interval = 4 # Amount of pomodoros to reach long break
 
         form_elements = [minutes, timer_break, long_break]
 
         # Function to check for valid ints as user input
         def is_valid_element(element):
-            return element.isdigit() and int(element) > 0
+            try:
+                num = int(element)
+                return num > 0
+            
+            except ValueError:
+                return False
 
 
-        """If element isn't valid then assign it its default value"""
-        # Handling minutes
-        if not is_valid_element(minutes):
-            minutes = default_minutes
+        with get_db() as db:
+            cursor = db.cursor()
+            # handling minutes
+            if is_valid_element(minutes):
+                cursor.execute("UPDATE preferences SET minutes = ? WHERE user_id = ?",
+                            (minutes, user))
 
-        # Handling break
-        if not is_valid_element(timer_break):
-            timer_break = default_break
+            # Handling break
+            if is_valid_element(timer_break):
+                cursor.execute("UPDATE preferences SET break = ? WHERE user_id = ?",
+                            (timer_break, user))
 
-        # Handling long break
-        if not is_valid_element(long_break):
-            long_break = default_long_break
+            # Handling long break
+            if is_valid_element(long_break):
+                cursor.execute("UPDATE preferences SET long_break = ? WHERE user_id = ?",
+                            (long_break, user))
+                
+            db.commit()
 
-        # Update current user's preferences on database
-        db = get_db()
-        cursor = db.cursor()
-
-        cursor.execute("INSERT OR REPLACE INTO preferences \
-                        (user_id, minutes, break, long_break, lb_interval)\
-                        VALUES(?, ?, ?, ?, ?)", 
-                        (user, minutes, timer_break, long_break, lb_interval))
-        
-
-        return render_template("pomodoro.html")
+        return render_template("pomodoro.html", minutes=minutes, timer_break=timer_break, long_break=long_break)
                   
     else:
-        # Default configurations in case no valid user input
-        timer_minutes = 25 # Can change here later to values retrieved directly from the db, set default sql query to values
-        timer_break = 5
-        long_break = 15
-
-        return render_template("pomodoro.html", minutes=timer_minutes, timer_break=timer_break, long_break=long_break)
+        return render_template("pomodoro.html", minutes=minutes, timer_break=timer_break, long_break=long_break)
 
 
 @app.route("/about")
 @login_required
 def about():
     return render_template("about.html")
+
+
+@app.route("/error")
+def error():
+    return render_error()
