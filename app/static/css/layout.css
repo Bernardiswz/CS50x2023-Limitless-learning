@@ -30,6 +30,10 @@
     background: #305b76;
 }
 
+#navbar-logo {
+    max-height: 6vh;
+}
+
 ::selection {
     background:#577E99;
 }

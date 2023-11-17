@@ -81,7 +81,7 @@ def login():
         user_id = authenticate_user(username, password)
 
         if not user_id:
-            return 404
+            return render_error("Wrong password or wrong name!", 404)
         
         # If matches update user id to match user id from db
         session["user_id"] = user_id
@@ -176,4 +176,4 @@ def about():
 
 @app.route("/error")
 def error():
-    return render_error()
+    return render_template("error.html")

@@ -1,18 +1,52 @@
 .bg-navy {
     background: linear-gradient(90deg, #234d66, #163c52);
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
-    height: 5.5vh;
 }
 
-.body-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-    background-color: #f0f0f0;
-    max-width: 120vh;
-    margin: 0 auto;
-    margin-top: 2vh;
-    height: 90vh;
+.message {
+    font-family: 'Inter', sans-serif;
+    color: #555555;
+    font-size: 3.3vh;
+    line-height: 0.72em;
+    padding-left: 6vh;
+    padding-top: 3vh;
+    letter-spacing: -0.4px;
 }
+
+#error-title {
+    font-family: 'Inclusive Sans', sans-serif;
+    font-weight: bold;
+    font-size: 10vh;
+    color: #384955;
+    padding-left: 6vh;
+    padding-top: 16vh;
+    width: auto;
+    height: auto;
+    letter-spacing: -2px;
+}
+
+.navbar-elements:hover {
+    color: #FFECCC;
+    background-color: #007488c0;
+}
+
+/* Styling for the active state */
+.navbar-nav .nav-item.active .nav-link,
+.dropdown-menu .dropdown-item.active {
+    background-color: #007488c0;
+}
+
+#navbar-logo {
+    max-height: 6vh;
+}
+
+::selection {
+    background:#577E99;
+}
+
+/* @media screen and (max-width:768px) {
+    .main-text {
+        line-height: 1em!important;
+    }
+} */
+

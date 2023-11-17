@@ -5,13 +5,10 @@
 {% endblock %}
 
 {% block element %}
-<a class="navbar-elements navbar-brand" href="/login">Login</a>
+    <a class="navbar-elements navbar-brand" href="/login">Login</a>
 {% endblock %}
 
 {% block main %}
-<!-- Linking external files -->
-    <script src="../static/js/register/register.js"></script>
-
     <form id="register-form" action="/register" method="post" onsubmit="return checkInputs()">
         <div class="body-container">
             <div id="form-title">Register</div>
@@ -27,4 +24,6 @@
             <button class="btn btn-secondary" id="submit-button" type="submit">Submit</button>
         </div>
     </form>
+
+    <script src="../static/js/register/register.js"></script>
 {% endblock %}

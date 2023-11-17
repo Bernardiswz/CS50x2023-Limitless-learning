@@ -74,7 +74,8 @@ def is_valid_username(username):
     
     else:
         return True
-    
+
+
 # Function to render html in case of errors
-def render_error():
-    return render_template("error.html")
+def render_error(message, status_code):
+    return render_template("error.html", message=message, status_code=status_code)

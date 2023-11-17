@@ -4,24 +4,14 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <!-- Include Bootstrap's CSS -->
-        <link rel="stylesheet" href="/static/js/node_modules/bootstrap/dist/css/bootstrap.min.css">
-
-        <!-- Include Bootstrap's Js -->
-        <script src="/static/js/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
         <!-- Linking fonts -->
 
-        <!-- Inter -->
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap" rel="stylesheet">
-            
-        <!-- Inclusive Sans -->
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inclusive+Sans&display=swap" rel="stylesheet">
+        <!-- Inter and Inclusive Sans -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300&family=Inclusive+Sans&display=swap">
 
+        <!-- Include Bootstrap's CSS -->
+        <link rel="stylesheet" href="/static/js/node_modules/bootstrap/dist/css/bootstrap.min.css">
         <!-- Link external styling file -->
         <link rel="stylesheet" href="../static/css/error.css">
 
@@ -32,13 +22,29 @@
     <body>
         <nav class="navbar bg-navy" id="navbar">
             <div class="container-fluid">
+                <a class="navbar-elements navbar-brand" href="/" >
+                    <img src="../static/images/logo_inverse.png" id="navbar-logo"> 
+                  </a>
                 {% block element %}{% endblock %}
             </div>
         </nav>
         
         <main>
-            <!-- <div class="body-container">
-            </div> -->
+            <!-- <div class="body-container"> -->
+            <h1 id="error-title">Something went wrong!</h1>
+            
+            <div class="message">
+                <p>The server responded with the status code <span style="font-weight: bold; color: #01849A;">{{ status_code }}</span>.</p>
+                <p>{{ message }}</p>
+                <a href="#" onclick="goBack()">Go back to the previous page</a>
+            </div>
         </main>
+
+        <!-- Send user to previous page -->
+        <script>
+            function goBack() {
+                window.history.back();
+            }
+        </script>
     </body>
 </html>
