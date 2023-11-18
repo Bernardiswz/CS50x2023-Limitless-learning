@@ -10,8 +10,6 @@
 
 {% block main %}
     <!-- Linking external files -->
-    <script src="../static/js/login/login.js"></script>
-
     <form id="login-form" action="/login" method="post">
         <div class="body-container">
             <div id="form-title">Login</div>
@@ -26,4 +24,6 @@
             <button class="btn btn-secondary" id="submit-button" type="submit">Submit</button>
         </div>
     </form>
+    
+    <script src="../static/js/login/login.js"></script>
 {% endblock %}

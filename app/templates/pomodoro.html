@@ -5,10 +5,9 @@
 {% endblock %}
 
 {% block main %}
+    <!-- Css -->
     <link rel="stylesheet" href="/static/css/pomodoro.css">
-    <script src="/static/js/pomodoro/pomodoro.js"></script>
-    <script src="/static/js/pomodoro/settings.js"></script>
-
+    
     <!-- Variables of time, break and long break -->
     <div id="timer-minutes" style="display: none;">{{ minutes }}</div>
     <div id="timer-break" style="display: none;">{{ timer_break }}</div>
@@ -65,4 +64,8 @@
             </div>
         </form>
     </div> 
+
+    <!-- JavaScript files -->
+    <script src="/static/js/pomodoro/pomodoro.js"></script>
+    <script src="/static/js/pomodoro/settings.js"></script>
 {% endblock %}

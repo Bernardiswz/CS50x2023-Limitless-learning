@@ -98,6 +98,18 @@ def logout():
 
     return redirect("/")
 
+@app.route("/flashcards", methods=["GET", "POST"])
+def flashcards():
+    user = session.get("user_id")
+    user_flashcards = None
+    
+
+    if request.method == "POST":
+        return
+    
+    else:
+        return render_template("flashcards.html")
+
 
 @app.route("/pomodoro", methods=["GET", "POST"])
 @login_required

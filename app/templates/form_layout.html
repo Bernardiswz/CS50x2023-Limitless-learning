@@ -1,46 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <!-- Include Bootstrap's CSS -->
-        <link rel="stylesheet" href="/static/js/node_modules/bootstrap/dist/css/bootstrap.min.css">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <!-- Include Bootstrap's Js -->
-        <script src="/static/js/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Linking Inter and Inclusive Sans fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300&family=Inclusive+Sans&display=swap">
 
-        <!-- Including zxcvbn to check password security -->
-        <script src="../static/js/node_modules/zxcvbn/dist/zxcvbn.js"></script>
+    <!-- Include Bootstrap's CSS -->
+    <link rel="stylesheet" href="/static/js/node_modules/bootstrap/dist/css/bootstrap.min.css">
 
-        <!-- Linking fonts -->
+    <!-- Link external styling file -->
+    <link rel="stylesheet" href="../static/css/form_layout.css">
 
-        <!-- Inter -->
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap" rel="stylesheet">
-            
-        <!-- Inclusive Sans -->
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inclusive+Sans&display=swap" rel="stylesheet">
+    <title>{% block title %}{% endblock %}</title>
 
-        <!-- Link external styling file -->
-        <link rel="stylesheet" href="../static/css/register.css">
+</head>
 
-        <title>{% block title %}{% endblock %}</title>
+<body>
+    <nav class="navbar bg-navy" id="navbar">
+        <div class="container-fluid">
+            {% block element %}{% endblock %}
+        </div>
+    </nav>
+    
+    <main>
+        {% block main %}{% endblock %}
+    </main>
 
-    </head>
+    <!-- Include Bootstrap's Js -->
+    <script src="/static/js/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
-    <body>
-        <nav class="navbar bg-navy" id="navbar">
-            <div class="container-fluid">
-                {% block element %}{% endblock %}
-            </div>
-        </nav>
-        
-        <main>
-            {% block main %}{% endblock %}
-        </main>
-    </body>
+    <!-- Including zxcvbn to check password security -->
+    <script src="../static/js/node_modules/zxcvbn/dist/zxcvbn.js"></script>
+</body>
+
 </html>

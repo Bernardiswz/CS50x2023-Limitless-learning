@@ -21,7 +21,7 @@
 }
 
 .dropdown-item:hover {
-    color: #FFECCC;
+    color: hsl(38, 100%, 90%);
     background-color: #007488c0;
 }
 
