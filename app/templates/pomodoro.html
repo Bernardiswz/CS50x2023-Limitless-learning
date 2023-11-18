@@ -6,7 +6,7 @@
 
 {% block main %}
     <!-- Css -->
-    <link rel="stylesheet" href="/static/css/pomodoro.css">
+    <link rel="stylesheet" href="../static/css/pomodoro.css">
     
     <!-- Variables of time, break and long break -->
     <div id="timer-minutes" style="display: none;">{{ minutes }}</div>
@@ -17,19 +17,19 @@
     <div class="container timer-container">
         <div class="timer-box">
             <button id="settings-button" type="button">
-                <img src="/static/images/settings-icon.png" alt="Button Image" id="settings-icon">
+                <img src="../static/images/settings-icon.png" alt="Button Image" id="settings-icon">
             </button>
             <div id="timer">{{ minutes }}:00</div>
             <button class="btn btn-light" id="start-button">Start</button>
         </div>
 
         <audio id="button-sound">
-            <source src="/static/audio/button_press.mp3" type="audio/mpeg">
+            <source src="../static/audio/button_press.mp3" type="audio/mpeg">
             Your browser does not support the audio element.
         </audio>
 
         <audio id="timeup-sound">
-            <source src="/static/audio/time_up.mp3" type="audio/mpeg">
+            <source src="../static/audio/time_up.mp3" type="audio/mpeg">
             Your browser does not support the audio element.
         </audio>
     </div>
@@ -44,7 +44,7 @@
 
             <!-- Exit button -->
             <button id="close-button" type="submit">
-                <img src="/static/images/close-button.png" alt="Button Image" id="close-button-icon">
+                <img src="../static/images/close-button.png" alt="Button Image" id="close-button-icon">
             </button>
 
             <!-- Input titles -->
@@ -65,7 +65,10 @@
         </form>
     </div> 
 
-    <!-- JavaScript files -->
-    <script src="/static/js/pomodoro/pomodoro.js"></script>
-    <script src="/static/js/pomodoro/settings.js"></script>
+    <!-- Jquery for dynamic server side input submission -->
+    <script src="../static/js/node_modules//jquery/dist/jquery.min.js"></script>
+
+    <!-- JavaScript external files -->
+    <script src="../static/js/pomodoro/pomodoro.js"></script>
+    <script src="../static/js/pomodoro/settings.js"></script>
 {% endblock %}

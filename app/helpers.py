@@ -22,14 +22,15 @@ def register_user(username, password):
             return None  # Username already exists
 
         password_hash = generate_password_hash(password)
-        cursor.execute("INSERT INTO users (username, hash) VALUES(?, ?)", (username, password_hash))
 
-        cursor.execute("SELECT id FROM users WHERE username = ?", (username,))
+        cursor.execute("INSERT INTO users (username, hash) VALUES(?, ?)", (username, password_hash))
+        cursor.execute("SELECT user_id FROM users WHERE username = ?", (username,))
         user_id = cursor.fetchone()[0]
 
         cursor.execute("INSERT INTO preferences (user_id) VALUES(?)", (user_id,))
-        db.commit()
+        cursor.execute("INSERT INTO user_data (user_id) VALUES(?)", (user_id,))
 
+        db.commit()
         return user_id
 
 

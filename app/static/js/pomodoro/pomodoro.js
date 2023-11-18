@@ -69,6 +69,7 @@ function main() {
 
             // Automatically start the break timer
             if (!timeBreak) {
+                submitDataToServer();
                 pomodoros++;
             }
             
@@ -113,6 +114,23 @@ function main() {
             timerRunning = false;
             startButton.textContent = "Start";
         }
+    }
+
+    function submitDataToServer() {
+        $.ajax({
+            type: "POST",
+            url: "/update_data",
+            data: {
+                operation: "incrementPomodoros"
+            },
+            success: function(response) { 
+                console.log("Data sent sucessfully");
+            },
+
+            error: function(error) {
+                console.error("Error sending data:", error);
+            }
+        });
     }
 
     startButton.addEventListener("click", startTimer);

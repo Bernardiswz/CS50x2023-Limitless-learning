@@ -3,7 +3,6 @@ function main() {
     const settingsDialog = document.getElementById("settings-dialog");
     const closeButton = document.getElementById("close-button");
     const settingsOverlay = document.getElementById("overlay");
-
     let dialogVisible = false;
 
     settingsButton.addEventListener("click", toggleDialog);
@@ -16,7 +15,7 @@ function main() {
             settingsOverlay.style.display = "block";
             dialogVisible = true;
 
-            closeButton.addEventListener("click", hideDialog);
+            closeButton.addEventListener("click", buttonEventListeners);
         }
     }
 
@@ -24,6 +23,39 @@ function main() {
         settingsDialog.style.display = "none";
         settingsOverlay.style.display = "none";
         dialogVisible = false;
+    }
+
+    function updatePreferencesOnServer() {
+        var minutes = $("#minutes-input").val();
+        var timerBreak = $("#break-input").val();
+        var longBreak = $("#long-break-input").val();
+
+        $.ajax({
+            type: "POST",
+            url: "/pomodoro",
+            data: {
+                minutes: minutes,
+                break: timerBreak,
+                long_break: longBreak
+            },
+            success: function(data) {
+                console.log("Preferences updated");
+            },
+            error: function(error) {
+                console.log(error);
+                alert("Error updating preferences");
+            }
+        });
+    }
+
+    function buttonEventListeners(event) {
+        hideDialog();
+
+        if (!dialogVisible) {
+            updatePreferencesOnServer();
+        }
+
+        event.preventDefault();
     }
 }
 

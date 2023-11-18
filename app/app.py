@@ -2,7 +2,7 @@
 This is a Flask web application that providdes information about the importance of learning
 and offers various learning resources. See the README for more information.
 """
-from flask import Flask, redirect, render_template, request, session, g
+from flask import Flask, g, jsonify, redirect, render_template, request, session
 from flask_session import Session
 from helpers import login_required, is_valid_password, is_valid_username, get_db, register_user, authenticate_user, render_error
 
@@ -111,10 +111,33 @@ def flashcards():
         return render_template("flashcards.html")
 
 
+@app.errorhandler(Exception)
+def error(error):
+    error_message = str(error)
+    status_code = getattr(error, 'code', 500)
+
+    return render_template("error.html", status_code=status_code, message=error_message)
+
+
+@app.route("/update_data", methods=["POST"])
+@login_required
+def update_data():
+    user = session.get("user_id")
+    operation = request.form.get("operation")
+
+    if operation == "incrementPomodoros":
+        with get_db() as db:
+            cursor = db.cursor()
+
+            cursor.execute("UPDATE user_data SET pomodoros_finished = pomodoros_finished + 1 WHERE user_id = ?", 
+                           (user,))
+            db.commit()
+
+
 @app.route("/pomodoro", methods=["GET", "POST"])
 @login_required
 def pomodoro():
-    # Get default options from current user if no form is submitted
+    # Get default options from the current user if no form is submitted
     user = session.get("user_id")
 
     # Initialize variables to hold the values of the database query
@@ -123,7 +146,7 @@ def pomodoro():
     long_break = None
     lb_interval = None
 
-    """Querying database to retreive user's preferences of the pomodoro timer"""
+    """Querying the database to retrieve the user's preferences of the pomodoro timer"""
     with get_db() as db:
         cursor = db.cursor()
         cursor.execute("SELECT minutes, break, long_break, lb_interval FROM preferences WHERE user_id = ?", (user,))
@@ -131,9 +154,6 @@ def pomodoro():
 
         if user_data:
             minutes, timer_break, long_break, lb_interval = user_data
-
-        else:
-            return None
 
     if request.method == "POST":
         minutes = request.form.get("minutes")
@@ -150,42 +170,37 @@ def pomodoro():
             try:
                 num = int(element)
                 return num > 0
-            
+
             except ValueError:
                 return False
-
 
         with get_db() as db:
             cursor = db.cursor()
             # handling minutes
             if is_valid_element(minutes):
-                cursor.execute("UPDATE preferences SET minutes = ? WHERE user_id = ?",
-                            (minutes, user))
+                cursor.execute("UPDATE preferences SET minutes = ? WHERE user_id = ?", (minutes, user))
 
             # Handling break
             if is_valid_element(timer_break):
-                cursor.execute("UPDATE preferences SET break = ? WHERE user_id = ?",
-                            (timer_break, user))
+                cursor.execute("UPDATE preferences SET break = ? WHERE user_id = ?", (timer_break, user))
 
             # Handling long break
             if is_valid_element(long_break):
-                cursor.execute("UPDATE preferences SET long_break = ? WHERE user_id = ?",
-                            (long_break, user))
-                
+                cursor.execute("UPDATE preferences SET long_break = ? WHERE user_id = ?", (long_break, user))
+
             db.commit()
 
-        return render_template("pomodoro.html", minutes=minutes, timer_break=timer_break, long_break=long_break)
-                  
-    else:
-        return render_template("pomodoro.html", minutes=minutes, timer_break=timer_break, long_break=long_break)
+        return jsonify({
+            'minutes': minutes,
+            'timer_break': timer_break,
+            'long_break': long_break
+        })
+
+    # This part was modified to render the template instead of returning None
+    return render_template("pomodoro.html", minutes=minutes, timer_break=timer_break, long_break=long_break)
 
 
 @app.route("/about")
 @login_required
 def about():
     return render_template("about.html")
-
-
-@app.route("/error")
-def error():
-    return render_template("error.html")
