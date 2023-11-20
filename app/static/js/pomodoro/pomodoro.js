@@ -21,6 +21,7 @@ function main() {
     let timerRunning = false;
     let waiting = false;
     let timeBreak = false;
+    let isLongBreak = false;
     let pomodoros = 0;
 
     // Update the timer element on page load
@@ -31,25 +32,48 @@ function main() {
         const target = event.target;
 
         if (target.matches(".settings-input")) {
-            // Handle changes in input elements with class 'settings-input'
             const name = target.name;
-            const value = parseInt(target.value);
-
+            let value = target.value.trim(); // Trim whitespace from the input value
+    
+            // Regular expression to match positive integers
+            const integerPattern = /^[1-9]\d*$/;
+            
+            // Need to fix the replace invalid input later
             switch (name) {
                 case "minutes":
-                    minutes = value;
+                    if (!integerPattern.test(value)) {
+                        target.value = value.replace(/[^0-9]/g, "");
+                    } else {
+                        minutes = parseInt(value, 10);
+                    }
                     break;
+    
                 case "break":
-                    timerBreak = value;
+                    if (!integerPattern.test(value)) {
+                        target.value = "";
+                    } else {
+                        timerBreak = parseInt(value, 10);
+                    }
                     break;
+    
                 case "long_break":
-                    longBreak = value;
+                    if (!integerPattern.test(value)) {
+                        target.value = "";
+                    } else {
+                        longBreak = parseInt(value, 10);
+                    }
                     break;
             }
-
+    
             if (!timerRunning && !timeBreak) {
-                time = minutes * 60; // Update the 'time' variable
-                timerElement.textContent = `${minutes}:00`; // Update the timer element
+                time = minutes * 60;
+                timerElement.textContent = `${minutes}:00`;
+            } else if (!timerRunning && timeBreak) {
+                time = timerBreak * 60;
+                timerElement.textContent = `${timerBreak}:00`;
+            } else if (!timerRunning && isLongBreak) {
+                time = longBreak * 60;
+                timerElement.textContent = `${longBreak}:00`;
             }
         }
     });
@@ -78,19 +102,21 @@ function main() {
     }
 
     function startBreak() {
-        // Set break or long break based on your conditions
-        if (timerBreak && pomodoros < 4) {
-            time = timerBreak * 60;
-        } else if (timerBreak && pomodoros === 4) {
-            time = longBreak * 60;
-            pomodoros = 0;
-        }
-        timeBreak = !timeBreak;
-        resetTimer(); // Reset the timer before updating the button text
-        startTimer(); // Automatically start the break timer
-        // Update the timer element AFTER starting the timer
-        timerElement.textContent = timeBreak ? `${timerBreak}:00` : `${longBreak}:00`;
+    if (timerBreak && pomodoros < 4) {
+        time = timerBreak * 60;
+        isLongBreak = false;
+    } else if (timerBreak && pomodoros === 4) {
+        time = longBreak * 60;
+        pomodoros = 0;
+        isLongBreak = true;
     }
+    timeBreak = !timeBreak;
+    resetTimer(); // Reset the timer before updating the button text
+    startTimer(); // Automatically start the break timer
+
+    // Update the timer element AFTER starting the timer
+    timerElement.textContent = timeBreak ? `${timerBreak}:00` : `${longBreak}:00`;
+}
 
     function resetTimer() {
         time = minutes * 60;

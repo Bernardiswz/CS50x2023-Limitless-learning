@@ -7,14 +7,19 @@
 } */
 
 .buttons {
-    background-color: #fffaaf;
+    background-color: #b5ddfb5d;
+    width: 125vh;
+    border-radius: 8px;
+    margin-bottom: 10px;
 }
 
 
 .buttons-container {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin: 10px;
 }
 
 .body-container {
@@ -28,4 +33,10 @@
     margin: 0 auto;
     margin-top: 2vh;
     height: 88vh;
+}
+
+@media (max-width: 768px) {
+    .buttons {
+        width: auto;
+    }
 }

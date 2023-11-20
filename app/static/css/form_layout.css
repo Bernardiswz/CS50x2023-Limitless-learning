@@ -76,6 +76,6 @@
         position: relative;
         top: -5%;
         transform: none;
-        margin-top: 2vh; /* Ajuste para dispositivos móveis */
+        margin-top: 2vh; /* Adjusting for mobile devices */
     }
 }

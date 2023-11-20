@@ -3,13 +3,26 @@ function main() {
     const settingsDialog = document.getElementById("settings-dialog");
     const closeButton = document.getElementById("close-button");
     const settingsOverlay = document.getElementById("overlay");
+    const inputContainer = document.getElementById("inputs");
     let dialogVisible = false;
 
     settingsButton.addEventListener("click", toggleDialog);
 
+    function checkInputs() {
+        const inputs = inputContainer.querySelectorAll("input");
+
+        // Check if all inputs have a integer value greater than 0, 
+        return Array.from(inputs).every(input => {
+            const value = parseInt(input.value);
+            return !isNaN(value) && value > 0;
+        });
+
+    }
+
     function toggleDialog(event) {
+        
         if (dialogVisible) {
-            hideDialog()
+            hideDialog();
         } else {
             settingsDialog.style.display = "block";
             settingsOverlay.style.display = "block";
@@ -38,9 +51,9 @@ function main() {
                 break: timerBreak,
                 long_break: longBreak
             },
-            success: function(data) {
-                console.log("Preferences updated");
-            },
+            // success: function(data) {
+            //     console.log("Preferences updated");
+            // },
             error: function(error) {
                 console.log(error);
                 alert("Error updating preferences");
@@ -49,7 +62,9 @@ function main() {
     }
 
     function buttonEventListeners(event) {
-        hideDialog();
+        if (checkInputs()) {
+            hideDialog();
+        }
 
         if (!dialogVisible) {
             updatePreferencesOnServer();
