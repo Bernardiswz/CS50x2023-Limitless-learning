@@ -1,18 +1,8 @@
-/* .buttons {
-    width: 68vh;
-    align-items: center;
-    text-align: center;
-    justify-content: center;
-    top: 50%;
-} */
-
 .buttons {
     background-color: #b5ddfb5d;
     width: 125vh;
     border-radius: 8px;
-    margin-bottom: 10px;
 }
-
 
 .buttons-container {
     display: flex;
@@ -20,6 +10,10 @@
     align-items: center;
     justify-content: center;
     margin: 10px;
+}
+
+.buttons-container ul {
+    margin-bottom: 10px;
 }
 
 .body-container {

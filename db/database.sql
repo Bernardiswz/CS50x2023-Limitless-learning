@@ -14,9 +14,10 @@ CREATE TABLE IF NOT EXISTS preferences (
 );
 
 CREATE TABLE IF NOT EXISTS flashcards (
-    user_id INTEGER PRIMARY KEY,
+    user_id INTEGER,
     question TEXT,
     answer TEXT,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
@@ -30,7 +31,8 @@ CREATE TABLE IF NOT EXISTS user_data (
 );
 
 CREATE TABLE IF NOT EXISTS history (
-    user_id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
+    user_id INTEGER,
     action TEXT NOT NULL,
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id)

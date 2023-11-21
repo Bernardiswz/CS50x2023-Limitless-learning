@@ -4,7 +4,8 @@ and offers various learning resources. See the README for more information.
 """
 from flask import Flask, g, jsonify, redirect, render_template, request, session
 from flask_session import Session
-from helpers import login_required, is_valid_password, is_valid_username, get_db, register_user, authenticate_user, render_error
+from datetime import datetime
+from helpers import *
 
 
 # Configure app
@@ -99,16 +100,17 @@ def logout():
     return redirect("/")
 
 @app.route("/flashcards", methods=["GET", "POST"])
+@login_required
 def flashcards():
-    user = session.get("user_id")
-    user_flashcards = None
+    user_id = session.get("user_id")
+    user_flashcards = get_flashcards(user_id)
+    print(user_flashcards)
     
-
     if request.method == "POST":
         return
     
     else:
-        return render_template("flashcards.html")
+        return render_template("flashcards.html", flashcards=user_flashcards)
 
 
 @app.errorhandler(Exception)

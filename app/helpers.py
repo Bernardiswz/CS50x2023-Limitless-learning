@@ -1,6 +1,7 @@
 from flask import render_template, redirect, session, g
 from werkzeug.security import check_password_hash, generate_password_hash
 from functools import wraps
+from datetime import datetime
 import sqlite3
 
 
@@ -47,6 +48,39 @@ def authenticate_user(username, password):
             return None
 
         return user_data[0]  # Return user_id
+
+
+def get_flashcards(user_id):
+    user_flashcards = []
+
+    with get_db() as db:
+        cursor = db.cursor()
+
+        cursor.execute("SELECT question, answer, timestamp FROM flashcards WHERE user_id = ?",
+                   (user_id,))
+        
+        rows = cursor.fetchall()
+
+        for row in rows:
+            timestamp_str = row[2]
+            timestamp = datetime.strptime(timestamp_str, "%Y-%m-%d %H:%M:%S")
+
+            flashcards_dict = {
+                "question": row[0],
+                "answer" : row[1],
+                "timestamp": timestamp.strftime("%d/%m/%Y")
+            }
+            
+            # timestamp = flashcards_dict["timestamp"]
+            # date_parts = timestamp.split("-")
+
+            # # Reordering the datetime to DD/MM/YYYY
+            # reordered_date = f"{date_parts[2]}/{date_parts[1]}/{date_parts[0]}"
+            # flashcards_dict["timestamp"] = reordered_date
+
+            user_flashcards.append(flashcards_dict)
+
+    return user_flashcards
 
 
 # Decorated function to ensure login
