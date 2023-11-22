@@ -65,6 +65,7 @@
 
 #submit-button {
     background-color: #384955;
+    border: none;
 }
 
 #submit-button:hover {

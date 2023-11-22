@@ -14,7 +14,9 @@ CREATE TABLE IF NOT EXISTS preferences (
 );
 
 CREATE TABLE IF NOT EXISTS flashcards (
+    id INTEGER PRIMARY KEY,
     user_id INTEGER,
+    topic TEXT,
     question TEXT,
     answer TEXT,
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,

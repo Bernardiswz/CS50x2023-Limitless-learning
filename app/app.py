@@ -104,6 +104,10 @@ def logout():
 def flashcards():
     user_id = session.get("user_id")
     user_flashcards = get_flashcards(user_id)
+    
+    for flashcard in user_flashcards:
+        flashcard["time_ago"] = get_date_difference(flashcard["timestamp"])
+
     print(user_flashcards)
     
     if request.method == "POST":

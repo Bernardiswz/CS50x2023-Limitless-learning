@@ -56,31 +56,35 @@ def get_flashcards(user_id):
     with get_db() as db:
         cursor = db.cursor()
 
-        cursor.execute("SELECT question, answer, timestamp FROM flashcards WHERE user_id = ?",
+        cursor.execute("SELECT topic, question, answer, timestamp FROM flashcards WHERE user_id = ?",
                    (user_id,))
         
         rows = cursor.fetchall()
 
         for row in rows:
-            timestamp_str = row[2]
+            timestamp_str = row[3]
             timestamp = datetime.strptime(timestamp_str, "%Y-%m-%d %H:%M:%S")
 
             flashcards_dict = {
-                "question": row[0],
-                "answer" : row[1],
+                "topic": row[0],
+                "question": row[1],
+                "answer" : row[2],
                 "timestamp": timestamp.strftime("%d/%m/%Y")
             }
             
-            # timestamp = flashcards_dict["timestamp"]
-            # date_parts = timestamp.split("-")
-
-            # # Reordering the datetime to DD/MM/YYYY
-            # reordered_date = f"{date_parts[2]}/{date_parts[1]}/{date_parts[0]}"
-            # flashcards_dict["timestamp"] = reordered_date
-
             user_flashcards.append(flashcards_dict)
 
     return user_flashcards
+
+
+def get_date_difference(date):
+    date_object = datetime.strptime(date, "%d/%m/%Y")
+    current_date = datetime.now()
+    
+    date_difference = current_date - date_object
+    days_difference = date_difference.days
+
+    return days_difference
 
 
 # Decorated function to ensure login
