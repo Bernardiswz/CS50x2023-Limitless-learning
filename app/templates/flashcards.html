@@ -35,5 +35,23 @@
         </form>
     </div>
 
+    <div id="flashcard-feedback" style="display: none">
+        <form id="feedback" class="form-container">
+            <h1 id="answer-header">Your answer:</h1>
+            <div id="user-answer">User answer</div>
+            <h2 id="user-answer-header">Flashcard answer:</h2>
+            <div id="flashcard-answer">Answer</div>
+
+            <div id="buttons-div">
+                <button class="btn btn-outline-success">Very Easy</button>
+                <button class="btn btn-outline-primary">Easy</button>
+                <button class="btn btn-outline-warning">Medium</button>
+                <button class="btn btn-outline-danger">Hard</button>
+                <button class="btn btn-outline-dark">Very Hard</button>
+            </div>
+        </form>
+    </div>
+
     <script src="../static/js/flashcards/flashcards.js"></script>
+
 {% endblock %}

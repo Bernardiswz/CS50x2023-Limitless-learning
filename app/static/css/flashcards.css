@@ -30,7 +30,69 @@
     height: 88vh;
 }
 
-.form-container {
+#buttons-div {
+    flex-direction: row;
+    text-align: center;
+}
+
+#buttons-div button {
+    flex-direction: row;
+    margin-right: 0.8rem;
+    width: 10vh;
+}
+
+#flashcard-feedback #feedback {
+    #answer-header {
+        font-family: 'Inclusive Sans', sans-serif;
+        font-size: 6vh;
+        color: #384955;
+        text-align: center;
+        position: relative;
+        top: -22%;
+        margin-top: 9vh;
+        margin-bottom: 9vh;
+        line-height: 1;
+        z-index: 1;
+    }
+
+    #user-answer {
+        font-family: 'Inter', sans-serif;
+        font-size: 3.2vh;
+        color:#163C52;
+        line-height: 1;
+        text-align: center;
+        position: relative;
+        top: -28%;
+        z-index: 2;
+    }
+
+    #user-answer-header {
+        font-family: 'Inclusive Sans', sans-serif;
+        font-size: 6vh;
+        color: #384955;
+        text-align: center;
+        position: relative;
+        top: -22%;
+        /* margin-top: 9vh; */
+        margin-bottom: 9vh;
+        line-height: 1;
+        z-index: 1;
+    }
+
+    #flashcard-answer {
+        font-family: 'Inter', sans-serif;
+        font-size: 3.2vh;
+        color:#163C52;
+        line-height: 1;
+        text-align: center;
+        position: relative;
+        top: -28%;
+        z-index: 2;
+    }
+
+}
+
+#flashcard-page .form-container {
     .form-control {
         width: 80%;
         margin-bottom: 10vh;
@@ -80,8 +142,22 @@
     }
 }
 
+
+
 @media (max-width: 768px) {
     .buttons {
         width: auto;
     }
+
+    #buttons-div {
+        flex-direction: row;
+        text-align: center;
+    }
+    
+    #buttons-div button {
+        flex-direction: row;
+        margin-right: 0.2rem;
+        width: auto;
+    }
+    
 }
