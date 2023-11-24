@@ -41,6 +41,19 @@
     width: 10vh;
 }
 
+#create-flashcard-button {
+    border: none;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+#add-icon {
+    box-sizing: content-box;
+    width: auto;
+    height: auto;
+    max-width: 6vh;
+    background-color: rgba(0, 0, 0, 0);
+}
+
 #flashcard-feedback #feedback {
     #answer-header {
         font-family: 'Inclusive Sans', sans-serif;
@@ -141,8 +154,6 @@
         background-color : #234D66;
     }
 }
-
-
 
 @media (max-width: 768px) {
     .buttons {

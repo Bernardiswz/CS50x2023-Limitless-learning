@@ -56,19 +56,20 @@ def get_flashcards(user_id):
     with get_db() as db:
         cursor = db.cursor()
 
-        cursor.execute("SELECT topic, question, answer, timestamp FROM flashcards WHERE user_id = ?",
+        cursor.execute("SELECT flashcard_id, topic, question, answer, timestamp FROM flashcards WHERE user_id = ?",
                    (user_id,))
         
         rows = cursor.fetchall()
 
         for row in rows:
-            timestamp_str = row[3]
+            timestamp_str = row[4]
             timestamp = datetime.strptime(timestamp_str, "%Y-%m-%d %H:%M:%S")
 
             flashcards_dict = {
-                "topic": row[0],
-                "question": row[1],
-                "answer" : row[2],
+                "flashcard_id": row[0],
+                "topic": row[1],
+                "question": row[2],
+                "answer" : row[3],
                 "timestamp": timestamp.strftime("%d/%m/%Y")
             }
             

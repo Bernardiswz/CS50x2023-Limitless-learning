@@ -139,6 +139,14 @@ def update_data():
                            (user,))
             db.commit()
 
+    elif operation =="flashcardFeedback":
+        button_value = request.form.get("buttonValue")
+
+        with get_db() as db:
+            cursor = db.cursor()
+
+            cursor.execute("")
+
 
 @app.route("/pomodoro", methods=["GET", "POST"])
 @login_required

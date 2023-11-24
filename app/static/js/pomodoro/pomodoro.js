@@ -148,13 +148,6 @@ function main() {
             url: "/update_data",
             data: {
                 operation: "incrementPomodoros"
-            },
-            success: function(response) { 
-                console.log("Data sent sucessfully");
-            },
-
-            error: function(error) {
-                console.error("Error sending data:", error);
             }
         });
     }

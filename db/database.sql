@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS preferences (
 );
 
 CREATE TABLE IF NOT EXISTS flashcards (
-    id INTEGER PRIMARY KEY,
+    flashcard_id INTEGER PRIMARY KEY,
     user_id INTEGER,
     topic TEXT,
     question TEXT,
@@ -23,12 +23,18 @@ CREATE TABLE IF NOT EXISTS flashcards (
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
+CREATE TABLE IF NOT EXISTS flashcards_rating (
+    flashcard_id INTEGER PRIMARY KEY,
+    rating TEXT,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (flashcard_id) REFERENCES flashcards(flashcard_id)
+);
+
 CREATE TABLE IF NOT EXISTS user_data (
     user_id INTEGER PRIMARY KEY,
     pomodoros_finished INTEGER NOT NULL DEFAULT 0,
-    correct_flashcards INTEGER NOT NULL DEFAULT 0,
-    incorrect_flashcards INTEGER NOT NULL DEFAULT 0,
-    flashcards_amount INTEGER NOT NULL DEFAULT 0, --Total amount of flash cards created and active
+    flashcards_quantity INTEGER NOT NULL DEFAULT 0,
+    flashcards_amount INTEGER NOT NULL DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 

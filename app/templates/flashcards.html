@@ -11,6 +11,7 @@
         <div id="flashcards" class="buttons-container">
             {% for flashcard in flashcards %}
                 <ul class="list-group buttons">
+                    <div class="flashcard-id" style="display: none">{{ flashcard["flashcard_id"] }}</div>
                     <div class="answer" style="display: none;">{{ flashcard["answer"] }}</div>
                     <a href="#" class="list-group-item list-group-item-action flex-column align-items-start buttons">
                         <div class="d-flex w-100 justify-content-between">
@@ -22,7 +23,14 @@
                     </a>
                 </ul>
             {% endfor %}
-        </div>    
+        </div>
+
+    {% else %}
+        <div id="create-flashcards" class="container-fluid">
+            <button id="create-flashcard-button">
+                <img id="add-icon" src="../static/images/add-icon.png" alt="Image">
+            </button>
+        </div>
     {% endif %}
 
 
@@ -43,11 +51,11 @@
             <div id="flashcard-answer">Answer</div>
 
             <div id="buttons-div">
-                <button class="btn btn-outline-success">Very Easy</button>
-                <button class="btn btn-outline-primary">Easy</button>
-                <button class="btn btn-outline-warning">Medium</button>
-                <button class="btn btn-outline-danger">Hard</button>
-                <button class="btn btn-outline-dark">Very Hard</button>
+                <button id="easy-button" value="easy" class="btn btn-outline-primary">Easy</button>
+                <button id="very-easy-button" value="very-easy" class="btn btn-outline-success">Very Easy</button>
+                <button id="medium-button" value="medium" class="btn btn-outline-warning">Medium</button>
+                <button id="hard-button" value="hard" class="btn btn-outline-danger">Hard</button>
+                <button id="very-hard-button" value="very-hard" class="btn btn-outline-dark">Very Hard</button>
             </div>
         </form>
     </div>
