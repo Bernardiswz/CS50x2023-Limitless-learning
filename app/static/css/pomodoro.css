@@ -48,7 +48,6 @@
     margin-right: 9.2vh;
 }
 
-
 .settings-input {
     width: 40%;
     margin: 2px;
@@ -91,8 +90,7 @@
     z-index: 999;
 }
 
-#overlay {
-    display: none;
+#dialog-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -109,6 +107,7 @@
     line-height: 1;
     text-align: center;
     padding-top: 1vh;
+    user-select: none;
 }
 
 #settings-thematic-break {
@@ -120,7 +119,7 @@
 #close-button {
     border: none;
     background: transparent;
-    padding:0;
+    padding: 0;
 }
 
 #close-button-icon {

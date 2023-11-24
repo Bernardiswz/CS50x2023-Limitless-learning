@@ -172,7 +172,7 @@ def pomodoro():
     if request.method == "POST":
         minutes = request.form.get("minutes")
         timer_break = request.form.get("break")
-        long_break = request.form.get("long_break")
+        long_break = request.form.get("long-break")
         lb_interval = 4
 
         # Assigning default values to the timer elements

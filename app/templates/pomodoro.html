@@ -35,10 +35,10 @@
     </div>
 
     <!-- Settings overlay -->
-    <div id="overlay" style="display: none;"></div>
+    <div id="dialog-overlay" style="display: none;"></div>
 
     <div class="container" id="settings-dialog" style="display: none;">
-        <form action="/pomodoro" method="post">
+        <form>
             <div id="settings-text">Settings</div>
             <hr id="settings-thematic-break">
 
@@ -61,10 +61,10 @@
                 <input autocomplete="off" value="{{ minutes }}" class="settings-input" name="minutes" type="number" id="minutes-input" min="1"
                 pattern="[1-9][0-9]*" title="Please enter a valid positive integer for minutes.">
                 <input autocomplete="off" value="{{ timer_break }}" class="settings-input" name="break" type="number" id="break-input" min="1">
-                <input autocomplete="off" value="{{ long_break }}" class="settings-input" name="long_break" type="number" id="long-break-input" min="1">
+                <input autocomplete="off" value="{{ long_break }}" class="settings-input" name="long-break" type="number" id="long-break-input" min="1">
             </div>
         </form>
-    </div> 
+    </div>
 
     <!-- Jquery for dynamic server side input submission -->
     <script src="../static/js/node_modules//jquery/dist/jquery.min.js"></script>

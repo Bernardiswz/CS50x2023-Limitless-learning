@@ -7,8 +7,8 @@
 {% block main %}
     <link rel="stylesheet" href="../static/css/flashcards.css">
 
-    {% if flashcards %}
-        <div id="flashcards" class="buttons-container">
+    <div id="flashcards" class="buttons-container"></div>
+        {% if flashcards %}
             {% for flashcard in flashcards %}
                 <ul class="list-group buttons">
                     <div class="flashcard-id" style="display: none">{{ flashcard["flashcard_id"] }}</div>
@@ -23,16 +23,44 @@
                     </a>
                 </ul>
             {% endfor %}
-        </div>
 
-    {% else %}
-        <div id="create-flashcards" class="container-fluid">
+        {% else %}
+            <div id="no-flashcards-div">
+                <h1 id="no-flashcards-message">You currently don't have any flashcards! Click the button below to create one.</h1>
+            </div>
+            
+        {% endif %}
+
+        <div id="add-button-div" class="container-fluid">
             <button id="create-flashcard-button">
                 <img id="add-icon" src="../static/images/add-icon.png" alt="Image">
             </button>
         </div>
-    {% endif %}
+    </div>
 
+    <!-- Create flashcard dialog -->
+    <div id="dialog-overlay" style="display: none;"></div>
+
+    <div class="container" id="new-flashcard-dialog" style="display: none;">
+        <form>
+            <div id="settings-text">New Flashcard</div>
+            <hr id="settings-thematic-break">
+
+            <!-- Exit button -->
+            <button id="close-button" type="submit">
+                <img src="../static/images/close-button.png" alt="Button Image" id="close-button-icon">
+            </button>
+
+            <!-- User input area -->
+            <div class="input-container" id="inputs">
+                <label class="input-labels" for="flashcard-topic">Topic</label>
+                <input autocomplete="off" id="flashcard-question" class="create-flashcard-input">
+                
+                <label class="input-labels" for="flashcard">Question</label>
+                <input autocomplete="off" id="flashcard-question" class="create-flashcard-input">
+            </div>
+        </form>
+    </div>
 
     <div id="flashcard-page" style="display: none;">
         <form id="flashcard-form" class="form-container">
@@ -61,5 +89,6 @@
     </div>
 
     <script src="../static/js/flashcards/flashcards.js"></script>
+    <script src="../static/js/flashcards/createFlashcards.js"></script>
 
 {% endblock %}

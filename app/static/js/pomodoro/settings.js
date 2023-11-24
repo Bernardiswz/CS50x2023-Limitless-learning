@@ -2,7 +2,7 @@ function main() {
     const settingsButton = document.getElementById("settings-button");
     const settingsDialog = document.getElementById("settings-dialog");
     const closeButton = document.getElementById("close-button");
-    const settingsOverlay = document.getElementById("overlay");
+    const settingsOverlay = document.getElementById("dialog-overlay");
     const inputContainer = document.getElementById("inputs");
     let dialogVisible = false;
 
