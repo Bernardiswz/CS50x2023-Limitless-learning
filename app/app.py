@@ -139,6 +139,49 @@ def update_data():
                            (user,))
             db.commit()
 
+    elif operation == "updatePomodoro":
+        minutes = request.form.get("minutes")
+        timer_break = request.form.get("timerBreak")
+        long_break = request.form.get("longBreak")
+
+        def is_valid_element(element):
+            try:
+                num = int(element)
+                return num > 0
+
+            except ValueError:
+                return False
+
+
+        with get_db() as db:
+            cursor = db.cursor()
+            # handling minutes
+            if is_valid_element(minutes):
+                cursor.execute("UPDATE preferences SET minutes = ? WHERE user_id = ?", (minutes, user))
+
+            # Handling break
+            if is_valid_element(timer_break):
+                cursor.execute("UPDATE preferences SET break = ? WHERE user_id = ?", (timer_break, user))
+
+            # Handling long break
+            if is_valid_element(long_break):
+                cursor.execute("UPDATE preferences SET long_break = ? WHERE user_id = ?", (long_break, user))
+
+            db.commit()
+
+        return jsonify({
+            'minutes': minutes,
+            'timer_break': timer_break,
+            'long_break': long_break
+        })
+
+    elif operation == "createFlashcard":
+        topic = request.form.get("topic")
+        question = request.form.get("question")
+        answer = request.form.get("answer")
+
+        print(topic)
+
     elif operation =="flashcardFeedback":
         button_value = request.form.get("buttonValue")
 
@@ -168,47 +211,6 @@ def pomodoro():
 
         if user_data:
             minutes, timer_break, long_break, lb_interval = user_data
-
-    if request.method == "POST":
-        minutes = request.form.get("minutes")
-        timer_break = request.form.get("break")
-        long_break = request.form.get("long-break")
-        lb_interval = 4
-
-        # Assigning default values to the timer elements
-
-        form_elements = [minutes, timer_break, long_break]
-
-        # Function to check for valid ints as user input
-        def is_valid_element(element):
-            try:
-                num = int(element)
-                return num > 0
-
-            except ValueError:
-                return False
-
-        with get_db() as db:
-            cursor = db.cursor()
-            # handling minutes
-            if is_valid_element(minutes):
-                cursor.execute("UPDATE preferences SET minutes = ? WHERE user_id = ?", (minutes, user))
-
-            # Handling break
-            if is_valid_element(timer_break):
-                cursor.execute("UPDATE preferences SET break = ? WHERE user_id = ?", (timer_break, user))
-
-            # Handling long break
-            if is_valid_element(long_break):
-                cursor.execute("UPDATE preferences SET long_break = ? WHERE user_id = ?", (long_break, user))
-
-            db.commit()
-
-        return jsonify({
-            'minutes': minutes,
-            'timer_break': timer_break,
-            'long_break': long_break
-        })
 
     # This part was modified to render the template instead of returning None
     return render_template("pomodoro.html", minutes=minutes, timer_break=timer_break, long_break=long_break)

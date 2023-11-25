@@ -28,7 +28,7 @@ function main() {
     timerElement.textContent = `${minutes}:00`;
 
     // Add an event listener to the input container to handle changes in any input element
-    inputContainer.addEventListener("input", function (event) {
+    inputContainer.addEventListener("input", function(event) {
         const target = event.target;
 
         if (target.matches(".settings-input")) {

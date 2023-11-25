@@ -18,7 +18,7 @@ function main() {
     const feedbackFlashcardAnswer = document.getElementById("flashcard-answer");
 
     // Handle default page flashcard selecting
-    flashcards.forEach(function (button) {
+    flashcards.forEach(function(button) {
         button.addEventListener("click", function (event) {
             event.preventDefault();
             flashcardId = button.parentElement.querySelector(".flashcard-id") ? 
@@ -37,7 +37,7 @@ function main() {
     });
 
     // Handle flashcard testing submit
-    flashcardForm.addEventListener("submit", function (event) {
+    flashcardForm.addEventListener("submit", function(event) {
         event.preventDefault();
 
         const formAnswer = flashcardForm.answer.value;
@@ -53,7 +53,7 @@ function main() {
     // Handle flashcard feedback
     var feedbackButtons = document.querySelectorAll(".form-container button");
 
-    feedbackButtons.forEach(function (button) {
+    feedbackButtons.forEach(function(button) {
         button.addEventListener("click", function(event) {
             event.preventDefault();
 

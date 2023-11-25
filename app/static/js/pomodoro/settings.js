@@ -7,6 +7,7 @@ function main() {
     let dialogVisible = false;
 
     settingsButton.addEventListener("click", toggleDialog);
+    closeButton.addEventListener("click", buttonEventListeners);
 
     function checkInputs() {
         const inputs = inputContainer.querySelectorAll("input");
@@ -20,15 +21,12 @@ function main() {
     }
 
     function toggleDialog(event) {
-        
         if (dialogVisible) {
             hideDialog();
         } else {
             settingsDialog.style.display = "block";
             settingsOverlay.style.display = "block";
             dialogVisible = true;
-
-            closeButton.addEventListener("click", buttonEventListeners);
         }
     }
 
@@ -45,15 +43,16 @@ function main() {
 
         $.ajax({
             type: "POST",
-            url: "/pomodoro",
+            url: "/update_data",
             data: {
+                operation: "updatePomodoro",
                 minutes: minutes,
-                break: timerBreak,
-                long_break: longBreak
+                timerBreak: timerBreak,
+                longBreak: longBreak
             },
-            // success: function(data) {
-            //     console.log("Preferences updated");
-            // },
+            success: function(data) {
+                console.log("Preferences updated");
+            },
             error: function(error) {
                 console.log(error);
                 alert("Error updating preferences");

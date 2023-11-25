@@ -53,11 +53,14 @@
 
             <!-- User input area -->
             <div class="input-container" id="inputs">
-                <label class="input-labels" for="flashcard-topic">Topic</label>
-                <input autocomplete="off" id="flashcard-question" class="create-flashcard-input">
+                <label class="input-labels" for="topic-input">Topic</label>
+                <input autocomplete="off" id="topic-input" class="create-flashcard-input">
                 
-                <label class="input-labels" for="flashcard">Question</label>
-                <input autocomplete="off" id="flashcard-question" class="create-flashcard-input">
+                <label class="input-labels" for="question-input">Question</label>
+                <input autocomplete="off" id="question-input" class="create-flashcard-input">
+
+                <label class="input-labels" for="answer-input">Answer</label>
+                <input autocomplete="off" id="answer-input" class="create-flashcard-input">
             </div>
         </form>
     </div>
@@ -88,6 +91,7 @@
         </form>
     </div>
 
+    <script src="../static/js/node_modules//jquery/dist/jquery.min.js"></script>
     <script src="../static/js/flashcards/flashcards.js"></script>
     <script src="../static/js/flashcards/createFlashcards.js"></script>
 
