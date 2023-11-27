@@ -1,5 +1,6 @@
 function main() {
     const maxInputLength = 300;
+    const createFlashcardDiv = document.getElementById("add-button-div");
     const createFlashcardButton = document.getElementById("create-flashcard-button");
     const flashcardDialog = document.getElementById("new-flashcard-dialog");
     const dialogOverlay = document.getElementById("dialog-overlay");
@@ -78,7 +79,7 @@ function main() {
                 answer: answer
             },
             success: function(data) {
-                console.log("Preferences updated");
+                insertCreatedFlashcard(data);
             },
             error: function(error) {
                 console.log(error);
@@ -87,14 +88,31 @@ function main() {
         });
     }
 
+    // function queryFlashcard()
+
     function insertCreatedFlashcard(data) {
-        const newFlashcard = document.createElement
+        console.log(typeof(data));
+        console.log(data);
 
+        const newFlashcard = document.createElement("ul");
+        newFlashcard.classList.add("list-group", "buttons");
+        newFlashcard.classList.add("list-group", "buttons");
 
+        newFlashcard.innerHTML = `
+            <div class="flashcard-id" style="display: none;">${data.createdFlashcard.flashcard_id}</div>
+            <div class="answer" style="display: none;">${data.createdFlashcard.answer}</div>
+            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start buttons">
+                <div class="d-flex w-100 justify-content-between">
+                    <p class="mb-1">${data.createdFlashcard.topic}</p>
+                    <small>Last visited ${data.createdFlashcard.time_ago} days ago</small>
+                </div>
+                <h4 class="mb-1">${data.createdFlashcard.question}</h4>
+                <small>${data.createdFlashcard.timestamp}</small>
+            </a>
+        `;
+        
+        flashcardsContainer.insertBefore(newFlashcard, createFlashcardDiv);
     }
-    
-    
-
 }
 
 document.addEventListener("DOMContentLoaded", main);

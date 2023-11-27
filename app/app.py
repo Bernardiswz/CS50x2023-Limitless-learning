@@ -145,23 +145,22 @@ def update_data():
         create_flashcard(user_id=user, topic=topic, question=question, answer=answer)
         created_flashcard = get_specific_flashcard(user_id=user, topic=topic, question=question, answer=answer)
 
+        date_difference = get_date_difference(created_flashcard["timestamp"])
+        created_flashcard["time_ago"] = date_difference
 
         return jsonify({
             'createdFlashcard': created_flashcard
         })
 
     elif operation == "flashcardFeedback":
-        print("sucess")
+        flashcard_id = request.form.get("flashcardId")
+        rating = request.form.get("buttonValue")
+
+        rate_flashcard(flashcard_id=flashcard_id, rating=rating)
 
         return jsonify({
             'tora': "torator"
         })
-        # button_value = request.form.get("buttonValue")
-
-        # with get_db() as db:
-        #     cursor = db.cursor()
-
-        #     cursor.execute("")
 
 
 @app.route("/pomodoro", methods=["GET", "POST"])
@@ -197,7 +196,7 @@ def flashcards():
     
     for flashcard in user_flashcards:
         flashcard["time_ago"] = get_date_difference(flashcard["timestamp"])
-    
+
     return render_template("flashcards.html", flashcards=user_flashcards)
 
 

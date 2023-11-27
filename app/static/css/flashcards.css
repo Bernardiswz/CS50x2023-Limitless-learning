@@ -1,5 +1,5 @@
 .buttons {
-    background-color: #b5ddfb5d;
+    background-color: #F1F1E6;
     width: 125vh;
     border-radius: 8px;
 }
@@ -263,7 +263,7 @@
 /* Mobile devices */
 @media (max-width: 768px) {
     .buttons {
-        width: auto;
+        width: 100%;
     }
 
     #buttons-div {

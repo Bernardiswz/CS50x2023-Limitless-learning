@@ -43,6 +43,7 @@ def get_db():
     db = getattr(g, "_database", None)
     if db is None:
         db = g._database = sqlite3.connect("../db/learning.db")
+
     return db
 
 
@@ -180,7 +181,23 @@ def get_specific_flashcard(user_id, topic, question, answer):
         if user_data:
             column_names = [description[0] for description in cursor.description]
             flashcard_dict = dict(zip(column_names, user_data))
+
+            timestamp_str = flashcard_dict["timestamp"]
+            timestamp = datetime.strptime(timestamp_str, "%Y-%m-%d %H:%M:%S")
+
+            flashcard_dict["timestamp"] = timestamp.strftime("%d/%m/%Y")
+
             return flashcard_dict
         
         else:
             return None
+        
+
+def rate_flashcard(flashcard_id, rating):
+    with get_db() as db:
+        cursor = db.cursor()
+
+        cursor.execute("INSERT INTO flashcards_rating (flashcard_id, rating) VALUES(?, ?)",
+                       (flashcard_id, rating))
+        db.commit()
+
