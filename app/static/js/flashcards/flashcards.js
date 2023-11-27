@@ -18,18 +18,19 @@ function main() {
     const feedbackFlashcardAnswer = document.getElementById("flashcard-answer");
 
     // Handle default page flashcard selecting
-    flashcards.forEach(function(button) {
+    flashcards.forEach(function (button) {
         button.addEventListener("click", function (event) {
             event.preventDefault();
-            flashcardId = button.parentElement.querySelector(".flashcard-id") ? 
-                        button.parentElement.querySelector(".flashcard-id").textContent: "Id not found";
+            flashcardId = event.currentTarget.parentElement.querySelector(".flashcard-id") ?
+                event.currentTarget.parentElement.querySelector(".flashcard-id").textContent : "Id not found";
 
-            var topic = button.querySelector("p.mb-1") ? button.querySelector("p.mb-1").textContent : "Topic not found";
-            var question = button.querySelector("h4.mb-1") ? button.querySelector("h4.mb-1").textContent : "Question not found";
-            answer = button.parentElement.querySelector(".answer") ? button.parentElement.querySelector(".answer").textContent : "Answer not found";
+            var topic = event.currentTarget.querySelector("p.mb-1") ? event.currentTarget.querySelector("p.mb-1").textContent : "Topic not found";
+            var question = event.currentTarget.querySelector("h4.mb-1") ? event.currentTarget.querySelector("h4.mb-1").textContent : "Question not found";
+            var answer = event.currentTarget.parentElement.querySelector(".answer") ? event.currentTarget.parentElement.querySelector(".answer").textContent : "Answer not found";
 
             flashcardTopic.textContent = topic;
             flashcardQuestion.textContent = question;
+            flashcardAnswer = answer; // Update the global variable with the current flashcard's answer
 
             flashcardsDiv.style.display = "none";
             flashcardPage.style.display = "block";
@@ -41,6 +42,7 @@ function main() {
         event.preventDefault();
 
         const formAnswer = flashcardForm.answer.value;
+        console.log(formAnswer);
 
         flashcardPage.style.display = "none";
 
@@ -51,7 +53,7 @@ function main() {
     });
 
     // Handle flashcard feedback
-    var feedbackButtons = document.querySelectorAll(".form-container button");
+    var feedbackButtons = document.querySelectorAll("#buttons-div button");
 
     feedbackButtons.forEach(function(button) {
         button.addEventListener("click", function(event) {
@@ -68,6 +70,9 @@ function main() {
                     flashcardId: flashcardId
                 }
             });
+
+            flashcardFeedback.style.display = "none";
+            flashcardsDiv.style.display = "flex";
 
         });
     });

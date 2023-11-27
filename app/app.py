@@ -99,23 +99,6 @@ def logout():
 
     return redirect("/")
 
-@app.route("/flashcards", methods=["GET", "POST"])
-@login_required
-def flashcards():
-    user_id = session.get("user_id")
-    user_flashcards = get_flashcards(user_id)
-    
-    for flashcard in user_flashcards:
-        flashcard["time_ago"] = get_date_difference(flashcard["timestamp"])
-
-    print(user_flashcards)
-    
-    if request.method == "POST":
-        return
-    
-    else:
-        return render_template("flashcards.html", flashcards=user_flashcards)
-
 
 @app.errorhandler(Exception)
 def error(error):
@@ -132,42 +115,21 @@ def update_data():
     operation = request.form.get("operation")
 
     if operation == "incrementPomodoros":
-        with get_db() as db:
-            cursor = db.cursor()
-
-            cursor.execute("UPDATE user_data SET pomodoros_finished = pomodoros_finished + 1 WHERE user_id = ?", 
-                           (user,))
-            db.commit()
+        increment_pomodoros(user)
 
     elif operation == "updatePomodoro":
         minutes = request.form.get("minutes")
         timer_break = request.form.get("timerBreak")
         long_break = request.form.get("longBreak")
 
-        def is_valid_element(element):
-            try:
-                num = int(element)
-                return num > 0
+        if minutes:
+            update_preferences(user, minutes=minutes)
 
-            except ValueError:
-                return False
+        if timer_break:
+            update_preferences(user, timer_break=timer_break)
 
-
-        with get_db() as db:
-            cursor = db.cursor()
-            # handling minutes
-            if is_valid_element(minutes):
-                cursor.execute("UPDATE preferences SET minutes = ? WHERE user_id = ?", (minutes, user))
-
-            # Handling break
-            if is_valid_element(timer_break):
-                cursor.execute("UPDATE preferences SET break = ? WHERE user_id = ?", (timer_break, user))
-
-            # Handling long break
-            if is_valid_element(long_break):
-                cursor.execute("UPDATE preferences SET long_break = ? WHERE user_id = ?", (long_break, user))
-
-            db.commit()
+        if long_break:
+            update_preferences(user, long_break=long_break)
 
         return jsonify({
             'minutes': minutes,
@@ -180,15 +142,26 @@ def update_data():
         question = request.form.get("question")
         answer = request.form.get("answer")
 
-        print(topic)
+        create_flashcard(user_id=user, topic=topic, question=question, answer=answer)
+        created_flashcard = get_specific_flashcard(user_id=user, topic=topic, question=question, answer=answer)
 
-    elif operation =="flashcardFeedback":
-        button_value = request.form.get("buttonValue")
 
-        with get_db() as db:
-            cursor = db.cursor()
+        return jsonify({
+            'createdFlashcard': created_flashcard
+        })
 
-            cursor.execute("")
+    elif operation == "flashcardFeedback":
+        print("sucess")
+
+        return jsonify({
+            'tora': "torator"
+        })
+        # button_value = request.form.get("buttonValue")
+
+        # with get_db() as db:
+        #     cursor = db.cursor()
+
+        #     cursor.execute("")
 
 
 @app.route("/pomodoro", methods=["GET", "POST"])
@@ -214,6 +187,18 @@ def pomodoro():
 
     # This part was modified to render the template instead of returning None
     return render_template("pomodoro.html", minutes=minutes, timer_break=timer_break, long_break=long_break)
+
+
+@app.route("/flashcards", methods=["GET", "POST"])
+@login_required
+def flashcards():
+    user_id = session.get("user_id")
+    user_flashcards = get_flashcards(user_id)
+    
+    for flashcard in user_flashcards:
+        flashcard["time_ago"] = get_date_difference(flashcard["timestamp"])
+    
+    return render_template("flashcards.html", flashcards=user_flashcards)
 
 
 @app.route("/about")

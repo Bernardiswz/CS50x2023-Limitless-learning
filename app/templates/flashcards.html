@@ -7,11 +7,11 @@
 {% block main %}
     <link rel="stylesheet" href="../static/css/flashcards.css">
 
-    <div id="flashcards" class="buttons-container"></div>
+    <div id="flashcards" class="buttons-container">
         {% if flashcards %}
             {% for flashcard in flashcards %}
                 <ul class="list-group buttons">
-                    <div class="flashcard-id" style="display: none">{{ flashcard["flashcard_id"] }}</div>
+                    <div class="flashcard-id" style="display: none;">{{ flashcard["flashcard_id"] }}</div>
                     <div class="answer" style="display: none;">{{ flashcard["answer"] }}</div>
                     <a href="#" class="list-group-item list-group-item-action flex-column align-items-start buttons">
                         <div class="d-flex w-100 justify-content-between">

@@ -5,6 +5,39 @@ from datetime import datetime
 import sqlite3
 
 
+# Decorated function to ensure login
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if session.get("user_id") is None:
+            return redirect("/login")
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
+# Functions to validate username and password
+def is_valid_password(password):
+    if " " in password or len(password) < 10:
+        return False
+    
+    else:
+        return True
+    
+
+def is_valid_username(username):
+    if len(username) < 6 or len(username) > 25:
+        return False
+    
+    else:
+        return True
+
+
+# Function to render html in case of errors
+def render_error(message, status_code):
+    return render_template("error.html", message=message, status_code=status_code)
+
+
 # Database related functions
 def get_db():
     db = getattr(g, "_database", None)
@@ -88,34 +121,66 @@ def get_date_difference(date):
     return days_difference
 
 
-# Decorated function to ensure login
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if session.get("user_id") is None:
-            return redirect("/login")
-        return f(*args, **kwargs)
+# Function to check whether an element is valid to insert into preferences
+def is_valid_element(element):
+    try:
+        num = int(element)
+        return num > 0
 
-    return decorated_function
-
-
-# Functions to validate username and password
-def is_valid_password(password):
-    if " " in password or len(password) < 10:
+    except ValueError:
         return False
-    
-    else:
-        return True
-    
-
-def is_valid_username(username):
-    if len(username) < 6 or len(username) > 25:
-        return False
-    
-    else:
-        return True
 
 
-# Function to render html in case of errors
-def render_error(message, status_code):
-    return render_template("error.html", message=message, status_code=status_code)
+def increment_pomodoros(user_id):
+    with get_db() as db:
+        cursor = db.cursor()
+
+        cursor.execute("UPDATE user_data SET pomodoros_finished = pomodoros_finished + 1 WHERE user_id = ?", 
+                        (user_id,))
+        db.commit()
+
+
+def update_preferences(user_id, **kwargs):
+    with get_db() as db:
+        cursor = db.cursor()
+        # handling minutes
+        if "minutes" in kwargs and is_valid_element(kwargs["minutes"]):
+            cursor.execute("UPDATE preferences SET minutes = ? WHERE user_id = ?", (kwargs["minutes"], user_id))
+
+        # Handling break
+        if "timer_break" in kwargs and is_valid_element(kwargs["timer_break"]):
+            cursor.execute("UPDATE preferences SET break = ? WHERE user_id = ?", (kwargs["timer_break"], user_id))
+
+        # Handling long break
+        if "long_break" in kwargs and is_valid_element(kwargs["long_break"]):
+            cursor.execute("UPDATE preferences SET long_break = ? WHERE user_id = ?", (kwargs["long_break"], user_id))
+
+        db.commit()
+
+
+def create_flashcard(user_id, topic, question, answer):
+    with get_db() as db:
+        cursor = db.cursor()
+
+        cursor.execute("INSERT INTO flashcards (user_id, topic, question, answer) VALUES(?, ?, ?, ?)",
+                       (user_id, topic, question, answer))
+
+        db.commit()
+
+
+def get_specific_flashcard(user_id, topic, question, answer):
+    with get_db() as db:
+        cursor = db.cursor()
+
+        cursor.execute("SELECT * FROM flashcards WHERE user_id = ? AND topic = ? AND question = ? AND answer = ?",
+                       (user_id, topic, question, answer))
+        
+        user_data = cursor.fetchone()
+
+        if user_data:
+            column_names = [description[0] for description in cursor.description]
+            flashcard_dict = dict(zip(column_names, user_data))
+            return flashcard_dict
+        
+        else:
+            return None

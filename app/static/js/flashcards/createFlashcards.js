@@ -10,10 +10,11 @@ function main() {
     const answerInput = document.getElementById("answer-input");
     let dialogVisible = false;
 
+    const flashcardsContainer = document.getElementById("flashcards");
+
     createFlashcardButton.addEventListener("click", toggleDialog);
     closeDialogButton.addEventListener("click", applyValidation);
     
-
     function toggleDialog(event) {
         if (dialogVisible) {
             hideDialog();
@@ -32,47 +33,40 @@ function main() {
     function applyValidation(event) {
         event.preventDefault();
         
-        userInputs = validateInputs()
+        userInputs = validateInputs();
 
         if (userInputs) {
-            dialogVisible = false;
-            hideDialog();
-        }
-
-        if (!dialogVisible) {
             createFlashcardOnServer(userInputs);
         }
+
+        dialogVisible = false;
+        hideDialog();
     }
 
     function validateInputs() {
         inputs = document.querySelectorAll("#new-flashcard-dialog input");
-
-        for (let i = 0; i < inputs.length; i++) {
+        userInputValues = [];
+    
+        for (var i = 0; i < inputs.length; i++) {
             var input = inputs[i];
-
+    
             if (input.value.length > maxInputLength) {
                 alert("Maximum 200 characters input length exceeded.");
                 return false;
-
             } else if (input.value.trim() === "") {
                 return false;
             }
-        }
-
-        userInputValues = [];
-
-        userInputValues.forEach(function(input) {
+    
             userInputValues.push(input.value);
-        });
-
+        }
+    
         return userInputValues;
-
     }
-
-    function createFlashcardOnServer(data) {
-        topic = data[0];
-        question = data[1];
-        answer = data[2];
+    
+    function createFlashcardOnServer(flashcard) {
+        topic = flashcard[0];
+        question = flashcard[1];
+        answer = flashcard[2];
 
         $.ajax({
             type: "POST",
@@ -92,6 +86,14 @@ function main() {
             }
         });
     }
+
+    function insertCreatedFlashcard(data) {
+        const newFlashcard = document.createElement
+
+
+    }
+    
+    
 
 }
 
