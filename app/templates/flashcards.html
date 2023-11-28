@@ -11,17 +11,25 @@
         {% if flashcards %}
             {% for flashcard in flashcards %}
                 <ul class="list-group buttons">
-                    <div class="flashcard-id" style="display: none;">{{ flashcard["flashcard_id"] }}</div>
-                    <div class="answer" style="display: none;">{{ flashcard["answer"] }}</div>
+                    <div class="flashcard-buttons">
+                        <button class="edit-button" type="button">
+                            <img class="edit-icon" src="../static/images/edit-icon.png">
+                        </button>
+                        
+                        <button class="delete-button">
+                            <img class="delete-icon" src="../static/images/delete-icon.png"> 
+                        </button>
+                    </div>
+                    
                     <a href="#" class="list-group-item list-group-item-action flex-column align-items-start buttons">
-                        <div class="d-flex w-100 justify-content-between">
-                            <p class="mb-1">{{ flashcard["topic"] }}</p>
+                        <div class="flashcard-id" style="display: none;">{{ flashcard["flashcard_id"] }}</div>
+                            <div class="answer" style="display: none;">{{ flashcard["answer"] }}</div>
+                            <div class="d-flex w-100 justify-content-between">
+                            <p class="mb-1 flashcard-topic">{{ flashcard["topic"] }}</p>
                             <small>Last visited {{ flashcard["time_ago"] }} days ago</small>
                         </div>
-                        <h4 class="mb-1">{{ flashcard["question"] }}</h4>
-                        <small>{{ flashcard["timestamp"] }}</small>
-
-                        
+                        <h4 class="mb-1 flashcard-question">{{ flashcard["question"] }}</h4>
+                        <small class="flashcard-timestamp">{{ flashcard["timestamp"] }}</small>
                     </a>
                 </ul>
             {% endfor %}

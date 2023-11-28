@@ -4,6 +4,10 @@ function main() {
     var flashcardsDiv = document.getElementById("flashcards");
     const flashcardTopic = document.getElementById("topic");
     const flashcardQuestion = document.getElementById("question");
+    const flashcardButtonsDiv = document.getElementsByClassName("flashcard-buttons");
+
+    const flashcardEditButton = document.querySelectorAll(".buttons-container .flashcard-buttons .edit-button");
+    const flashcardDeleteButton = document.querySelectorAll(".buttons-container .flashcard-buttons .delete-button");
     var flashcardId;
 
     // Flashcard page
@@ -13,13 +17,27 @@ function main() {
 
     // Flashcard feedback page
     const flashcardFeedback = document.getElementById("flashcard-feedback");
-    const feedbackForm = document.getElementById("feedback");
     const feedbackUserAnswer = document.getElementById("user-answer");
     const feedbackFlashcardAnswer = document.getElementById("flashcard-answer");
 
+
+    flashcardsDiv.addEventListener("click", function(event) {
+        const editButton = event.target.closest(".edit-button");
+        const deleteButton = event.target.closest(".delete-button");
+
+        if (editButton) {
+            handleEditButtonClick(editButton.closest(".flashcard-buttons"));
+        }
+
+        if (deleteButton) {
+            handleDeleteButtonClick(deleteButton.closest(".flashcard-buttons"));
+        }
+    });
+
+
     // Handle default page flashcard selecting
-    flashcards.forEach(function (button) {
-        button.addEventListener("click", function (event) {
+    flashcards.forEach(function(button) {
+        button.addEventListener("click", function(event) {
             event.preventDefault();
             flashcardId = event.currentTarget.parentElement.querySelector(".flashcard-id") ?
                 event.currentTarget.parentElement.querySelector(".flashcard-id").textContent : "Id not found";
@@ -76,6 +94,52 @@ function main() {
 
         });
     });
+}
+
+function handleEditButtonClick(buttonsContainer) {
+    console.log("Edit button clicked. Buttons container:", buttonsContainer);
+
+    // Try to find the .list-group-item element within the parent of buttonsContainer
+    const listItem = buttonsContainer.closest('.buttons').querySelector('.list-group-item');
+    console.log("List item:", listItem);
+
+    if (listItem) {
+        const flashcardIdElement = listItem.querySelector(".flashcard-id");
+        console.log("Flashcard ID element:", flashcardIdElement);
+
+        if (flashcardIdElement) {
+            const flashcardId = flashcardIdElement.textContent.trim();
+            console.log("Edit button clicked for flashcard ID:", flashcardId);
+        } else {
+            console.error("Error: Flashcard ID element not found!");
+        }
+    } else {
+        console.error("Error: List item not found!");
+    }
+}
+
+
+function handleDeleteButtonClick(buttonsContainer) {
+    console.log("Delete button clicked. Buttons container:", buttonsContainer);
+
+    // Try to find the .list-group-item element within the parent of buttonsContainer
+    const listItem = buttonsContainer.closest('.buttons').querySelector('.list-group-item');
+
+    console.log("List item:", listItem);
+
+    if (listItem) {
+        const flashcardIdElement = listItem.querySelector(".flashcard-id");
+        console.log("Flashcard ID element:", flashcardIdElement);
+
+        if (flashcardIdElement) {
+            const flashcardId = flashcardIdElement.textContent.trim();
+            console.log("Delete button clicked for flashcard ID:", flashcardId);
+        } else {
+            console.error("Error: Flashcard ID element not found!");
+        }
+    } else {
+        console.error("Error: List item not found!");
+    }
 }
 
 document.addEventListener("DOMContentLoaded", main);
