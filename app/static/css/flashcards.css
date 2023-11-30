@@ -128,7 +128,7 @@
 }
 
 /* Create flashcard dialog */
-#new-flashcard-dialog {
+.flashcard-dialog {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -152,7 +152,7 @@
     z-index: 998;
 }
 
-#settings-text {
+.dialog-title {
     font-family: 'Inclusive Sans', sans-serif;
     font-size: 3.2vh;
     color: #383838d3;
@@ -162,19 +162,19 @@
     user-select: none;
 }
 
-#settings-thematic-break {
+.dialog-thematic-break {
     margin-top: 3.5vh;
     margin-bottom: 0;
 }
 
 
-#close-button {
+.close-button {
     border: none;
     background: transparent;
     padding: 0;
 }
 
-#close-button-icon {
+.close-button-icon {
     position: absolute;
     width: 3vh;
     height: 3vh;
@@ -305,7 +305,7 @@
         width: auto;
     }
     
-    #new-flashcard-dialog {
+    .flashcard-dialog {
         width: 75%;
     }
 }

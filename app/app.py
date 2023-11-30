@@ -123,13 +123,13 @@ def update_data():
         long_break = request.form.get("longBreak")
 
         if minutes:
-            update_preferences(user, minutes=minutes)
+            update_preferences(user, minutes)
 
         if timer_break:
-            update_preferences(user, timer_break=timer_break)
+            update_preferences(user, timer_break)
 
         if long_break:
-            update_preferences(user, long_break=long_break)
+            update_preferences(user, long_break)
 
         return jsonify({
             'minutes': minutes,
@@ -156,12 +156,32 @@ def update_data():
         flashcard_id = request.form.get("flashcardId")
         rating = request.form.get("buttonValue")
 
-        rate_flashcard(flashcard_id=flashcard_id, rating=rating)
+        rate_flashcard(flashcard_id, rating)
 
         return jsonify({
-            'tora': "torator"
+            'tora': 'torator'
         })
 
+    elif operation == "editFlashcard":
+        flashcard_id = request.form.get("flashcardId")
+        topic = request.form.get("topic")
+        question = request.form.get("question")
+        answer = request.form.get("answer")
+
+        print(type(flashcard_id))
+
+        print(flashcard_id, topic, question, answer)
+
+        print("server reached")
+        update_flashcard(flashcard_id, topic, question, answer)
+        print("sucess")
+
+        return jsonify({
+            'updatedFlashcardId': flashcard_id,
+            'updatedTopic': topic,
+            'updatedQuestion': question,
+            'updatedAnswer': answer
+        })
 
 @app.route("/pomodoro", methods=["GET", "POST"])
 @login_required

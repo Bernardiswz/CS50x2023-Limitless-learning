@@ -201,3 +201,12 @@ def rate_flashcard(flashcard_id, rating):
                        (flashcard_id, rating))
         db.commit()
 
+
+def update_flashcard(flashcard_id, topic, question, answer):
+    with get_db() as db:
+        cursor = db.cursor()
+
+        cursor.execute("UPDATE flashcards SET topic = ?, question = ?, answer = ?, timestamp = CURRENT_TIMESTAMP\
+                       WHERE flashcard_id = ?", (topic, question, answer, flashcard_id))
+        
+        db.commit()

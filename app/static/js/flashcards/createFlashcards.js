@@ -4,7 +4,7 @@ function main() {
     const createFlashcardButton = document.getElementById("create-flashcard-button");
     const flashcardDialog = document.getElementById("new-flashcard-dialog");
     const dialogOverlay = document.getElementById("dialog-overlay");
-    const closeDialogButton = document.getElementById("close-button");
+    const closeDialogButton = document.getElementById("close-new-flashcard-button");
 
     const topicInput = document.getElementById("topic-input");
     const questionInput = document.getElementById("question-input");
@@ -96,18 +96,28 @@ function main() {
 
         const newFlashcard = document.createElement("ul");
         newFlashcard.classList.add("list-group", "buttons");
-        newFlashcard.classList.add("list-group", "buttons");
+        // newFlashcard.classList.add("list-group", "buttons");
 
         newFlashcard.innerHTML = `
-            <div class="flashcard-id" style="display: none;">${data.createdFlashcard.flashcard_id}</div>
-            <div class="answer" style="display: none;">${data.createdFlashcard.answer}</div>
+            <div class="flashcard-buttons">
+                <button class="edit-button" type="button">
+                    <img class="edit-icon" src="../static/images/edit-icon.png">
+                </button>
+                
+                <button class="delete-button">
+                    <img class="delete-icon" src="../static/images/delete-icon.png"> 
+                </button>
+            </div>
+
             <a href="#" class="list-group-item list-group-item-action flex-column align-items-start buttons">
+                <div class="flashcard-id" style="display: none;">${data.createdFlashcard.flashcard_id}</div>
+                <div class="answer" style="display: none;">${data.createdFlashcard.answer}</div>
                 <div class="d-flex w-100 justify-content-between">
-                    <p class="mb-1">${data.createdFlashcard.topic}</p>
-                    <small>Last visited ${data.createdFlashcard.time_ago} days ago</small>
+                    <p class="mb-1 flashcard-topic">${data.createdFlashcard.topic}</p>
+                    <small class="time-ago">Last visited ${data.createdFlashcard.time_ago} days ago</small>
                 </div>
-                <h4 class="mb-1">${data.createdFlashcard.question}</h4>
-                <small>${data.createdFlashcard.timestamp}</small>
+                <h4 class="mb-1 flashcard-question">${data.createdFlashcard.question}</h4>
+                <small class="timestamp">${data.createdFlashcard.timestamp}</small>
             </a>
         `;
         
