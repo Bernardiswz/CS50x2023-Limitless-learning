@@ -34,7 +34,6 @@ function main() {
         }
     });
 
-
     // Handle default page flashcard selecting
     flashcards.forEach(function(button) {
         button.addEventListener("click", function(event) {
@@ -110,7 +109,7 @@ function main() {
 
         editFlashcardOnServer(editFlashcardId, editFlashcardTopic, editFlashcardQuestion, editFlashcardAnswer);
     });
-    
+
     function handleEditButtonClick(buttonsContainer) {
         editFlashcardDialog.style.display = "block";
         dialogOverlay.style.display = "block";
@@ -134,21 +133,37 @@ function main() {
         }
     }
 
+    // Delete flashcard confirmation dialog
+    const deleteFlashcardDialog = document.getElementById("delete-flashcard-dialog");
+    const deleteFlashcardCloseButton = document.getElementById("delete-flashcard-close-button");
+    const confirmDeleteButton = document.getElementById("confirm-delete-button");
+
+    confirmDeleteButton.addEventListener("click", function(event) {
+        event.preventDefault();
+        handleDeleteButtonClick(event);
+    });
+
+    deleteFlashcardCloseButton.addEventListener("click", function(event) {
+        event.preventDefault();
+        deleteFlashcardDialog.style.display = "none";
+        dialogOverlay.style.display = "none";
+    });
+
+    /* Helper functions */
     function handleDeleteButtonClick(buttonsContainer) {
-        console.log("Delete button clicked. Buttons container:", buttonsContainer);
+        deleteFlashcardDialog.style.display = "block";
+        dialogOverlay.style.display = "block";
 
         // Try to find the .list-group-item element within the parent of buttonsContainer
         const listItem = buttonsContainer.closest('.buttons').querySelector('.list-group-item');
 
-        console.log("List item:", listItem);
-
         if (listItem) {
             const flashcardIdElement = listItem.querySelector(".flashcard-id");
-            console.log("Flashcard ID element:", flashcardIdElement);
 
             if (flashcardIdElement) {
                 const flashcardId = flashcardIdElement.textContent.trim();
-                console.log("Delete button clicked for flashcard ID:", flashcardId);
+                deleteFlashcardOnServer(flashcardId);
+
             } else {
                 console.error("Error: Flashcard ID element not found!");
             }
@@ -200,6 +215,44 @@ function main() {
         }
     }
     
+    function deleteFlashcardOnServer(deleteFlashcardId) {
+        $.ajax({
+            type: "POST",
+            url: "/update_data",
+            data: {
+                operation: "deleteFlashcard",
+                flashcardId: deleteFlashcardId,
+            },
+            success: function(data) {
+                flashcardToDelete = data.flashcardToDeleteId;
+
+                deleteFlashcardElementOnPage(flashcardToDelete);
+            },
+            error: function(error) {
+                console.log(error);
+                alert("Error updating flashcard.");
+            }
+        });
+    }
+    
+    function deleteFlashcardElementOnPage(toDeleteFlashcardId) {
+        var flashcardIdSelect = `.list-group-item .flashcard-id:contains("${toDeleteFlashcardId}")`;
+        var anchorElement = $(flashcardIdSelect).filter(function() {
+            return $(this).text() === toDeleteFlashcardId;
+        });
+    
+        if (anchorElement.length > 0) {
+            flashcardIdSelect.remove();
+
+            // var parentAElement = anchorElement.closest(".list-group-item");
+
+            // parentAElement.find(".flashcard-topic").text(topic);
+            // parentAElement.find(".flashcard-question").text(question);
+            // parentAElement.find(".answer").text(answer);
+
+            // console.log(parentAElement);
+        }
+    }
 }
 
 document.addEventListener("DOMContentLoaded", main);

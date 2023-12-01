@@ -38,7 +38,6 @@
             <div id="no-flashcards-div">
                 <h1 id="no-flashcards-message">You currently don't have any flashcards! Click the button below to create one.</h1>
             </div>
-            
         {% endif %}
 
         <div id="add-button-div" class="container-fluid">
@@ -52,7 +51,7 @@
     <div id="edit-flashcard-dialog" class="flashcard-dialog" style="display: none;">
         <form>
             <div class="dialog-title">Edit Flashcard</div>
-            <hr id="edit-thematic-break">
+            <hr class="dialog-thematic-break">
 
             <button id="edit-flashcard-close-button" class="close-button" type="submit">
                 <img src="../static/images/close-button.png" alt="Button Image" class="close-button-icon">
@@ -67,6 +66,22 @@
 
                 <label class="input-labels" for="edit-answer-input">Answer</label>
                 <input autocomplete="off" id="edit-answer-input" class="create-flashcard-input">
+            </div>
+        </form>
+    </div>
+
+    <!-- Delete flashcard confirmation dialog -->
+    <div id="delete-flashcard-dialog" class="flashcard-dialog" style="display: none;">
+        <form>
+            <div class="dialog-title">Delete flashcard?</div>
+            <hr class="dialog-thematic-break">
+
+            <button id="delete-flashcard-close-button" class="close-button" type="button">
+                <img src="../static/images/close-button.png" alt="Button Image" class="close-button-icon">
+            </button>
+
+            <div class="input-container" id="confirm-button-div">
+                <button class="btn btn-danger" id="confirm-delete-button">Confirm</button>
             </div>
         </form>
     </div>

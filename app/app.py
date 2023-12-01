@@ -182,6 +182,16 @@ def update_data():
             'updatedQuestion': question,
             'updatedAnswer': answer
         })
+    
+    elif operation == "deleteFlashcard":
+        flashcard_id = request.form.get("flashcardId")
+
+        delete_flashcard(flashcard_id)
+
+        return jsonify({
+            "flashcardToDeleteId": flashcard_id
+        })
+
 
 @app.route("/pomodoro", methods=["GET", "POST"])
 @login_required

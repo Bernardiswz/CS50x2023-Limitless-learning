@@ -127,6 +127,22 @@
     max-width: 3.5vh;
 }
 
+#confirm-button-div {
+    justify-content: center;
+}
+
+#confirm-delete-button {
+    /* background-color: #553838; */
+    justify-content: center;
+    margin-top: 3vh;
+    width: 75%;
+    border: none;
+}
+
+/* #confirm-delete-button:hover {
+    background-color : #234D66;
+} */
+
 /* Create flashcard dialog */
 .flashcard-dialog {
     position: fixed;
@@ -183,6 +199,10 @@
     right: 2vh;
     max-width: 30%;
     max-height: 30%;
+}
+
+#delete-flashcard-dialog {
+    height: 25%;
 }
 
 /* Feedback page  */
@@ -294,6 +314,10 @@
         width: 100%;
     }
 
+    .flashcard-dialog {
+            width: 75%;
+        }
+
     #buttons-div {
         flex-direction: row;
         text-align: center;
@@ -305,7 +329,7 @@
         width: auto;
     }
     
-    .flashcard-dialog {
-        width: 75%;
+    #confirm-delete-button {
+        margin-top: 1.2vh;
     }
 }

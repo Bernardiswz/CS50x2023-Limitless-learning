@@ -210,3 +210,12 @@ def update_flashcard(flashcard_id, topic, question, answer):
                        WHERE flashcard_id = ?", (topic, question, answer, flashcard_id))
         
         db.commit()
+
+
+
+def delete_flashcard(flashcard_id):
+    with get_db() as db:
+        cursor = db.cursor()
+
+        cursor.execute("DELETE FROM flashcards WHERE flashcard_id = ?", (flashcard_id,))
+        db.commit()
