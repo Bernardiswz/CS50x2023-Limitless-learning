@@ -1,24 +1,53 @@
-export var variables = (function() {
+const deleteVariablesObject = (function() {
+    const flashcardsDiv = document.getElementById("flashcards");
     const deleteFlashcardDialog = document.getElementById("delete-flashcard-dialog");
     const deleteFlashcardCloseButton = document.getElementById("delete-flashcard-close-button");
     const confirmDeleteButton = document.getElementById("confirm-delete-button");
     const dialogOverlay = document.getElementById("dialog-overlay");
+    var buttonsContainer;
 
     return {
+        flashcardsDiv: flashcardsDiv,
         deleteFlashcardDialog: deleteFlashcardDialog,
         deleteFlashcardCloseButton: deleteFlashcardCloseButton,
         confirmDeleteButton: confirmDeleteButton,
-        dialogOverlay: dialogOverlay
+        dialogOverlay: dialogOverlay,
+        buttonsContainer: buttonsContainer
     }
-})
+})();
 
-export function handleConfirmDelete(event) {
+function init() {
+    deleteVariablesObject.flashcardsDiv.addEventListener("click", (event) => displayDeleteOption(event));
+    deleteVariablesObject.deleteFlashcardCloseButton.addEventListener("click", handleDeleteCloseButton);
+    deleteVariablesObject.confirmDeleteButton.addEventListener("click", (event) => handleConfirmDelete(event.target));
+}
+
+function displayDeleteOption(event) {
     event.preventDefault();
-    variables.deleteFlashcardDialog.style.display = "none";
-    variables.dialogOverlay.style.display = "none";
+    const deleteButton = event.target.closest(".delete-button");
+
+    if (deleteButton) {
+        handleDeleteButtonClick(deleteButton.closest(".flashcard-buttons"));
+    }
+}
+
+function handleDeleteButtonClick(buttonsContainer) {
+    deleteVariablesObject.deleteFlashcardDialog.style.display = "block";
+    deleteVariablesObject.dialogOverlay.style.display = "block";
+    deleteVariablesObject.buttonsContainer = buttonsContainer
+}
+
+function handleDeleteCloseButton() {
+    deleteVariablesObject.deleteFlashcardDialog.style.display = "none";
+    deleteVariablesObject.dialogOverlay.style.display = "none";
+}
+
+function handleConfirmDelete(buttonsContainer) {
+    deleteVariablesObject.deleteFlashcardDialog.style.display = "none";
+    deleteVariablesObject.dialogOverlay.style.display = "none";
     
     // Try to find the .list-group-item element within the parent of buttonsContainer
-    const listItem = buttonsContainer.closest('.buttons').querySelector('.list-group-item');
+    const listItem = deleteVariablesObject.buttonsContainer.closest('.buttons').querySelector('.list-group-item');
 
     if (listItem) {
         const flashcardIdElement = listItem.querySelector(".flashcard-id");
@@ -35,17 +64,7 @@ export function handleConfirmDelete(event) {
     }
 }
 
-export function handleDeleteCloseButton() {
-    variables.deleteFlashcardDialog.style.display = "none";
-    variables.dialogOverlay.style.display = "none";
-}
-
-export function handleDeleteButtonClick() {
-    variables.deleteFlashcardDialog.style.display = "block";
-    variables.dialogOverlay.style.display = "block";
-}
-
-export function deleteFlashcardOnServer(deleteFlashcardId) {
+function deleteFlashcardOnServer(deleteFlashcardId) {
     $.ajax({
         type: "POST",
         url: "/update_data",
@@ -54,7 +73,7 @@ export function deleteFlashcardOnServer(deleteFlashcardId) {
             flashcardId: deleteFlashcardId,
         },
         success: function(data) {
-            flashcardToDelete = data.flashcardToDeleteId;
+            const flashcardToDelete = data.flashcardToDeleteId;
 
             deleteFlashcardElementOnPage(flashcardToDelete);
         },
@@ -65,13 +84,15 @@ export function deleteFlashcardOnServer(deleteFlashcardId) {
     });
 }
 
-export function deleteFlashcardElementOnPage(toDeleteFlashcardId) {
-    var flashcardIdSelect = `.list-group-item .flashcard-id:contains("${toDeleteFlashcardId}")`;
-    var anchorElement = $(flashcardIdSelect).filter(function() {
-        return $(this).text() === toDeleteFlashcardId;
+function deleteFlashcardElementOnPage(toDeleteFlashcardId) {
+    var flashcardIdSelector = `.list-group-item .flashcard-id`;
+    var anchorElements = $(flashcardIdSelector).filter(function() {
+        return $(this).text().trim() === toDeleteFlashcardId;
     });
 
-    if (anchorElement.length > 0) {
-        flashcardIdSelect.remove();
+    if (anchorElements.length > 0) {
+        anchorElements.closest('.list-group-item').remove();
     }
 }
+
+document.addEventListener("DOMContentLoaded", init);

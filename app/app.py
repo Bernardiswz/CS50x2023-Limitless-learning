@@ -168,13 +168,7 @@ def update_data():
         question = request.form.get("question")
         answer = request.form.get("answer")
 
-        print(type(flashcard_id))
-
-        print(flashcard_id, topic, question, answer)
-
-        print("server reached")
         update_flashcard(flashcard_id, topic, question, answer)
-        print("sucess")
 
         return jsonify({
             'updatedFlashcardId': flashcard_id,

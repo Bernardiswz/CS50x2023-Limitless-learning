@@ -1,3 +1,7 @@
+const CreateFlashcardsVariablesObject = (() => {
+
+}());
+
 function main() {
     const maxInputLength = 300;
     const createFlashcardDiv = document.getElementById("add-button-div");
@@ -52,7 +56,7 @@ function main() {
             var input = inputs[i];
     
             if (input.value.length > maxInputLength) {
-                alert("Maximum 200 characters input length exceeded.");
+                alert("Maximum 300 characters input length exceeded.");
                 return false;
             } else if (input.value.trim() === "") {
                 return false;
@@ -88,7 +92,6 @@ function main() {
         });
     }
 
-    // function queryFlashcard()
 
     function insertCreatedFlashcard(data) {
         console.log(typeof(data));
@@ -96,7 +99,6 @@ function main() {
 
         const newFlashcard = document.createElement("ul");
         newFlashcard.classList.add("list-group", "buttons");
-        // newFlashcard.classList.add("list-group", "buttons");
 
         newFlashcard.innerHTML = `
             <div class="flashcard-buttons">

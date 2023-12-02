@@ -1,7 +1,7 @@
 function main() {
     // Default page
     var flashcards = document.querySelectorAll(".buttons-container .list-group-item");
-    // var flashcardsDiv = document.getElementById("flashcards");
+    var flashcardsDiv = document.getElementById("flashcards");
     const flashcardTopic = document.getElementById("topic");
     const flashcardQuestion = document.getElementById("question");
     var flashcardId;
@@ -75,79 +75,6 @@ function main() {
 
         });
     });
-
-    var flashcardIdElement;
-
-    // Delete flashcard confirmation dialog
-    const deleteFlashcardDialog = document.getElementById("delete-flashcard-dialog");
-    const deleteFlashcardCloseButton = document.getElementById("delete-flashcard-close-button");
-    const confirmDeleteButton = document.getElementById("confirm-delete-button");
-
-    confirmDeleteButton.addEventListener("click", function(event) {
-        event.preventDefault();
-        deleteFlashcardDialog.style.display = "none";
-        dialogOverlay.style.display = "none";
-        
-        // Try to find the .list-group-item element within the parent of buttonsContainer
-        const listItem = buttonsContainer.closest('.buttons').querySelector('.list-group-item');
-
-        if (listItem) {
-            const flashcardIdElement = listItem.querySelector(".flashcard-id");
-
-            if (flashcardIdElement) {
-                const flashcardId = flashcardIdElement.textContent.trim();
-                deleteFlashcardOnServer(flashcardId);
-
-            } else {
-                console.error("Error: Flashcard ID element not found!");
-            }
-        } else {
-            console.error("Error: List item not found!");
-        }
-    });
-
-    deleteFlashcardCloseButton.addEventListener("click", function(event) {
-        event.preventDefault();
-        deleteFlashcardDialog.style.display = "none";
-        dialogOverlay.style.display = "none";
-    });
-
-    /* Helper functions */
-    function handleDeleteButtonClick(buttonsContainer) {
-        deleteFlashcardDialog.style.display = "block";
-        dialogOverlay.style.display = "block";
-    }
-    
-    function deleteFlashcardOnServer(deleteFlashcardId) {
-        $.ajax({
-            type: "POST",
-            url: "/update_data",
-            data: {
-                operation: "deleteFlashcard",
-                flashcardId: deleteFlashcardId,
-            },
-            success: function(data) {
-                flashcardToDelete = data.flashcardToDeleteId;
-
-                deleteFlashcardElementOnPage(flashcardToDelete);
-            },
-            error: function(error) {
-                console.log(error);
-                alert("Error updating flashcard.");
-            }
-        });
-    }
-    
-    function deleteFlashcardElementOnPage(toDeleteFlashcardId) {
-        var flashcardIdSelect = `.list-group-item .flashcard-id:contains("${toDeleteFlashcardId}")`;
-        var anchorElement = $(flashcardIdSelect).filter(function() {
-            return $(this).text() === toDeleteFlashcardId;
-        });
-    
-        if (anchorElement.length > 0) {
-            flashcardIdSelect.remove();
-        }
-    }
 }
 
 document.addEventListener("DOMContentLoaded", main);
