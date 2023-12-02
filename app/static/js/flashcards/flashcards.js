@@ -1,15 +1,10 @@
 function main() {
     // Default page
     var flashcards = document.querySelectorAll(".buttons-container .list-group-item");
-    var flashcardsDiv = document.getElementById("flashcards");
+    // var flashcardsDiv = document.getElementById("flashcards");
     const flashcardTopic = document.getElementById("topic");
     const flashcardQuestion = document.getElementById("question");
     var flashcardId;
-
-    // Flashcard settings
-    const editFlashcardDialog = document.getElementById("edit-flashcard-dialog");
-    const editFlashcardCloseButton = document.getElementById("edit-flashcard-close-button");
-    const dialogOverlay = document.getElementById("dialog-overlay");
 
     // Flashcard page
     const flashcardPage = document.getElementById("flashcard-page");
@@ -20,19 +15,6 @@ function main() {
     const flashcardFeedback = document.getElementById("flashcard-feedback");
     const feedbackUserAnswer = document.getElementById("user-answer");
     const feedbackFlashcardAnswer = document.getElementById("flashcard-answer");
-
-    flashcardsDiv.addEventListener("click", function(event) {
-        const editButton = event.target.closest(".edit-button");
-        const deleteButton = event.target.closest(".delete-button");
-
-        if (editButton) {
-            handleEditButtonClick(editButton.closest(".flashcard-buttons"));
-        }
-
-        if (deleteButton) {
-            handleDeleteButtonClick(deleteButton.closest(".flashcard-buttons"));
-        }
-    });
 
     // Handle default page flashcard selecting
     flashcards.forEach(function(button) {
@@ -96,43 +78,6 @@ function main() {
 
     var flashcardIdElement;
 
-    editFlashcardCloseButton.addEventListener("click", function(event) {
-        event.preventDefault();
-
-        editFlashcardDialog.style.display = "none";
-        dialogOverlay.style.display = "none";
-
-        var editFlashcardTopic = document.getElementById("edit-topic-input").value;
-        var editFlashcardQuestion = document.getElementById("edit-question-input").value;
-        var editFlashcardAnswer = document.getElementById("edit-answer-input").value;
-        var editFlashcardId = flashcardIdElement.textContent.trim();
-
-        editFlashcardOnServer(editFlashcardId, editFlashcardTopic, editFlashcardQuestion, editFlashcardAnswer);
-    });
-
-    function handleEditButtonClick(buttonsContainer) {
-        editFlashcardDialog.style.display = "block";
-        dialogOverlay.style.display = "block";
-
-        // Try to find the .list-group-item element within the parent of buttonsContainer
-        const listItem = buttonsContainer.closest('.buttons').querySelector('.list-group-item');
-        console.log("List item:", listItem);
-
-        if (listItem) {
-            flashcardIdElement = listItem.querySelector(".flashcard-id");
-            console.log("Flashcard ID element:", flashcardIdElement);
-            
-            if (flashcardIdElement) {
-                const flashcardId = flashcardIdElement.textContent.trim();
-                console.log("Edit button clicked for flashcard ID:", flashcardId);
-            } else {
-                console.error("Error: Flashcard ID element not found!");
-            }
-        } else {
-            console.error("Error: List item not found!");
-        }
-    }
-
     // Delete flashcard confirmation dialog
     const deleteFlashcardDialog = document.getElementById("delete-flashcard-dialog");
     const deleteFlashcardCloseButton = document.getElementById("delete-flashcard-close-button");
@@ -140,20 +85,9 @@ function main() {
 
     confirmDeleteButton.addEventListener("click", function(event) {
         event.preventDefault();
-        handleDeleteButtonClick(event);
-    });
-
-    deleteFlashcardCloseButton.addEventListener("click", function(event) {
-        event.preventDefault();
         deleteFlashcardDialog.style.display = "none";
         dialogOverlay.style.display = "none";
-    });
-
-    /* Helper functions */
-    function handleDeleteButtonClick(buttonsContainer) {
-        deleteFlashcardDialog.style.display = "block";
-        dialogOverlay.style.display = "block";
-
+        
         // Try to find the .list-group-item element within the parent of buttonsContainer
         const listItem = buttonsContainer.closest('.buttons').querySelector('.list-group-item');
 
@@ -170,49 +104,18 @@ function main() {
         } else {
             console.error("Error: List item not found!");
         }
-    }
+    });
 
-    function editFlashcardOnServer(editFlashcardId, topic, question, answer) {
-        $.ajax({
-            type: "POST",
-            url: "/update_data",
-            data: {
-                operation: "editFlashcard",
-                flashcardId: editFlashcardId,
-                topic: topic,
-                question: question,
-                answer: answer
-            },
-            success: function(data) {
-                var updatedFlashcardId = data.updatedFlashcardId;
-                var updatedTopic = data.updatedTopic;
-                var updatedQuestion = data.updatedQuestion;
-                var updatedAnswer = data.updatedAnswer;
+    deleteFlashcardCloseButton.addEventListener("click", function(event) {
+        event.preventDefault();
+        deleteFlashcardDialog.style.display = "none";
+        dialogOverlay.style.display = "none";
+    });
 
-                updateFlashcardElement(updatedFlashcardId, updatedTopic, updatedQuestion, updatedAnswer);
-            },
-            error: function(error) {
-                console.log(error);
-                alert("Error updating flashcard.");
-            }
-        });
-    }
-
-    function updateFlashcardElement(updatedFlashcardId, topic, question, answer) {
-        var flashcardIdSelector = `.list-group-item .flashcard-id:contains("${updatedFlashcardId}")`;
-        var anchorElement = $(flashcardIdSelector).filter(function() {
-            return $(this).text() === updatedFlashcardId;
-        });
-    
-        if (anchorElement.length > 0) {
-            var parentAElement = anchorElement.closest(".list-group-item");
-
-            parentAElement.find(".flashcard-topic").text(topic);
-            parentAElement.find(".flashcard-question").text(question);
-            parentAElement.find(".answer").text(answer);
-
-            console.log(parentAElement);
-        }
+    /* Helper functions */
+    function handleDeleteButtonClick(buttonsContainer) {
+        deleteFlashcardDialog.style.display = "block";
+        dialogOverlay.style.display = "block";
     }
     
     function deleteFlashcardOnServer(deleteFlashcardId) {
@@ -243,14 +146,6 @@ function main() {
     
         if (anchorElement.length > 0) {
             flashcardIdSelect.remove();
-
-            // var parentAElement = anchorElement.closest(".list-group-item");
-
-            // parentAElement.find(".flashcard-topic").text(topic);
-            // parentAElement.find(".flashcard-question").text(question);
-            // parentAElement.find(".answer").text(answer);
-
-            // console.log(parentAElement);
         }
     }
 }
