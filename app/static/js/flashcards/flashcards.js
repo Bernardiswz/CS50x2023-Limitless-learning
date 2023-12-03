@@ -1,7 +1,7 @@
-function main() {
+const FlashcardsVariablesObject = (function() {
     // Default page
-    var flashcards = document.querySelectorAll(".buttons-container .list-group-item");
-    var flashcardsDiv = document.getElementById("flashcards");
+    const flashcards = document.querySelectorAll(".buttons-container .list-group-item");
+    const flashcardsDiv = document.getElementById("flashcards");
     const flashcardTopic = document.getElementById("topic");
     const flashcardQuestion = document.getElementById("question");
     var flashcardId;
@@ -15,66 +15,87 @@ function main() {
     const flashcardFeedback = document.getElementById("flashcard-feedback");
     const feedbackUserAnswer = document.getElementById("user-answer");
     const feedbackFlashcardAnswer = document.getElementById("flashcard-answer");
-
-    // Handle default page flashcard selecting
-    flashcards.forEach(function(button) {
-        button.addEventListener("click", function(event) {
-            event.preventDefault();
-            flashcardId = event.currentTarget.parentElement.querySelector(".flashcard-id") ?
-                event.currentTarget.parentElement.querySelector(".flashcard-id").textContent : "Id not found";
-
-            var topic = event.currentTarget.querySelector("p.mb-1") ? event.currentTarget.querySelector("p.mb-1").textContent : "Topic not found";
-            var question = event.currentTarget.querySelector("h4.mb-1") ? event.currentTarget.querySelector("h4.mb-1").textContent : "Question not found";
-            var answer = event.currentTarget.parentElement.querySelector(".answer") ? event.currentTarget.parentElement.querySelector(".answer").textContent : "Answer not found";
-
-            flashcardTopic.textContent = topic;
-            flashcardQuestion.textContent = question;
-            flashcardAnswer = answer; // Update the global variable with the current flashcard's answer
-
-            flashcardsDiv.style.display = "none";
-            flashcardPage.style.display = "block";
-        });
-    });
-
-    // Handle flashcard testing submit
-    flashcardForm.addEventListener("submit", function(event) {
-        event.preventDefault();
-
-        const formAnswer = flashcardForm.answer.value;
-        console.log(formAnswer);
-
-        flashcardPage.style.display = "none";
-
-        feedbackUserAnswer.textContent = formAnswer;
-        feedbackFlashcardAnswer.textContent = flashcardAnswer;
-
-        flashcardFeedback.style.display = "block";
-    });
-
-    // Handle flashcard feedback
     var feedbackButtons = document.querySelectorAll("#buttons-div button");
 
-    feedbackButtons.forEach(function(button) {
-        button.addEventListener("click", function(event) {
-            event.preventDefault();
+    return {
+        flashcards: flashcards,
+        flashcardsDiv: flashcardsDiv,
+        flashcardTopic: flashcardTopic,
+        flashcardQuestion: flashcardQuestion,
+        flashcardId: flashcardId,
+        flashcardPage: flashcardPage,
+        flashcardForm: flashcardForm,
+        flashcardAnswer: flashcardAnswer,
+        flashcardFeedback: flashcardFeedback,
+        feedbackUserAnswer: feedbackUserAnswer,
+        feedbackFlashcardAnswer: feedbackFlashcardAnswer,
+        feedbackButtons: feedbackButtons
+    }
+})();
 
-            var buttonValue = event.target.value;
-
-            $.ajax({
-                type: "POST",
-                url: "/update_data",
-                data: {
-                    operation: "flashcardFeedback",
-                    buttonValue: buttonValue,
-                    flashcardId: flashcardId
-                }
-            });
-
-            flashcardFeedback.style.display = "none";
-            flashcardsDiv.style.display = "flex";
-
-        });
-    });
+function init() {
+    FlashcardsVariablesObject.flashcards.forEach((button) => assignFlashcardsEventListeners(button));
+    FlashcardsVariablesObject.flashcardForm.addEventListener("submit", (event) => handleFlashcardForm(event));
+    FlashcardsVariablesObject.feedbackButtons.forEach((button) => assignFeedbackBtnEventListeners(button));
 }
 
-document.addEventListener("DOMContentLoaded", main);
+function assignFlashcardsEventListeners(button) {
+    button.addEventListener("click", (event) => handleFlashcards(event));
+}
+
+function handleFlashcards(event) {
+    event.preventDefault();
+    FlashcardsVariablesObject.flashcardId = event.currentTarget.parentElement.querySelector(".flashcard-id") ?
+        event.currentTarget.parentElement.querySelector(".flashcard-id").textContent : "Id not found";
+
+    const topic = event.currentTarget.querySelector("p.mb-1") ? event.currentTarget.querySelector("p.mb-1").textContent : "Topic not found";
+    const question = event.currentTarget.querySelector("h4.mb-1") ? event.currentTarget.querySelector("h4.mb-1").textContent : "Question not found";
+    const answer = event.currentTarget.parentElement.querySelector(".answer") ? event.currentTarget.parentElement.querySelector(".answer").textContent : "Answer not found";
+
+    FlashcardsVariablesObject.flashcardTopic.textContent = topic;
+    FlashcardsVariablesObject.flashcardQuestion.textContent = question;
+    FlashcardsVariablesObject.flashcardAnswer = answer; // Update the global variable with the current flashcard's answer
+
+    FlashcardsVariablesObject.flashcardsDiv.style.display = "none";
+    FlashcardsVariablesObject.flashcardPage.style.display = "block";
+}
+
+function handleFlashcardForm(event) {
+    event.preventDefault();
+    const formAnswer = FlashcardsVariablesObject.flashcardForm.answer.value;
+    FlashcardsVariablesObject.feedbackUserAnswer.textContent = formAnswer;
+    FlashcardsVariablesObject.feedbackFlashcardAnswer.textContent = FlashcardsVariablesObject.flashcardAnswer;
+    FlashcardsVariablesObject.flashcardPage.style.display = "none";
+    FlashcardsVariablesObject.flashcardFeedback.style.display = "block";
+}
+
+function assignFeedbackBtnEventListeners(button) {
+    button.addEventListener("click", (event) => handleFeedbackPage(event));
+}
+
+function handleFeedbackPage(event) {
+    sendFlashcardFeedbackToServer(event);
+    changeFeedbackPageToDefault();
+}
+
+function changeFeedbackPageToDefault() {
+    FlashcardsVariablesObject.flashcardFeedback.style.display = "none";
+    FlashcardsVariablesObject.flashcardsDiv.style.display = "flex";
+}
+
+function sendFlashcardFeedbackToServer(event) {
+    event.preventDefault();
+    var buttonValue = event.target.value;
+
+    $.ajax({
+        type: "POST",
+        url: "/update_data",
+        data: {
+            operation: "flashcardFeedback",
+            buttonValue: buttonValue,
+            flashcardId: FlashcardsVariablesObject.flashcardId
+        }
+    });    
+}
+
+document.addEventListener("DOMContentLoaded", init);

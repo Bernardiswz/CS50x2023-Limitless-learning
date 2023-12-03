@@ -74,6 +74,11 @@
     max-width: 2.5vh;
 }
 
+.info-button {
+    border: none;
+    
+}
+
 .edit-icon {
     max-width: 2.5vh;
 }
@@ -132,18 +137,12 @@
 }
 
 #confirm-delete-button {
-    /* background-color: #553838; */
     justify-content: center;
     margin-top: 3vh;
     width: 75%;
     border: none;
 }
 
-/* #confirm-delete-button:hover {
-    background-color : #234D66;
-} */
-
-/* Create flashcard dialog */
 .flashcard-dialog {
     position: fixed;
     top: 50%;
@@ -238,7 +237,6 @@
         text-align: center;
         position: relative;
         top: -22%;
-        /* margin-top: 9vh; */
         margin-bottom: 9vh;
         line-height: 1;
         z-index: 1;
