@@ -112,6 +112,29 @@ def get_flashcards(user_id):
     return user_flashcards
 
 
+def get_flashcard_rating(flashcard_id):
+    flashcard_ratings = []
+
+    with get_db() as db:
+        cursor = db.cursor()
+
+        cursor.execute("SELECT rating, timestamp FROM flashcards_rating WHERE flashcard_id = ?", (flashcard_id,))
+        rows = cursor.fetchall()
+
+        for row in  rows:
+            timestamp_str = row[1]
+            timestamp = datetime.strptime(timestamp_str, "%Y-%m-%d %H:%M:%S")
+
+            rating_date_dict = {
+                "rating": row[0],
+                "timestamp": timestamp.strftime("%d/%m/%Y")
+            }
+
+            flashcard_ratings.append(rating_date_dict)
+
+    return flashcard_ratings
+
+
 def get_date_difference(date):
     date_object = datetime.strptime(date, "%d/%m/%Y")
     current_date = datetime.now()

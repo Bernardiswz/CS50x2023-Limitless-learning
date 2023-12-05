@@ -220,6 +220,7 @@ def flashcards():
     
     for flashcard in user_flashcards:
         flashcard["time_ago"] = get_date_difference(flashcard["timestamp"])
+        flashcard["ratings"] = get_flashcard_rating(flashcard["flashcard_id"])
 
     return render_template("flashcards.html", flashcards=user_flashcards)
 

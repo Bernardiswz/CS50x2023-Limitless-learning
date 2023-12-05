@@ -53,6 +53,20 @@
     user-select: none;
 }
 
+.flashcard-dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    height: 40%;
+    width: 75%;
+    transform: translate(-50%, -50%);
+    background-color:#ffffff;
+    border-radius: 4px;
+    border: 1px solid rgba(192, 192, 192, 0.582);
+    padding: 20px;
+    z-index: 999;
+}
+
 /* Flashcard settings/buttons */
 .flashcard-buttons {
     display: flex;
@@ -74,9 +88,11 @@
     max-width: 2.5vh;
 }
 
-.info-button {
+.info-box-button {
     border: none;
-    
+    background-color: rgba(0, 0, 0, 0);
+    max-width: 2.5vh;
+    margin-left: 1vh;
 }
 
 .edit-icon {
@@ -84,6 +100,10 @@
 }
 
 .delete-icon {
+    max-width: 2.5vh;
+}
+
+.info-box-icon {
     max-width: 2.5vh;
 }
 
@@ -143,19 +163,7 @@
     border: none;
 }
 
-.flashcard-dialog {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    height: 40%;
-    width: 75%;
-    transform: translate(-50%, -50%);
-    background-color:#ffffff;
-    border-radius: 4px;
-    border: 1px solid rgba(192, 192, 192, 0.582);
-    padding: 20px;
-    z-index: 999;
-}
+
 
 #dialog-overlay {
     position: fixed;
@@ -203,6 +211,10 @@
 #delete-flashcard-dialog {
     height: 25%;
 }
+
+/* #infobox-dialog {
+    
+} */
 
 /* Feedback page  */
 #flashcard-feedback #feedback {
@@ -252,7 +264,6 @@
         top: -28%;
         z-index: 2;
     }
-
 }
 
 /* Ongoing flashcard session */

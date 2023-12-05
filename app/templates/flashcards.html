@@ -16,19 +16,20 @@
                             <img class="edit-icon" src="../static/images/edit-icon.png">
                         </button>
                         
-                        <button class="delete-button">
+                        <button class="delete-button" type="button">
                             <img class="delete-icon" src="../static/images/delete-icon.png"> 
                         </button>
 
-                        <!-- <button class="info-box-button">
+                        <button class="info-box-button" type="button">
                             <img class="info-box-icon" src="../static/images/info-icon.jpg">
-                        </button> -->
+                        </button>
                     </div>
                     
                     <a href="#" class="list-group-item list-group-item-action flex-column align-items-start buttons">
                         <div class="flashcard-id" style="display: none;">{{ flashcard["flashcard_id"] }}</div>
-                            <div class="answer" style="display: none;">{{ flashcard["answer"] }}</div>
-                            <div class="d-flex w-100 justify-content-between">
+                        <div class="flashcard-ratings" style="display: none;">{{ flashcard["ratings"] }}</div>
+                        <div class="answer" style="display: none;">{{ flashcard["answer"] }}</div>
+                        <div class="d-flex w-100 justify-content-between">
                             <p class="mb-1 flashcard-topic">{{ flashcard["topic"] }}</p>
                             <small class="time-ago">Last visited {{ flashcard["time_ago"] }} days ago</small>
                         </div>
@@ -48,6 +49,20 @@
             <button id="create-flashcard-button">
                 <img id="add-icon" src="../static/images/add-icon.png" alt="Image">
             </button>
+        </div>
+    </div>
+
+    <!-- Infobox dialog -->
+    <div id="infobox-dialog" class="flashcard-dialog" style="display: none;">
+        <div class="dialog-title">Flashcard insights</div>
+        <hr class="dialog-thematic-break">
+
+        <button id="infobox-close-button" class="close-button" type="button">
+            <img src="../static/images/close-button.png" alt="Button Image" class="close-button-icon">
+        </button>
+
+        <div class="flashcard-information">
+
         </div>
     </div>
 
@@ -148,6 +163,6 @@
     <script src="../static/js/flashcards/createFlashcards.js"></script>
     <script src="../static/js/flashcards/deleteFlashcard.js"></script>
     <script src="../static/js/flashcards/editFlashcard.js"></script>
-    <!-- <script src="../static/js/eventHandlers.js"></script> -->
+    <script src="../static/js/flashcards/infoBox.js"></script>
 
 {% endblock %}

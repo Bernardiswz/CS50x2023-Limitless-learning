@@ -45,6 +45,7 @@ function assignFlashcardsEventListeners(button) {
 
 function handleFlashcards(event) {
     event.preventDefault();
+
     FlashcardsVariablesObject.flashcardId = event.currentTarget.parentElement.querySelector(".flashcard-id") ?
         event.currentTarget.parentElement.querySelector(".flashcard-id").textContent : "Id not found";
 
@@ -86,6 +87,7 @@ function changeFeedbackPageToDefault() {
 function sendFlashcardFeedbackToServer(event) {
     event.preventDefault();
     var buttonValue = event.target.value;
+    var flashcardId = FlashcardsVariablesObject.flashcardId;
 
     $.ajax({
         type: "POST",
@@ -93,9 +95,15 @@ function sendFlashcardFeedbackToServer(event) {
         data: {
             operation: "flashcardFeedback",
             buttonValue: buttonValue,
-            flashcardId: FlashcardsVariablesObject.flashcardId
+            flashcardId: flashcardId
+        },
+        sucess: function(data) {
+            console.log(data)
+        },
+        error: function(error) {
+            console.log(error);
         }
-    });    
+    });
 }
 
 document.addEventListener("DOMContentLoaded", init);

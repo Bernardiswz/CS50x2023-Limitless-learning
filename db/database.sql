@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS flashcards (
 );
 
 CREATE TABLE IF NOT EXISTS flashcards_rating (
-    flashcard_id INTEGER PRIMARY KEY,
+    flashcard_id INTEGER,
     rating TEXT,
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (flashcard_id) REFERENCES flashcards(flashcard_id)
