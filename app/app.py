@@ -185,6 +185,18 @@ def update_data():
         return jsonify({
             "flashcardToDeleteId": flashcard_id
         })
+    
+    elif operation == "getFlashcardRatings":
+        flashcard_id = request.form.get("flashcardId")
+
+        flashcard_ratings = get_flashcard_rating(flashcard_id)
+        flashcard_ratings_count = count_flashcard_ratings(flashcard_ratings)
+        print(flashcard_ratings_count)
+
+        return jsonify({
+            "flashcardRatings": flashcard_ratings,
+            "flashcardRatingsCount": flashcard_ratings_count
+        })
 
 
 @app.route("/pomodoro", methods=["GET", "POST"])
@@ -220,7 +232,6 @@ def flashcards():
     
     for flashcard in user_flashcards:
         flashcard["time_ago"] = get_date_difference(flashcard["timestamp"])
-        flashcard["ratings"] = get_flashcard_rating(flashcard["flashcard_id"])
 
     return render_template("flashcards.html", flashcards=user_flashcards)
 

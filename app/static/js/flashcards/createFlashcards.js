@@ -107,9 +107,6 @@ function createFlashcardOnServer(flashcard) {
 
 
 function insertCreatedFlashcard(data) {
-    console.log(typeof(data));
-    console.log(data);
-
     const newFlashcard = document.createElement("ul");
     newFlashcard.classList.add("list-group", "buttons");
 

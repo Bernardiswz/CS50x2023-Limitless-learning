@@ -1,6 +1,7 @@
-const infoBoxVarObject = (function() {
+const InfoBoxVarObject = (function() {
     const flashcardsDiv = document.getElementById("flashcards");
     const infoBoxDialog = document.getElementById("infobox-dialog");
+    const dialogOverlay = document.getElementById("dialog-overlay");
     const infoBoxCloseButton = document.getElementById("infobox-close-button");
     var currentFlashcardId;
     var hasInfoBtnBeenClicked = false;
@@ -8,6 +9,7 @@ const infoBoxVarObject = (function() {
     return {
         flashcardsDiv: flashcardsDiv,
         infoBoxDialog: infoBoxDialog,
+        dialogOverlay: dialogOverlay,
         infoBoxCloseButton: infoBoxCloseButton,
         currentFlashcardId: currentFlashcardId,
         hasInfoBtnBeenClicked: hasInfoBtnBeenClicked
@@ -15,32 +17,34 @@ const infoBoxVarObject = (function() {
 })();
 
 function init() {
-    infoBoxVarObject.flashcardsDiv.addEventListener("click", (event) => displayInfoDialog(event));
-    infoBoxVarObject.infoBoxCloseButton.addEventListener("click", (event) => hideInfoDialog(event));
+    InfoBoxVarObject.flashcardsDiv.addEventListener("click", (event) => displayInfoDialog(event));
+    InfoBoxVarObject.infoBoxCloseButton.addEventListener("click", (event) => hideInfoDialog(event));
 }
 
 function displayInfoDialog(event) {
     event.preventDefault();
     const infoBoxButton = event.target.closest(".info-box-button");
 
-    if (!infoBoxVarObject.hasInfoBtnBeenClicked) {
-        infoBoxVarObject.hasInfoBtnBeenClicked = true;
+    if (!InfoBoxVarObject.hasInfoBtnBeenClicked) {
+        InfoBoxVarObject.hasInfoBtnBeenClicked = true;
     } else {
-        infoBoxVarObject.hasInfoBtnBeenClicked = false;
+        InfoBoxVarObject.hasInfoBtnBeenClicked = false;
     }
 
-    if (infoBoxButton && infoBoxVarObject.hasInfoBtnBeenClicked) {
+    if (infoBoxButton && InfoBoxVarObject.hasInfoBtnBeenClicked) {
         const buttonsContainer = infoBoxButton.closest(".flashcard-buttons");
         handleInfoBoxDisplay(buttonsContainer);
-        infoBoxVarObject.infoBoxDialog.style.display = "block";
+        InfoBoxVarObject.infoBoxDialog.style.display = "block";
+        InfoBoxVarObject.dialogOverlay.style.display = "block";
     } else {
         hideInfoDialog();
     }
 }
 
 function hideInfoDialog() {
-    infoBoxVarObject.hasInfoBtnBeenClicked = false;
-    infoBoxVarObject.infoBoxDialog.style.display = "none";
+    InfoBoxVarObject.hasInfoBtnBeenClicked = false;
+    InfoBoxVarObject.infoBoxDialog.style.display = "none";
+    InfoBoxVarObject.dialogOverlay.style.display = "none";
 }
 
 function handleInfoBoxDisplay(buttonsContainer) {
@@ -50,13 +54,44 @@ function handleInfoBoxDisplay(buttonsContainer) {
         const flashcardIdElement = listItem.querySelector(".flashcard-id");
 
         if (flashcardIdElement) {
-            infoBoxVarObject.currentFlashcardId = flashcardIdElement.textContent.trim();
+            InfoBoxVarObject.currentFlashcardId = flashcardIdElement.textContent.trim();
+            getFlashcardRatings(InfoBoxVarObject.currentFlashcardId);
         } else {
             console.error("Error: Flashcard ID element not found!");
         }
     } else {
         console.error("Error: List item not found!");
     }
+}
+
+function getFlashcardRatings(flashcardId) {
+    $.ajax({
+        type: "POST",
+        url: "/update_data",
+        data: {
+            operation: "getFlashcardRatings",
+            flashcardId: flashcardId
+        },
+        success: function(data) {
+            console.log(data.flashcardRatingsCount)
+            // populateInfoboxDialog(data.flashcardRatings);
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+}
+
+function populateInfoboxDialog(ratings) {
+    for (let i = 0; i < ratings.length; i++) {
+        const ratingsOnDialog = document.createElement("p");
+        // ratingsOnDialog.classList.add
+
+        ratingsOnDialog.innerHTML = Object.values(ratings[i]);
+
+        InfoBoxVarObject.infoBoxDialog.appendChild(ratingsOnDialog);
+    }
+
 }
 
 document.addEventListener("DOMContentLoaded", init);

@@ -27,7 +27,6 @@
                     
                     <a href="#" class="list-group-item list-group-item-action flex-column align-items-start buttons">
                         <div class="flashcard-id" style="display: none;">{{ flashcard["flashcard_id"] }}</div>
-                        <div class="flashcard-ratings" style="display: none;">{{ flashcard["ratings"] }}</div>
                         <div class="answer" style="display: none;">{{ flashcard["answer"] }}</div>
                         <div class="d-flex w-100 justify-content-between">
                             <p class="mb-1 flashcard-topic">{{ flashcard["topic"] }}</p>
@@ -62,7 +61,16 @@
         </button>
 
         <div class="flashcard-information">
-
+            <label class="info-label" for="very-easy-count">Very Easy</label>
+            <label class="info-label" for="easy-count">Easy</label>
+            <label class="info-label" for="medium-count">Medium</label>
+            <label class="info-label" for="hard-count">Hard</label>
+            <label class="info-label" for="very-hard-count">Very Hard</label>
+            <div id="very-easy-count">0</div>
+            <div id="easy-count">0</div>
+            <div id="medium-count">0</div>
+            <div id="hard-count">0</div>
+            <div id="very-hard-count">0</div>
         </div>
     </div>
 
@@ -149,8 +157,8 @@
             <div id="flashcard-answer">Answer</div>
 
             <div id="buttons-div">
-                <button id="easy-button" value="easy" class="btn btn-outline-primary">Easy</button>
                 <button id="very-easy-button" value="very-easy" class="btn btn-outline-success">Very Easy</button>
+                <button id="easy-button" value="easy" class="btn btn-outline-primary">Easy</button>
                 <button id="medium-button" value="medium" class="btn btn-outline-warning">Medium</button>
                 <button id="hard-button" value="hard" class="btn btn-outline-danger">Hard</button>
                 <button id="very-hard-button" value="very-hard" class="btn btn-outline-dark">Very Hard</button>

@@ -163,8 +163,6 @@
     border: none;
 }
 
-
-
 #dialog-overlay {
     position: fixed;
     top: 0;
@@ -208,13 +206,28 @@
     max-height: 30%;
 }
 
+.info-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 2.4vh;
+    margin-left: 4vh;
+}
+
+.info-label:not(:last-child) {
+    margin-right: 2vh;
+}
+
+
+
 #delete-flashcard-dialog {
     height: 25%;
 }
 
-/* #infobox-dialog {
-    
-} */
+.flashcard-information {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-right: 4vh;
+}
 
 /* Feedback page  */
 #flashcard-feedback #feedback {
