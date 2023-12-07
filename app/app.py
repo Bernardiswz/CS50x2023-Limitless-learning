@@ -191,11 +191,11 @@ def update_data():
 
         flashcard_ratings = get_flashcard_rating(flashcard_id)
         flashcard_ratings_count = count_flashcard_ratings(flashcard_ratings)
-        print(flashcard_ratings_count)
+        most_recent_rating = get_most_recent_rating(flashcard_id)
 
         return jsonify({
-            "flashcardRatings": flashcard_ratings,
-            "flashcardRatingsCount": flashcard_ratings_count
+            "flashcardRatingsCount": flashcard_ratings_count,
+            "mostRecentRating": most_recent_rating
         })
 
 

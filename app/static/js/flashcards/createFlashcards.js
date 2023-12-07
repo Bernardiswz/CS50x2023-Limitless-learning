@@ -119,6 +119,10 @@ function insertCreatedFlashcard(data) {
             <button class="delete-button">
                 <img class="delete-icon" src="../static/images/delete-icon.png"> 
             </button>
+
+            <button class="info-box-button" type="button">
+                <img class="info-box-icon" src="../static/images/info-icon.jpg">
+            </button>
         </div>
 
         <a href="#" class="list-group-item list-group-item-action flex-column align-items-start buttons">

@@ -51,9 +51,8 @@
         </div>
     </div>
 
-    <!-- Infobox dialog -->
     <div id="infobox-dialog" class="flashcard-dialog" style="display: none;">
-        <div class="dialog-title">Flashcard insights</div>
+        <div class="dialog-title">Flashcard ratings</div>
         <hr class="dialog-thematic-break">
 
         <button id="infobox-close-button" class="close-button" type="button">
@@ -61,20 +60,33 @@
         </button>
 
         <div class="flashcard-information">
-            <label class="info-label" for="very-easy-count">Very Easy</label>
-            <label class="info-label" for="easy-count">Easy</label>
-            <label class="info-label" for="medium-count">Medium</label>
-            <label class="info-label" for="hard-count">Hard</label>
-            <label class="info-label" for="very-hard-count">Very Hard</label>
-            <div id="very-easy-count">0</div>
-            <div id="easy-count">0</div>
-            <div id="medium-count">0</div>
-            <div id="hard-count">0</div>
-            <div id="very-hard-count">0</div>
+            <div class="info-item very-easy-color">
+                <div class="info-label">Very Easy</div>
+                <div class="ratings-counter" id="very-easy-count">0</div>
+            </div>
+        
+            <div class="info-item easy-color">
+                <div class="info-label">Easy</div>
+                <div class="ratings-counter" id="easy-count">0</div>
+            </div>
+        
+            <div class="info-item medium-color">
+                <div class="info-label">Medium</div>
+                <div class="ratings-counter" id="medium-count">0</div>
+            </div>
+        
+            <div class="info-item hard-color">
+                <div class="info-label">Hard</div>
+                <div class="ratings-counter" id="hard-count">0</div>
+            </div>
+        
+            <div class="info-item very-hard-color">
+                <div class="info-label">Very Hard</div>
+                <div class="ratings-counter" id="very-hard-count">0</div>
+            </div>
         </div>
     </div>
 
-    <!-- Edit flashcard dialog -->
     <div id="edit-flashcard-dialog" class="flashcard-dialog" style="display: none;">
         <form>
             <div class="dialog-title">Edit Flashcard</div>
@@ -97,7 +109,6 @@
         </form>
     </div>
 
-    <!-- Delete flashcard confirmation dialog -->
     <div id="delete-flashcard-dialog" class="flashcard-dialog" style="display: none;">
         <form>
             <div class="dialog-title">Delete flashcard?</div>
@@ -113,20 +124,16 @@
         </form>
     </div>
 
-    <!-- Create flashcard dialog -->
     <div id="dialog-overlay" style="display: none;"></div>
-
     <div id="new-flashcard-dialog" class="container flashcard-dialog" style="display: none;">
         <form>
             <div class="dialog-title">New Flashcard</div>
             <hr id="dialog-thematic-break">
 
-            <!-- Exit button -->
             <button id="close-new-flashcard-button" class="close-button" type="submit">
                 <img src="../static/images/close-button.png" alt="Button Image" class="close-button-icon">
             </button>
 
-            <!-- User input area -->
             <div class="input-container" id="inputs">
                 <label class="input-labels" for="topic-input">Topic</label>
                 <input autocomplete="off" id="topic-input" class="create-flashcard-input">
@@ -142,8 +149,8 @@
 
     <div id="flashcard-page" style="display: none;">
         <form id="flashcard-form" class="form-container">
-            <div id="topic">Music</div>
-            <h1 id="question">Testing flashcards?</h1>   
+            <div id="topic"></div>
+            <h1 id="question"></h1>   
             <input autocomplete="off" autofocus class="form-control" id="answer" name="username" placeholder="Answer" type="text" required>
             <button id="submit-button" class="btn btn-primary" type="submit">Submit</button>
         </form>
@@ -151,10 +158,10 @@
 
     <div id="flashcard-feedback" style="display: none">
         <form id="feedback" class="form-container">
-            <h1 id="answer-header">Your answer:</h1>
-            <div id="user-answer">User answer</div>
-            <h2 id="user-answer-header">Flashcard answer:</h2>
-            <div id="flashcard-answer">Answer</div>
+            <h1 id="answer-header"></h1>
+            <div id="user-answer"></div>
+            <h2 id="user-answer-header"></h2>
+            <div id="flashcard-answer"></div>
 
             <div id="buttons-div">
                 <button id="very-easy-button" value="very-easy" class="btn btn-outline-success">Very Easy</button>
@@ -172,5 +179,4 @@
     <script src="../static/js/flashcards/deleteFlashcard.js"></script>
     <script src="../static/js/flashcards/editFlashcard.js"></script>
     <script src="../static/js/flashcards/infoBox.js"></script>
-
 {% endblock %}

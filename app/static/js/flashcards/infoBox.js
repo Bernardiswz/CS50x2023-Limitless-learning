@@ -12,7 +12,7 @@ const InfoBoxVarObject = (function() {
         dialogOverlay: dialogOverlay,
         infoBoxCloseButton: infoBoxCloseButton,
         currentFlashcardId: currentFlashcardId,
-        hasInfoBtnBeenClicked: hasInfoBtnBeenClicked
+        hasInfoBtnBeenClicked: hasInfoBtnBeenClicked,
     }
 })();
 
@@ -73,8 +73,8 @@ function getFlashcardRatings(flashcardId) {
             flashcardId: flashcardId
         },
         success: function(data) {
-            console.log(data.flashcardRatingsCount)
-            // populateInfoboxDialog(data.flashcardRatings);
+            populateInfoboxDialog(data.flashcardRatingsCount);
+            console.log(data.mostRecentRating);
         },
         error: function(error) {
             console.log(error);
@@ -83,15 +83,23 @@ function getFlashcardRatings(flashcardId) {
 }
 
 function populateInfoboxDialog(ratings) {
-    for (let i = 0; i < ratings.length; i++) {
-        const ratingsOnDialog = document.createElement("p");
-        // ratingsOnDialog.classList.add
-
-        ratingsOnDialog.innerHTML = Object.values(ratings[i]);
-
-        InfoBoxVarObject.infoBoxDialog.appendChild(ratingsOnDialog);
+    for (const difficulty in ratings) {
+        if (ratings.hasOwnProperty(difficulty)) {
+            const count = ratings[difficulty];
+            const element = document.getElementById(`${difficulty}-count`);
+            if (element) {
+                element.textContent = count;
+            }
+        }
     }
+}
 
+function highlightLastRating(rating) {
+    const lastRatingLabel = document.getElementById(`${rating}-count`);
+
+    if (lastRatingLabel) {
+        
+    }
 }
 
 document.addEventListener("DOMContentLoaded", init);

@@ -122,17 +122,30 @@ def get_flashcard_rating(flashcard_id):
 
 
 def count_flashcard_ratings(ratings_dict):
-    rating_count_dict = {"very-easy": 0,
-                        "easy": 0,
-                        "medium": 0,
-                        "hard": 0,
-                        "very-hard": 0}
+    rating_count_dict = {
+        "very-easy": 0,
+        "easy": 0,
+        "medium": 0,
+        "hard": 0,
+        "very-hard": 0
+    }
 
     for rating in ratings_dict:
         if rating[0] in rating_count_dict:
             rating_count_dict[rating[0]] += 1
 
     return rating_count_dict
+
+
+def get_most_recent_rating(flashcard_id):
+    with get_db() as db:
+        cursor = db.cursor()
+
+        cursor.execute("SELECT rating FROM flashcards_rating WHERE flashcard_id = ? ORDER BY timestamp DESC LIMIT 1",
+                       (flashcard_id,))
+        most_recent_rating = cursor.fetchone()
+
+        return most_recent_rating
 
 
 def get_date_difference(date):

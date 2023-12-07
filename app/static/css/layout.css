@@ -9,7 +9,7 @@
 }
 
 .navbar-elements:hover {
-    color: #FFECCC;
+    color: #F1F1E6;
     background-color: #007488c0;
 }
 
@@ -20,7 +20,7 @@
 }
 
 .dropdown-item:hover {
-    color: hsl(38, 100%, 90%);
+    color: #F1F1E6;
     background-color: #007488c0;
 }
 
