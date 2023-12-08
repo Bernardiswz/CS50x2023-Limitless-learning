@@ -9,6 +9,7 @@ const FlashcardsVariablesObject = (function() {
     // Flashcard page
     const flashcardPage = document.getElementById("flashcard-page");
     const flashcardForm = document.getElementById("flashcard-form");
+    const answerInput = document.getElementById("answer");
     var flashcardAnswer;
 
     // Flashcard feedback page
@@ -25,6 +26,7 @@ const FlashcardsVariablesObject = (function() {
         flashcardId: flashcardId,
         flashcardPage: flashcardPage,
         flashcardForm: flashcardForm,
+        answerInput: answerInput,
         flashcardAnswer: flashcardAnswer,
         flashcardFeedback: flashcardFeedback,
         feedbackUserAnswer: feedbackUserAnswer,
@@ -80,6 +82,7 @@ function handleFeedbackPage(event) {
 }
 
 function changeFeedbackPageToDefault() {
+    FlashcardsVariablesObject.answerInput.value = "";
     FlashcardsVariablesObject.flashcardFeedback.style.display = "none";
     FlashcardsVariablesObject.flashcardsDiv.style.display = "flex";
 }

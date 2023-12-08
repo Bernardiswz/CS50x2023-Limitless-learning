@@ -143,7 +143,7 @@ def update_data():
         answer = request.form.get("answer")
 
         create_flashcard(user_id=user, topic=topic, question=question, answer=answer)
-        created_flashcard = get_specific_flashcard(user_id=user, topic=topic, question=question, answer=answer)
+        created_flashcard = get_flashcard_by_user_data(user_id=user, topic=topic, question=question, answer=answer)
 
         date_difference = get_date_difference(created_flashcard["timestamp"])
         created_flashcard["time_ago"] = date_difference
@@ -167,6 +167,9 @@ def update_data():
         topic = request.form.get("topic")
         question = request.form.get("question")
         answer = request.form.get("answer")
+ 
+
+        
 
         update_flashcard(flashcard_id, topic, question, answer)
 

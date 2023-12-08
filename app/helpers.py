@@ -1,6 +1,7 @@
 from flask import render_template, redirect, session, g
 from werkzeug.security import check_password_hash, generate_password_hash
 from functools import wraps
+from itertools import islice
 from datetime import datetime
 import sqlite3
 
@@ -204,8 +205,8 @@ def create_flashcard(user_id, topic, question, answer):
 
         db.commit()
 
-
-def get_specific_flashcard(user_id, topic, question, answer):
+        
+def get_flashcard_by_user_data(user_id, topic, question, answer):
     with get_db() as db:
         cursor = db.cursor()
 
@@ -229,6 +230,21 @@ def get_specific_flashcard(user_id, topic, question, answer):
             return None
         
 
+def get_flashcard_content_by_id(flashcard_id):
+    with get_db() as db:
+        cursor = db.cursor()
+
+        cursor.execute("SELECT topic, question, answer FROM flashcards WHERE flashcard_id = ?", (flashcard_id,))
+        flashcard = cursor.fetchone()
+        flashcard_dict = {
+            "topic": flashcard[0],
+            "question": flashcard[1],
+            "answer": flashcard[2],
+        }
+        
+        return flashcard_dict
+
+
 def rate_flashcard(flashcard_id, rating):
     with get_db() as db:
         cursor = db.cursor()
@@ -238,6 +254,41 @@ def rate_flashcard(flashcard_id, rating):
         db.commit()
 
 
+def validate_update_inputs(inputs):
+    flashcard_id = inputs[0]
+
+    inputs_dict = {
+        "topic": inputs[1],
+        "question": inputs[2],
+        "answer": inputs[3]
+    }
+
+    flashcard_to_edit = get_flashcard_content_by_id(flashcard_id)
+
+    # Return flashcard_id for convenience
+    valid_input_dict = {"flashcard_id": flashcard_id}
+
+    # If input doesn't match the flashcard it is considered valid, to prevent useless queries
+    for key, value in inputs_dict.items():
+        if value != flashcard_to_edit[key]:
+            valid_input_dict[key] = value
+
+    return valid_input_dict
+
+
+def update_flashcard_specialized(**kwargs):
+    with get_db() as db:
+        cursor = db.cursor
+
+        flashcard_id = kwargs.get("flashcard_id")
+        kwargs.pop("flashcard_id")
+
+        for key, value in kwargs.items():
+            cursor.execute("UPDATE flashcards SET ? = ? WHERE flashcard_id = ?", (key, value, flashcard_id))
+        
+        db.commit()
+
+    
 def update_flashcard(flashcard_id, topic, question, answer):
     with get_db() as db:
         cursor = db.cursor()
@@ -255,3 +306,4 @@ def delete_flashcard(flashcard_id):
 
         cursor.execute("DELETE FROM flashcards WHERE flashcard_id = ?", (flashcard_id,))
         db.commit()
+

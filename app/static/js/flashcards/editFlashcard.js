@@ -1,9 +1,12 @@
-const editVariablesObject = (function() {
+const EditVariablesObject = (function() {
     const flashcardsDiv = document.getElementById("flashcards");
     const editFlashcardDialog = document.getElementById("edit-flashcard-dialog");
     const editFlashcardCloseButton = document.getElementById("edit-flashcard-close-button");
     const dialogOverlay = document.getElementById("dialog-overlay");
     const maxInputLength = 300;
+    const currentFlashcardTopic = document.getElementById("edit-topic-input");
+    const currentFlashcardQuestion = document.getElementById("edit-question-input");
+    const currentFlashcardAnswer = document.getElementById("edit-answer-input");
     var currentFlashcardId;
 
     return {
@@ -12,13 +15,16 @@ const editVariablesObject = (function() {
         editFlashcardCloseButton: editFlashcardCloseButton,
         dialogOverlay: dialogOverlay,
         maxInputLength: maxInputLength,
-        currentFlashcardId: currentFlashcardId
+        currentFlashcardId: currentFlashcardId,
+        currentFlashcardTopic: currentFlashcardTopic,
+        currentFlashcardQuestion: currentFlashcardQuestion,
+        currentFlashcardAnswer: currentFlashcardAnswer
     }
 })();
 
 function init() {
-    editVariablesObject.flashcardsDiv.addEventListener("click", (event) => displayEditOption(event));
-    editVariablesObject.editFlashcardCloseButton.addEventListener("click", (event) => closeEditDialog(event));
+    EditVariablesObject.flashcardsDiv.addEventListener("click", (event) => displayEditOption(event));
+    EditVariablesObject.editFlashcardCloseButton.addEventListener("click", (event) => closeEditDialog(event));
 }
 
 function displayEditOption(event) {
@@ -31,19 +37,20 @@ function displayEditOption(event) {
 }
 
 function handleEditButtonClick(buttonsContainer) {
-    editVariablesObject.editFlashcardDialog.style.display = "block";
-    editVariablesObject.dialogOverlay.style.display = "block";
+    EditVariablesObject.editFlashcardDialog.style.display = "block";
+    EditVariablesObject.dialogOverlay.style.display = "block";
 
     // Try to find the .list-group-item element within the parent of buttonsContainer
     const listItem = buttonsContainer.closest('.buttons').querySelector('.list-group-item');
 
     if (listItem) {
         const flashcardIdElement = listItem.querySelector(".flashcard-id");
-        
-        if (flashcardIdElement) {
-            editVariablesObject.currentFlashcardId = flashcardIdElement.textContent.trim();
-            console.log(editVariablesObject.currentFlashcardId);
+        EditVariablesObject.currentFlashcardTopic.value = listItem.querySelector(".flashcard-topic").textContent;
+        EditVariablesObject.currentFlashcardQuestion.value = listItem.querySelector(".flashcard-question").textContent;
+        EditVariablesObject.currentFlashcardAnswer.value = listItem.querySelector(".answer").textContent;
 
+        if (flashcardIdElement) {
+            EditVariablesObject.currentFlashcardId = flashcardIdElement.textContent.trim();
         } else {
             console.error("Error: Flashcard ID element not found!");
         }
@@ -55,20 +62,20 @@ function handleEditButtonClick(buttonsContainer) {
 function closeEditDialog(event) {
     event.preventDefault();
 
-    editVariablesObject.editFlashcardDialog.style.display = "none";
-    editVariablesObject.dialogOverlay.style.display = "none";
+    EditVariablesObject.editFlashcardDialog.style.display = "none";
+    EditVariablesObject.dialogOverlay.style.display = "none";
 
-    var editFlashcardTopic = document.getElementById("edit-topic-input").value;
-    var editFlashcardQuestion = document.getElementById("edit-question-input").value;
-    var editFlashcardAnswer = document.getElementById("edit-answer-input").value;
-    var editFlashcardId = editVariablesObject.currentFlashcardId
+    var editFlashcardTopic = EditVariablesObject.currentFlashcardTopic.value;
+    var editFlashcardQuestion = EditVariablesObject.currentFlashcardQuestion.value;
+    var editFlashcardAnswer = EditVariablesObject.currentFlashcardAnswer.value;
+    var editFlashcardId = EditVariablesObject.currentFlashcardId;
 
     const checkUserInputs = isUserInputsValid(editFlashcardTopic, editFlashcardQuestion, editFlashcardAnswer);
 
     if (!checkUserInputs) {
         return;
     }
-
+    
     editFlashcardOnServer(editFlashcardId, editFlashcardTopic, editFlashcardQuestion, editFlashcardAnswer);
 }
 
@@ -76,8 +83,8 @@ function isUserInputsValid(topic, question, answer) {
     const userInputs = [topic, question, answer];
 
     for (let i = 0; i < userInputs.length; i++) {
-        if (userInputs[i].length > deleteVariablesObject.maxInputLength) {
-            window.alert(`Maximum ${deleteVariablesObject.maxInputLength} characters input length exceeded.`);
+        if (userInputs[i].length > EditVariablesObject.maxInputLength) {
+            window.alert(`Maximum ${EditVariablesObject.maxInputLength} characters input length exceeded.`);
             return false;
         } else if (userInputs[i].trim() === "") {
             return false;
