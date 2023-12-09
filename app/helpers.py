@@ -1,4 +1,4 @@
-from flask import render_template, redirect, session, g
+from flask import abort, render_template, redirect, session, g
 from werkzeug.security import check_password_hash, generate_password_hash
 from functools import wraps
 from itertools import islice
@@ -34,12 +34,29 @@ def is_valid_username(username):
         return True
 
 
-# Function to render html in case of errors
+def is_valid_paramether(*paramethers):
+    for paramether in paramethers:
+        if not paramether:
+            return False
+    return True
+
+
+# Returns the valid key value pairs given as arguments to the function
+def get_valid_paramethers(**paramethers):
+    valid_paramethers = {}
+
+    for key, value in paramethers.items():
+        if value:
+            valid_paramethers[key] = value
+
+    return valid_paramethers
+
+
 def render_error(message, status_code):
     return render_template("error.html", message=message, status_code=status_code)
 
 
-# Database related functions
+# Database init function
 def get_db():
     db = getattr(g, "_database", None)
     if db is None:
@@ -178,21 +195,19 @@ def increment_pomodoros(user_id):
         db.commit()
 
 
-def update_preferences(user_id, **kwargs):
+def update_preferences(user_id, preferences_dict):
+    if not user_id:
+        abort(400)
+
     with get_db() as db:
         cursor = db.cursor()
-        # handling minutes
-        if "minutes" in kwargs and is_valid_element(kwargs["minutes"]):
-            cursor.execute("UPDATE preferences SET minutes = ? WHERE user_id = ?", (kwargs["minutes"], user_id))
 
-        # Handling break
-        if "timer_break" in kwargs and is_valid_element(kwargs["timer_break"]):
-            cursor.execute("UPDATE preferences SET break = ? WHERE user_id = ?", (kwargs["timer_break"], user_id))
+        for key, value in preferences_dict.items():
+            if is_valid_element(value):
+                query = f"UPDATE preferences SET {key} = ? WHERE user_id = ?"
 
-        # Handling long break
-        if "long_break" in kwargs and is_valid_element(kwargs["long_break"]):
-            cursor.execute("UPDATE preferences SET long_break = ? WHERE user_id = ?", (kwargs["long_break"], user_id))
-
+                cursor.execute(query, (value, user_id))
+        
         db.commit()
 
 
@@ -254,18 +269,12 @@ def rate_flashcard(flashcard_id, rating):
         db.commit()
 
 
-def validate_update_inputs(inputs):
-    flashcard_id = inputs[0]
-
-    inputs_dict = {
-        "topic": inputs[1],
-        "question": inputs[2],
-        "answer": inputs[3]
-    }
+def validate_update_inputs(inputs_dict):
+    flashcard_id = inputs_dict.pop("flashcard_id")
 
     flashcard_to_edit = get_flashcard_content_by_id(flashcard_id)
 
-    # Return flashcard_id for convenience
+    # Include flashcard_id in returning dict for convenience
     valid_input_dict = {"flashcard_id": flashcard_id}
 
     # If input doesn't match the flashcard it is considered valid, to prevent useless queries
@@ -276,27 +285,27 @@ def validate_update_inputs(inputs):
     return valid_input_dict
 
 
-def update_flashcard_specialized(**kwargs):
+def update_flashcard(elements_dict):
     with get_db() as db:
-        cursor = db.cursor
+        cursor = db.cursor()
 
-        flashcard_id = kwargs.get("flashcard_id")
-        kwargs.pop("flashcard_id")
+        flashcard_id = elements_dict.pop("flashcard_id")
 
-        for key, value in kwargs.items():
-            cursor.execute("UPDATE flashcards SET ? = ? WHERE flashcard_id = ?", (key, value, flashcard_id))
+        for key, value in elements_dict.items():
+            query = f"UPDATE flashcards SET {key} = ? WHERE flashcard_id = ?"
+            cursor.execute(query, (value, flashcard_id))
         
         db.commit()
 
     
-def update_flashcard(flashcard_id, topic, question, answer):
-    with get_db() as db:
-        cursor = db.cursor()
+# def update_flashcard(flashcard_id, topic, question, answer):
+#     with get_db() as db:
+#         cursor = db.cursor()
 
-        cursor.execute("UPDATE flashcards SET topic = ?, question = ?, answer = ?, timestamp = CURRENT_TIMESTAMP\
-                       WHERE flashcard_id = ?", (topic, question, answer, flashcard_id))
+#         cursor.execute("UPDATE flashcards SET topic = ?, question = ?, answer = ?, timestamp = CURRENT_TIMESTAMP\
+#                        WHERE flashcard_id = ?", (topic, question, answer, flashcard_id))
         
-        db.commit()
+#         db.commit()
 
 
 

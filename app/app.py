@@ -2,7 +2,7 @@
 This is a Flask web application that providdes information about the importance of learning
 and offers various learning resources. See the README for more information.
 """
-from flask import Flask, g, jsonify, redirect, render_template, request, session
+from flask import Flask, g, jsonify, redirect, render_template, request, session, abort
 from flask_session import Session
 from datetime import datetime
 from helpers import *
@@ -71,18 +71,18 @@ def login():
 
         # Validate user input
         if not username or not password:
-            return 403
+            return abort(403)
 
         check_password = is_valid_password(password)
         check_username = is_valid_username(username)
 
         if not check_password or not check_username:
-            return 404
+            return abort(404)
 
         user_id = authenticate_user(username, password)
 
         if not user_id:
-            return render_error("Wrong password or wrong name!", 404)
+            return abort(404)
         
         # If matches update user id to match user id from db
         session["user_id"] = user_id
@@ -114,6 +114,11 @@ def update_data():
     user = session.get("user_id")
     operation = request.form.get("operation")
 
+    is_valid_operation = is_valid_paramether(user, operation)
+
+    if not is_valid_operation:
+        abort(400)
+
     if operation == "incrementPomodoros":
         increment_pomodoros(user)
 
@@ -122,14 +127,8 @@ def update_data():
         timer_break = request.form.get("timerBreak")
         long_break = request.form.get("longBreak")
 
-        if minutes:
-            update_preferences(user, minutes)
-
-        if timer_break:
-            update_preferences(user, timer_break)
-
-        if long_break:
-            update_preferences(user, long_break)
+        valid_preferences = get_valid_paramethers(minutes=minutes, timer_break=timer_break, long_break=long_break)
+        update_preferences(user_id=user, preferences_dict=valid_preferences)
 
         return jsonify({
             'minutes': minutes,
@@ -168,16 +167,12 @@ def update_data():
         question = request.form.get("question")
         answer = request.form.get("answer")
  
-
-        
-
-        update_flashcard(flashcard_id, topic, question, answer)
+        valid_paramethers = get_valid_paramethers(flashcard_id=flashcard_id, topic=topic, question=question, answer=answer)
+        valid_inputs = validate_update_inputs(valid_paramethers)
+        update_flashcard(valid_inputs)
 
         return jsonify({
-            'updatedFlashcardId': flashcard_id,
-            'updatedTopic': topic,
-            'updatedQuestion': question,
-            'updatedAnswer': answer
+            'updatedFlashcardData': valid_inputs
         })
     
     elif operation == "deleteFlashcard":
@@ -217,7 +212,7 @@ def pomodoro():
     """Querying the database to retrieve the user's preferences of the pomodoro timer"""
     with get_db() as db:
         cursor = db.cursor()
-        cursor.execute("SELECT minutes, break, long_break, lb_interval FROM preferences WHERE user_id = ?", (user,))
+        cursor.execute("SELECT minutes, timer_break, long_break, lb_interval FROM preferences WHERE user_id = ?", (user,))
         user_data = cursor.fetchone()
 
         if user_data:

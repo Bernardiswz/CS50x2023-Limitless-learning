@@ -127,7 +127,7 @@ function insertCreatedFlashcard(data) {
 
         <a href="#" class="list-group-item list-group-item-action flex-column align-items-start buttons">
             <div class="flashcard-id" style="display: none;">${data.createdFlashcard.flashcard_id}</div>
-            <div class="answer" style="display: none;">${data.createdFlashcard.answer}</div>
+            <div class="flashcard-answer" style="display: none;">${data.createdFlashcard.answer}</div>
             <div class="d-flex w-100 justify-content-between">
                 <p class="mb-1 flashcard-topic">${data.createdFlashcard.topic}</p>
                 <small class="time-ago">Last visited ${data.createdFlashcard.time_ago} days ago</small>

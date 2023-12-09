@@ -53,7 +53,8 @@ function handleFlashcards(event) {
 
     const topic = event.currentTarget.querySelector("p.mb-1") ? event.currentTarget.querySelector("p.mb-1").textContent : "Topic not found";
     const question = event.currentTarget.querySelector("h4.mb-1") ? event.currentTarget.querySelector("h4.mb-1").textContent : "Question not found";
-    const answer = event.currentTarget.parentElement.querySelector(".answer") ? event.currentTarget.parentElement.querySelector(".answer").textContent : "Answer not found";
+    const answer = event.currentTarget.parentElement.querySelector(".flashcard-answer") ? 
+        event.currentTarget.parentElement.querySelector(".flashcard-answer").textContent : "Answer not found";
 
     FlashcardsVariablesObject.flashcardTopic.textContent = topic;
     FlashcardsVariablesObject.flashcardQuestion.textContent = question;

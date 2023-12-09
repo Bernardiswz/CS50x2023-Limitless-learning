@@ -47,7 +47,7 @@ function handleEditButtonClick(buttonsContainer) {
         const flashcardIdElement = listItem.querySelector(".flashcard-id");
         EditVariablesObject.currentFlashcardTopic.value = listItem.querySelector(".flashcard-topic").textContent;
         EditVariablesObject.currentFlashcardQuestion.value = listItem.querySelector(".flashcard-question").textContent;
-        EditVariablesObject.currentFlashcardAnswer.value = listItem.querySelector(".answer").textContent;
+        EditVariablesObject.currentFlashcardAnswer.value = listItem.querySelector(".flashcard-answer").textContent;
 
         if (flashcardIdElement) {
             EditVariablesObject.currentFlashcardId = flashcardIdElement.textContent.trim();
@@ -86,8 +86,6 @@ function isUserInputsValid(topic, question, answer) {
         if (userInputs[i].length > EditVariablesObject.maxInputLength) {
             window.alert(`Maximum ${EditVariablesObject.maxInputLength} characters input length exceeded.`);
             return false;
-        } else if (userInputs[i].trim() === "") {
-            return false;
         }
     }
 
@@ -106,12 +104,35 @@ function editFlashcardOnServer(editFlashcardId, topic, question, answer) {
             answer: answer
         },
         success: function(data) {
-            var updatedFlashcardId = data.updatedFlashcardId;
-            var updatedTopic = data.updatedTopic;
-            var updatedQuestion = data.updatedQuestion;
-            var updatedAnswer = data.updatedAnswer;
+            data = data.updatedFlashcardData;
 
-            updateFlashcardElement(updatedFlashcardId, updatedTopic, updatedQuestion, updatedAnswer);
+            // Assign keys to the object passed to the updateFlashcardElement on page, even if falsy
+            
+            const updatedFlashcardId = EditVariablesObject.currentFlashcardId;
+            const argumentDataKeys = ["topic", "question", "answer"];
+            const validObject = {}
+
+            for (const key in data) {
+                if (data.hasOwnProperty(key)) {
+                    validObject[key] = data[key];
+                }
+            }
+
+            for (const keyName of argumentDataKeys) {
+                if (!validObject.hasOwnProperty(keyName)) {
+                    validObject[keyName] = "";
+                }
+            }
+
+            console.log(validObject)
+
+            updateFlashcardElement({
+                flashcardId: updatedFlashcardId,
+                topic: validObject.topic,
+                question: validObject.question,
+                answer: validObject.answer
+            });
+           
         },
         error: function(error) {
             console.log(error);
@@ -120,19 +141,49 @@ function editFlashcardOnServer(editFlashcardId, topic, question, answer) {
     });
 }
 
-function updateFlashcardElement(updatedFlashcardId, topic, question, answer) {
-    var flashcardIdSelector = `.list-group-item .flashcard-id:contains("${updatedFlashcardId}")`;
+function updateFlashcardElement({flashcardId, topic, question, answer}) {
+    const validElements = {
+        flashcardId: flashcardId
+    };
+
+    const argsObject = {
+        topic: topic, 
+        question: question, 
+        answer: answer
+    };
+
+    console.log(argsObject)
+
+    // Retrieve the anchor element and update it dynamically according to the changes made to the flashcard
+    var flashcardIdSelector = `.list-group-item .flashcard-id:contains("${validElements.flashcardId}")`;
     var anchorElement = $(flashcardIdSelector).filter(function() {
-        return $(this).text() === updatedFlashcardId;
+        return $(this).text() === validElements.flashcardId;
     });
 
     if (anchorElement.length > 0) {
         var parentAElement = anchorElement.closest(".list-group-item");
 
-        parentAElement.find(".flashcard-topic").text(topic);
-        parentAElement.find(".flashcard-question").text(question);
-        parentAElement.find(".answer").text(answer);
+        for (const key in argsObject) {
+            if (argsObject.hasOwnProperty(key) && argsObject[key] !== "") {
+                parentAElement.find(`.flashcard-${key}`).text(argsObject[key]);
+            }
+        }
     }
 }
+
+// function updateFlashcardElementsa(updatedFlashcardId, topic, question, answer) {
+//     var flashcardIdSelector = `.list-group-item .flashcard-id:contains("${updatedFlashcardId}")`;
+//     var anchorElement = $(flashcardIdSelector).filter(function() {
+//         return $(this).text() === updatedFlashcardId;
+//     });
+
+//     if (anchorElement.length > 0) {
+//         var parentAElement = anchorElement.closest(".list-group-item");
+
+//         parentAElement.find(".flashcard-topic").text(topic);
+//         parentAElement.find(".flashcard-question").text(question);
+//         parentAElement.find(".flashcard-answer").text(answer);
+//     }
+// }
 
 document.addEventListener("DOMContentLoaded", init);
