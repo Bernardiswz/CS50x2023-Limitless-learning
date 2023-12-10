@@ -19,6 +19,17 @@
     align-items: center;
 }
 
+/* Settings container */
+.inputs-row-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.column-container {
+    display: flex;
+    flex-direction: column;
+}
+
 /* Settings form input css */
 .input-container {
     display: flex;
@@ -40,16 +51,16 @@
 }
 
 /* Target specific naming elements to line with input box */
-.input-names > div:nth-child(1) {
+.input-names-container > label:nth-child(1) {
     margin-right: 7vh;
 }
 
-.input-names > div:nth-child(2) {
+.input-names-container > label:nth-child(2) {
     margin-right: 9.2vh;
 }
 
 .settings-input {
-    width: 40%;
+    width: 90%;
     margin: 2px;
     border-radius: 4px;
     border: 1px solid rgba(192, 192, 192, 0.582);

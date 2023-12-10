@@ -5,15 +5,12 @@
 {% endblock %}
 
 {% block main %}
-    <!-- Css -->
     <link rel="stylesheet" href="../static/css/pomodoro.css">
     
-    <!-- Variables of time, break and long break -->
     <div id="timer-minutes" style="display: none;">{{ minutes }}</div>
     <div id="timer-break" style="display: none;">{{ timer_break }}</div>
     <div id="timer-long-break" style="display: none;">{{ long_break }}</div>
 
-    <!-- Timer structure -->
     <div class="container timer-container">
         <div class="timer-box">
             <button id="settings-button" type="button">
@@ -34,7 +31,6 @@
         </audio>
     </div>
 
-    <!-- Settings overlay -->
     <div id="dialog-overlay" style="display: none;"></div>
 
     <div class="container" id="settings-dialog" style="display: none;">
@@ -42,34 +38,32 @@
             <div id="settings-text">Settings</div>
             <hr id="settings-thematic-break">
 
-            <!-- Exit button -->
             <button id="close-button" type="submit">
                 <img src="../static/images/close-button.png" alt="Button Image" id="close-button-icon">
             </button>
 
-            <!-- Input titles -->
-            <div class="input-names-container" id="inputs-text">
-                <div class="input-names" id="input-names">
-                    <div>Minutes</div>
-                    <div>Break</div>
-                    <div>Long break</div>
+            <div class="inputs-row-container" id="inputs">
+                <div class="column-container">
+                    <label class="input-names" for="minutes-input">Minutes</label>
+                    <input autocomplete="off" value="{{ minutes }}" class="settings-input" name="minutes" type="number" id="minutes-input" min="1"
+                    pattern="[1-9][0-9]*" title="Please enter a valid positive integer for minutes.">
                 </div>
-            </div>
 
-            <!-- User input area -->
-            <div class="input-container" id="inputs">
-                <input autocomplete="off" value="{{ minutes }}" class="settings-input" name="minutes" type="number" id="minutes-input" min="1"
-                pattern="[1-9][0-9]*" title="Please enter a valid positive integer for minutes.">
-                <input autocomplete="off" value="{{ timer_break }}" class="settings-input" name="break" type="number" id="break-input" min="1">
-                <input autocomplete="off" value="{{ long_break }}" class="settings-input" name="long-break" type="number" id="long-break-input" min="1">
+                <div class="column-container">
+                    <label class="input-names" for="break-input">Break</label>
+                    <input autocomplete="off" value="{{ timer_break }}" class="settings-input" name="break" type="number" id="break-input" min="1">
+                </div>
+
+                <div class="column-container">
+                    <label class="input-names" for="long-break-input">Long break</label>
+                    <input autocomplete="off" value="{{ long_break }}" class="settings-input" name="long-break" type="number" id="long-break-input" 
+                    min="1">
+                </div>
             </div>
         </form>
     </div>
 
-    <!-- Jquery for dynamic server side input submission -->
     <script src="../static/js/node_modules//jquery/dist/jquery.min.js"></script>
-
-    <!-- JavaScript external files -->
     <script src="../static/js/pomodoro/pomodoro.js"></script>
     <script src="../static/js/pomodoro/settings.js"></script>
 {% endblock %}

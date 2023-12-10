@@ -1,158 +1,174 @@
-function main() {
-    const timerElement = document.getElementById("timer");
-    const startButton = document.getElementById("start-button");
-    const buttonSound = document.getElementById("button-sound");
-    const timeupSound = document.getElementById("timeup-sound");
-    const inputContainer = document.getElementById("inputs");
+const pomodoroElements = {
+    timerElement: document.getElementById("timer"),
+    startButton: document.getElementById("start-button"),
+    buttonSound: document.getElementById("button-sound"),
+    timeupSound: document.getElementById("timeup-sound"),
+    inputContainer: document.getElementById("inputs"),
 
     // Pop up settings variables
-    const minutesInput = document.getElementById("minutes-input");
-    const breakInput = document.getElementById("break-input");
-    const longBreakInput = document.getElementById("long-break-input");
+    minutesInput: document.getElementById("minutes-input"),
+    breakInput: document.getElementById("break-input"),
+    longBreakInput: document.getElementById("long-break-input"),
+};
 
+const pomodoroVarObject = {
+    ...pomodoroElements,
     // Load values from sessionStorage or use default values
-    let minutes = parseInt(sessionStorage.getItem("minutes-input")) || parseInt(minutesInput.value);
-    let timerBreak = parseInt(breakInput.value);
-    let longBreak = parseInt(longBreakInput.value);
+    minutes: parseInt(sessionStorage.getItem("minutes-input")) || parseInt(pomodoroElements.minutesInput.value),
+    timerBreak: parseInt(pomodoroElements.breakInput.value),
+    longBreak: parseInt(pomodoroElements.longBreakInput.value),
 
     // Initializing variables of time and to dynamism between the on and off states of the button
-    let time = minutes * 60;
-    let intervalId;
-    let timerRunning = false;
-    let waiting = false;
-    let timeBreak = false;
-    let isLongBreak = false;
-    let pomodoros = 0;
+    time: (parseInt(pomodoroElements.minutesInput.value) || 25) * 60,
+    intervalId: undefined,
+    timerRunning: false,
+    waiting: false,
+    timeBreak: false,
+    isLongBreak: false,
+    pomodoros: 0,
+};
 
-    // Update the timer element on page load
-    timerElement.textContent = `${minutes}:00`;
+function init() {
+    const p = pomodoroVarObject;
+    p.timerElement.textContent = `${pomodoroVarObject.minutes}:00`;
+    p.inputContainer.addEventListener("input", (event) => handleInputContainer(event));
+    p.startButton.addEventListener("click", startTimer);
+}
 
-    // Add an event listener to the input container to handle changes in any input element
-    inputContainer.addEventListener("input", function(event) {
-        const target = event.target;
+function handleInputContainer(event) {
+    const p = pomodoroVarObject;
+    const target = event.target;
 
-        if (target.matches(".settings-input")) {
-            const name = target.name;
-            let value = target.value.trim(); // Trim whitespace from the input value
-    
-            // Regular expression to match positive integers
-            const integerPattern = /^[1-9]\d*$/;
-            
-            // Need to fix the replace invalid input later
-            switch (name) {
-                case "minutes":
-                    if (!integerPattern.test(value)) {
-                        target.value = value.replace(/[^0-9]/g, "");
-                    } else {
-                        minutes = parseInt(value, 10);
-                    }
-                    break;
-    
-                case "break":
-                    if (!integerPattern.test(value)) {
-                        target.value = "";
-                    } else {
-                        timerBreak = parseInt(value, 10);
-                    }
-                    break;
-    
-                case "long_break":
-                    if (!integerPattern.test(value)) {
-                        target.value = "";
-                    } else {
-                        longBreak = parseInt(value, 10);
-                    }
-                    break;
-            }
-    
-            if (!timerRunning && !timeBreak) {
-                time = minutes * 60;
-                timerElement.textContent = `${minutes}:00`;
-            } else if (!timerRunning && timeBreak) {
-                time = timerBreak * 60;
-                timerElement.textContent = `${timerBreak}:00`;
-            } else if (!timerRunning && isLongBreak) {
-                time = longBreak * 60;
-                timerElement.textContent = `${longBreak}:00`;
+    if (target.matches(".settings-input")) {
+        const name = target.name;
+        let value = target.value.trim(); // Trim whitespace from the input value
+
+        // Regular expression to match positive integers
+        const integerPattern = /^[1-9]\d*$/;
+        
+        // Need to fix the replace invalid input later
+        switch (name) {
+            case "minutes":
+                if (!integerPattern.test(value)) {
+                    target.value = value.replace(/[^0-9]/g, "");
+                } else {
+                    p.minutes = parseInt(value, 10);
+                }
+                break;
+
+            case "break":
+                if (!integerPattern.test(value)) {
+                    target.value = "";
+                } else {
+                    p.timerBreak = parseInt(value, 10);
+                }
+                break;
+
+            case "long_break":
+                if (!integerPattern.test(value)) {
+                    target.value = "";
+                } else {
+                    p.longBreak = parseInt(value, 10);
+                }
+                break;
+        }
+
+        if (!p.timerRunning) {
+            if (p.timeBreak) {
+                setTimer(p.timerBreak);
+            } else if (p.isLongBreak) {
+                setTimer(p.longBreak);
+            } else {
+                setTimer(p.minutes);
             }
         }
-    });
+    }
+}
 
-    function updateCountDown() {
-        const minutes = Math.floor(time / 60);
-        let seconds = time % 60;
+function setTimer(minutes) {
+    const p = pomodoroVarObject;
+    p.time = minutes * 60;
+    p.timerElement.textContent = `${minutes}:00`;
+}
 
-        const formattedTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-        timerElement.innerHTML = formattedTime;
-        time--;
+function startTimer() {
+    const p = pomodoroVarObject;
+    p.buttonSound.play();
 
-        if (time < 0) {
-            clearInterval(intervalId);
-            timerRunning = false;
-            timeupSound.play();
+    if (!p.timerRunning && !p.waiting) {
+        p.waiting = true;
+        p.startButton.textContent = "Pause";
+        p.intervalId = setInterval(updateCountDown, 1000);
+        p.timerRunning = true;
+        setTimeout(() => {
+            p.waiting = false;
+        }, 1000); // Delay for about 1 second (1000 milliseconds)
+    } else if (p.timerRunning) {
+        clearInterval(p.intervalId);
+        p.timerRunning = false;
+        p.startButton.textContent = "Start";
+    }
+}    
 
-            // Automatically start the break timer
-            if (!timeBreak) {
-                submitDataToServer();
-                pomodoros++;
-            }
-            
+function resetTimer() {
+    const p = pomodoroVarObject;
+    p.time = p.minutes * 60;
+    p.timerElement.textContent = `${p.minutes}:00`; // Update the timer element
+    p.startButton.textContent = "Start";
+}
+
+function startBreak() {
+    const p = pomodoroVarObject;
+
+    if (p.timerBreak && p.pomodoros < 4) {
+        p.time = p.timerBreak * 60;
+        p.isLongBreak = false;
+        p.timerElement.textContent = `${p.timerBreak}:00`;
+        
+    } else if (p.timerBreak && p.pomodoros === 4) {
+        p.time = p.longBreak * 60;
+        p.pomodoros = 0;
+        p.isLongBreak = true;
+        p.timerElement.textContent = `${p.longBreak}:00`;
+    }
+    
+    // p.timerElement.textContent = p.timerBreak ? `${p.timerBreak}:00` : `${p.longBreak}:00`;
+}
+
+function updateCountDown() {
+    const p = pomodoroVarObject;
+    const minutesDisplay = Math.floor(p.time / 60);
+    let seconds = p.time % 60;
+
+    const formattedTime = `${minutesDisplay}:${seconds.toString().padStart(2, '0')}`;
+    p.timerElement.innerHTML = formattedTime;
+    p.time--;
+
+    if (p.time < 0) {
+        clearInterval(p.intervalId);
+        p.timerRunning = false;
+        p.timeupSound.play();
+
+        resetTimer();
+        // If is break time, update countdown
+        p.timeBreak = !p.timeBreak;
+
+        if (p.timeBreak) {
+            incrementPomodoroOnServer();
+            p.pomodoros++;
             startBreak();
         }
     }
-
-    function startBreak() {
-    if (timerBreak && pomodoros < 4) {
-        time = timerBreak * 60;
-        isLongBreak = false;
-    } else if (timerBreak && pomodoros === 4) {
-        time = longBreak * 60;
-        pomodoros = 0;
-        isLongBreak = true;
-    }
-    timeBreak = !timeBreak;
-    resetTimer(); // Reset the timer before updating the button text
-    startTimer(); // Automatically start the break timer
-
-    // Update the timer element AFTER starting the timer
-    timerElement.textContent = timeBreak ? `${timerBreak}:00` : `${longBreak}:00`;
 }
 
-    function resetTimer() {
-        time = minutes * 60;
-        timerElement.textContent = `${minutes}:00`; // Update the timer element
-        startButton.textContent = "Start";
-    }
-
-    function startTimer() {
-        buttonSound.play();
-
-        if (!timerRunning && !waiting) {
-            waiting = true;
-            startButton.textContent = "Pause";
-            intervalId = setInterval(updateCountDown, 1000);
-            timerRunning = true;
-            setTimeout(() => {
-                waiting = false;
-            }, 1000); // Delay for about 1 second (1000 milliseconds)
-        } else if (timerRunning) {
-            clearInterval(intervalId);
-            timerRunning = false;
-            startButton.textContent = "Start";
+function incrementPomodoroOnServer() {
+    $.ajax({
+        type: "POST",
+        url: "/update_data",
+        data: {
+            operation: "incrementPomodoros"
         }
-    }
-
-    function submitDataToServer() {
-        $.ajax({
-            type: "POST",
-            url: "/update_data",
-            data: {
-                operation: "incrementPomodoros"
-            }
-        });
-    }
-
-    startButton.addEventListener("click", startTimer);
+    });
 }
 
-document.addEventListener("DOMContentLoaded", main);
+document.addEventListener("DOMContentLoaded", init);

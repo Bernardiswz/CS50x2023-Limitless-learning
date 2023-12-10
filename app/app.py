@@ -122,6 +122,10 @@ def update_data():
     if operation == "incrementPomodoros":
         increment_pomodoros(user)
 
+        return jsonify({
+            'sucess': True
+        })
+
     elif operation == "updatePomodoro":
         minutes = request.form.get("minutes")
         timer_break = request.form.get("timerBreak")

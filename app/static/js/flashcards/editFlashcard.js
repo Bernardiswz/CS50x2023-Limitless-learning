@@ -152,8 +152,6 @@ function updateFlashcardElement({flashcardId, topic, question, answer}) {
         answer: answer
     };
 
-    console.log(argsObject)
-
     // Retrieve the anchor element and update it dynamically according to the changes made to the flashcard
     var flashcardIdSelector = `.list-group-item .flashcard-id:contains("${validElements.flashcardId}")`;
     var anchorElement = $(flashcardIdSelector).filter(function() {
@@ -170,20 +168,5 @@ function updateFlashcardElement({flashcardId, topic, question, answer}) {
         }
     }
 }
-
-// function updateFlashcardElementsa(updatedFlashcardId, topic, question, answer) {
-//     var flashcardIdSelector = `.list-group-item .flashcard-id:contains("${updatedFlashcardId}")`;
-//     var anchorElement = $(flashcardIdSelector).filter(function() {
-//         return $(this).text() === updatedFlashcardId;
-//     });
-
-//     if (anchorElement.length > 0) {
-//         var parentAElement = anchorElement.closest(".list-group-item");
-
-//         parentAElement.find(".flashcard-topic").text(topic);
-//         parentAElement.find(".flashcard-question").text(question);
-//         parentAElement.find(".flashcard-answer").text(answer);
-//     }
-// }
 
 document.addEventListener("DOMContentLoaded", init);
