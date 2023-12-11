@@ -43,13 +43,15 @@
                 <h1 id="no-flashcards-message">You currently don't have any flashcards! Click the button below to create one.</h1>
             </div>
         {% endif %}
-
-        <div id="add-button-div" class="container-fluid">
-            <button id="create-flashcard-button">
-                <img id="add-icon" src="../static/images/add-icon.png" alt="Image">
-            </button>
-        </div>
     </div>
+
+    <div id="add-button-div" class="container-fluid">
+        <button id="create-flashcard-button">
+            <img id="add-icon" src="../static/images/add-icon.png" alt="Image">
+        </button>
+    </div>
+
+    <div id="dialog-overlay" style="display: none;"></div>
 
     <div id="infobox-dialog" class="flashcard-dialog" style="display: none;">
         <div class="dialog-title">Flashcard ratings</div>
@@ -124,7 +126,6 @@
         </form>
     </div>
 
-    <div id="dialog-overlay" style="display: none;"></div>
     <div id="new-flashcard-dialog" class="container flashcard-dialog" style="display: none;">
         <form>
             <div class="dialog-title">New Flashcard</div>
@@ -176,7 +177,8 @@
     <script src="../static/js/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="../static/js/flashcards/flashcards.js"></script>
     <script src="../static/js/flashcards/createFlashcards.js"></script>
-    <script src="../static/js/flashcards/deleteFlashcard.js"></script>
-    <script src="../static/js/flashcards/editFlashcard.js"></script>
     <script src="../static/js/flashcards/infoBox.js"></script>
+    <script src="../static/js/flashcards/editFlashcard.js"></script>    
+    <script src="../static/js/flashcards/deleteFlashcard.js"></script>
+    <script src="../static/js/flashcards/initPage.js"></script>
 {% endblock %}

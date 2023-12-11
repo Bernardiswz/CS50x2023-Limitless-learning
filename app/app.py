@@ -41,18 +41,18 @@ def register():
 
         # Validate user input
         if not username or not password or not confirm_password:
-            return 403
+            abort(400)
 
         check_password = is_valid_password(password)
         check_username = is_valid_username(username)
 
         if not check_password or password != confirm_password or not check_username:
-            return 404
+            return abort(400)
 
         user_id = register_user(username, password)
 
         if user_id is None:
-            return 409
+            abort(409)
         
         return redirect("/login")
     
@@ -71,18 +71,18 @@ def login():
 
         # Validate user input
         if not username or not password:
-            return abort(403)
+            return abort(400)
 
         check_password = is_valid_password(password)
         check_username = is_valid_username(username)
 
         if not check_password or not check_username:
-            return abort(404)
+            return abort(400)
 
         user_id = authenticate_user(username, password)
 
-        if not user_id:
-            return abort(404)
+        if user_id is None:
+            return abort(409)
         
         # If matches update user id to match user id from db
         session["user_id"] = user_id
@@ -96,9 +96,7 @@ def login():
 @app.route("/logout")
 def logout():
     session.clear()
-
     return redirect("/")
-
 
 @app.errorhandler(Exception)
 def error(error):
@@ -181,6 +179,7 @@ def update_data():
     
     elif operation == "deleteFlashcard":
         flashcard_id = request.form.get("flashcardId")
+        print(flashcard_id)
 
         delete_flashcard(flashcard_id)
 
@@ -222,7 +221,6 @@ def pomodoro():
         if user_data:
             minutes, timer_break, long_break, lb_interval = user_data
 
-    # This part was modified to render the template instead of returning None
     return render_template("pomodoro.html", minutes=minutes, timer_break=timer_break, long_break=long_break)
 
 

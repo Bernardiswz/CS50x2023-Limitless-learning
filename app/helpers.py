@@ -72,7 +72,7 @@ def register_user(username, password):
         existing_username = cursor.fetchone()
 
         if existing_username:
-            return None  # Username already exists
+            return None
 
         password_hash = generate_password_hash(password)
 

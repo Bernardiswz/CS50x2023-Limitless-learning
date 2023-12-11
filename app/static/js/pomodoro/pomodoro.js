@@ -28,6 +28,7 @@ const pomodoroVarObject = {
     pomodoros: 0,
 };
 
+// Initiate the program and add event listeners to containers and buttons
 function init() {
     const p = pomodoroVarObject;
     p.timerElement.textContent = `${pomodoroVarObject.minutes}:00`;
@@ -46,7 +47,7 @@ function handleInputContainer(event) {
         // Regular expression to match positive integers
         const integerPattern = /^[1-9]\d*$/;
         
-        // Need to fix the replace invalid input later
+        // Replace and update preferences's values according to user select
         switch (name) {
             case "minutes":
                 if (!integerPattern.test(value)) {
@@ -73,6 +74,7 @@ function handleInputContainer(event) {
                 break;
         }
 
+        // Set timer accordingly to the current state the timer is in, if it isn't running
         if (!p.timerRunning) {
             if (p.timeBreak) {
                 setTimer(p.timerBreak);
@@ -131,8 +133,6 @@ function startBreak() {
         p.isLongBreak = true;
         p.timerElement.textContent = `${p.longBreak}:00`;
     }
-    
-    // p.timerElement.textContent = p.timerBreak ? `${p.timerBreak}:00` : `${p.longBreak}:00`;
 }
 
 function updateCountDown() {
