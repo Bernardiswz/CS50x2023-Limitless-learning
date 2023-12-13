@@ -1,4 +1,4 @@
-function initializePage() {
+function initializeFlashcardPage() {
     FlashcardsModule.initFlashcards();
     CreateFlashcardsModule.initCreateFlashcards();
     InfoBoxModule.initInfoBox();
@@ -6,4 +6,4 @@ function initializePage() {
     DeleteFlashcardsModule.initDeleteFlashcards();
 }
 
-$(document).ready(initializePage);
+$(document).ready(initializeFlashcardPage);

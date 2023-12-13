@@ -190,13 +190,21 @@ def update_data():
     elif operation == "getFlashcardRatings":
         flashcard_id = request.form.get("flashcardId")
 
-        flashcard_ratings = get_flashcard_rating(flashcard_id)
+        flashcard_ratings = get_flashcard_ratings(flashcard_id)
         flashcard_ratings_count = count_flashcard_ratings(flashcard_ratings)
         most_recent_rating = get_most_recent_rating(flashcard_id)
 
         return jsonify({
             "flashcardRatingsCount": flashcard_ratings_count,
             "mostRecentRating": most_recent_rating
+        })
+    
+    elif operation == "queryUserData":
+        print("reached")
+        user_data = query_user_data(user)
+        print(user_data)
+        return jsonify({
+            "userData": user_data
         })
 
 

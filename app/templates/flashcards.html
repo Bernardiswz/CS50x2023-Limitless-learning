@@ -53,42 +53,6 @@
 
     <div id="dialog-overlay" style="display: none;"></div>
 
-    <div id="infobox-dialog" class="flashcard-dialog" style="display: none;">
-        <div class="dialog-title">Flashcard ratings</div>
-        <hr class="dialog-thematic-break">
-
-        <button id="infobox-close-button" class="close-button" type="button">
-            <img src="../static/images/close-button.png" alt="Button Image" class="close-button-icon">
-        </button>
-
-        <div class="flashcard-information">
-            <div class="info-item very-easy-color">
-                <div class="info-label">Very Easy</div>
-                <div class="ratings-counter" id="very-easy-count">0</div>
-            </div>
-        
-            <div class="info-item easy-color">
-                <div class="info-label">Easy</div>
-                <div class="ratings-counter" id="easy-count">0</div>
-            </div>
-        
-            <div class="info-item medium-color">
-                <div class="info-label">Medium</div>
-                <div class="ratings-counter" id="medium-count">0</div>
-            </div>
-        
-            <div class="info-item hard-color">
-                <div class="info-label">Hard</div>
-                <div class="ratings-counter" id="hard-count">0</div>
-            </div>
-        
-            <div class="info-item very-hard-color">
-                <div class="info-label">Very Hard</div>
-                <div class="ratings-counter" id="very-hard-count">0</div>
-            </div>
-        </div>
-    </div>
-
     <div id="edit-flashcard-dialog" class="flashcard-dialog" style="display: none;">
         <form>
             <div class="dialog-title">Edit Flashcard</div>
@@ -124,6 +88,42 @@
                 <button class="btn btn-danger" id="confirm-delete-button">Confirm</button>
             </div>
         </form>
+    </div>
+
+    <div id="infobox-dialog" class="flashcard-dialog" style="display: none;">
+        <div class="dialog-title">Flashcard ratings</div>
+        <hr class="dialog-thematic-break">
+
+        <button id="infobox-close-button" class="close-button" type="button">
+            <img src="../static/images/close-button.png" alt="Button Image" class="close-button-icon">
+        </button>
+
+        <div class="flashcard-information">
+            <div class="info-item very-easy-color">
+                <div class="info-label">Very Easy</div>
+                <div class="ratings-counter" id="very-easy-count">0</div>
+            </div>
+        
+            <div class="info-item easy-color">
+                <div class="info-label">Easy</div>
+                <div class="ratings-counter" id="easy-count">0</div>
+            </div>
+        
+            <div class="info-item medium-color">
+                <div class="info-label">Medium</div>
+                <div class="ratings-counter" id="medium-count">0</div>
+            </div>
+        
+            <div class="info-item hard-color">
+                <div class="info-label">Hard</div>
+                <div class="ratings-counter" id="hard-count">0</div>
+            </div>
+        
+            <div class="info-item very-hard-color">
+                <div class="info-label">Very Hard</div>
+                <div class="ratings-counter" id="very-hard-count">0</div>
+            </div>
+        </div>
     </div>
 
     <div id="new-flashcard-dialog" class="container flashcard-dialog" style="display: none;">
@@ -180,5 +180,5 @@
     <script src="../static/js/flashcards/infoBox.js"></script>
     <script src="../static/js/flashcards/editFlashcard.js"></script>    
     <script src="../static/js/flashcards/deleteFlashcard.js"></script>
-    <script src="../static/js/flashcards/initPage.js"></script>
+    <script src="../static/js/flashcards/initFlashcardsPage.js"></script>
 {% endblock %}

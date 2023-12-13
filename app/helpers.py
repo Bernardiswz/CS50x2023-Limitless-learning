@@ -117,7 +117,7 @@ def get_flashcards(user_id):
             timestamp_str = row[4]
             timestamp = datetime.strptime(timestamp_str, "%Y-%m-%d %H:%M:%S")
 
-            flashcards_dict = {
+            flashcard_dict = {
                 "flashcard_id": row[0],
                 "topic": row[1],
                 "question": row[2],
@@ -125,12 +125,12 @@ def get_flashcards(user_id):
                 "timestamp": timestamp.strftime("%d/%m/%Y")
             }
             
-            user_flashcards.append(flashcards_dict)
+            user_flashcards.append(flashcard_dict)
 
     return user_flashcards
 
 
-def get_flashcard_rating(flashcard_id):
+def get_flashcard_ratings(flashcard_id):
     with get_db() as db:
         cursor = db.cursor()
         cursor.execute("SELECT rating FROM flashcards_rating WHERE flashcard_id = ?", (flashcard_id,))
@@ -298,17 +298,6 @@ def update_flashcard(elements_dict):
         db.commit()
 
     
-# def update_flashcard(flashcard_id, topic, question, answer):
-#     with get_db() as db:
-#         cursor = db.cursor()
-
-#         cursor.execute("UPDATE flashcards SET topic = ?, question = ?, answer = ?, timestamp = CURRENT_TIMESTAMP\
-#                        WHERE flashcard_id = ?", (topic, question, answer, flashcard_id))
-        
-#         db.commit()
-
-
-
 def delete_flashcard(flashcard_id):
     with get_db() as db:
         cursor = db.cursor()
@@ -316,3 +305,56 @@ def delete_flashcard(flashcard_id):
         cursor.execute("DELETE FROM flashcards WHERE flashcard_id = ?", (flashcard_id,))
         db.commit()
 
+
+def query_flashcard_ratings(flashcard_id):
+    with get_db() as db:
+        cursor = db.cursor()
+        cursor.execute("SELECT rating, timestamp FROM flashcards_rating WHERE flashcard_id = ?", (flashcard_id,))
+        ratings = cursor.fetchall()
+        ratings_list = []
+
+        for rating in ratings:
+            ratings_dict = {
+                "rating": rating[0],
+                "timestamp": rating[1]
+            }
+
+            ratings_list.append(ratings_dict)
+        return ratings_list
+
+
+def query_user_data(user_id):
+    with get_db() as db:
+        cursor = db.cursor()
+
+        # Querying preferences
+        cursor.execute("SELECT minutes, timer_break, long_break, lb_interval FROM preferences WHERE user_id = ?", (user_id,))
+        user_preferences_data = cursor.fetchone()
+        user_preferences_dict = {
+            "minutes": user_preferences_data[0],
+            "timer_break": user_preferences_data[1],
+            "long_break": user_preferences_data[2],
+            "lb_interval": user_preferences_data[3]
+        }
+
+        # Query user flashcards and append a dict of its respective ratings
+        user_flashcards = get_flashcards(user_id)
+
+        for flashcard in user_flashcards:
+            current_flashcard_id = flashcard["flashcard_id"]
+            query_flascard_rating = query_flashcard_ratings(current_flashcard_id)
+            flashcard["ratings"] = query_flascard_rating
+
+        # Query overall stats
+        cursor.execute("SELECT pomodoros_finished FROM user_data WHERE user_id = ?", (user_id,))
+        stats_data = cursor.fetchone()
+
+        user_stats_dict = {
+            "pomodoros_finished": stats_data[0]
+        }
+
+        user_data_list = [user_preferences_dict, user_flashcards, user_stats_dict]
+
+        return user_data_list
+
+        
