@@ -200,9 +200,7 @@ def update_data():
         })
     
     elif operation == "queryUserData":
-        print("reached")
         user_data = query_user_data(user)
-        print(user_data)
         return jsonify({
             "userData": user_data
         })

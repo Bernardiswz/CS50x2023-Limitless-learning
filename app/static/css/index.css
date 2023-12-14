@@ -1,0 +1,28 @@
+.user-header-div {
+    background-color: #E2E2D8;
+    height: 8.5vh;
+    padding: 2vh;
+    border: 1px solid rgba(192, 192, 192, 0.178);
+}
+
+.user-header-content {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#username-element {
+    font-family: 'Inter', sans-serif;
+    color: #3d3d3d;
+    font-size: 2.8vh;
+    margin-left: 3vh;
+}
+
+#user-icon {
+    max-height: 6vh;
+    width: auto;
+    user-select: none;
+}

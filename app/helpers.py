@@ -327,6 +327,12 @@ def query_user_data(user_id):
     with get_db() as db:
         cursor = db.cursor()
 
+        # Query username
+        cursor.execute("SELECT username FROM users WHERE user_id = ?", (user_id,))
+        username = {
+            "username": cursor.fetchone()[0]
+        }
+
         # Querying preferences
         cursor.execute("SELECT minutes, timer_break, long_break, lb_interval FROM preferences WHERE user_id = ?", (user_id,))
         user_preferences_data = cursor.fetchone()
@@ -353,8 +359,13 @@ def query_user_data(user_id):
             "pomodoros_finished": stats_data[0]
         }
 
-        user_data_list = [user_preferences_dict, user_flashcards, user_stats_dict]
+        user_data_dict = {
+            "username": username, 
+            "user_preferences": user_preferences_dict, 
+            "user_flashcards": user_flashcards, 
+            "user_stats": user_stats_dict
+            }
 
-        return user_data_list
+        return user_data_dict
 
         
