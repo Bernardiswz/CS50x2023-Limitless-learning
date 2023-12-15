@@ -186,12 +186,23 @@ def is_valid_element(element):
         return False
 
 
-def increment_pomodoros(user_id):
+def register_history_action(user_id, action):
     with get_db() as db:
         cursor = db.cursor()
 
-        cursor.execute("UPDATE user_data SET pomodoros_finished = pomodoros_finished + 1 WHERE user_id = ?", 
-                        (user_id,))
+        cursor.execute("INSERT INTO history (user_id, action) VALUES(?, ?)", (user_id, action))
+        db.commit()
+
+
+
+def increment_pomodoros(user_id):
+    action = "finished_pomodoro"
+    with get_db() as db:
+        cursor = db.cursor()
+        cursor.execute("UPDATE user_data SET pomodoros_finished = pomodoros_finished + 1 WHERE user_id = ?", (user_id,))
+        
+        register_history_action(user_id, action)
+        
         db.commit()
 
 
@@ -264,8 +275,8 @@ def rate_flashcard(flashcard_id, rating):
     with get_db() as db:
         cursor = db.cursor()
 
-        cursor.execute("INSERT INTO flashcards_rating (flashcard_id, rating) VALUES(?, ?)",
-                       (flashcard_id, rating))
+        cursor.execute("INSERT INTO flashcards_rating (flashcard_id, rating) VALUES(?, ?)", (flashcard_id, rating))
+
         db.commit()
 
 
@@ -351,7 +362,7 @@ def query_user_data(user_id):
             query_flascard_rating = query_flashcard_ratings(current_flashcard_id)
             flashcard["ratings"] = query_flascard_rating
 
-        # Query overall stats
+        # Query stats
         cursor.execute("SELECT pomodoros_finished FROM user_data WHERE user_id = ?", (user_id,))
         stats_data = cursor.fetchone()
 
@@ -359,12 +370,27 @@ def query_user_data(user_id):
             "pomodoros_finished": stats_data[0]
         }
 
+        # Query history
+        cursor.execute("SELECT action, timestamp FROM history WHERE user_id = ?", (user_id,))
+        user_history_data = cursor.fetchall()
+        user_history_list = []
+
+        for row in user_history_data:
+            history_dict = {
+                "action": row[0],
+                "timestamp": row[1]
+            }
+
+            user_history_list.append(history_dict)
+
         user_data_dict = {
             "username": username, 
             "user_preferences": user_preferences_dict, 
             "user_flashcards": user_flashcards, 
-            "user_stats": user_stats_dict
-            }
+            "user_stats": user_stats_dict,
+            "user_history": user_history_list
+        }
+
 
         return user_data_dict
 

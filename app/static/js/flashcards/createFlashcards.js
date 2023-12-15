@@ -94,6 +94,7 @@ const CreateFlashcardsModule = (function() {
 
 
     function insertCreatedFlashcard(data) {
+        console.log(data);
         var ulElements = createFlashcardsVariablesObject.flashcardsDiv.querySelectorAll("ul");
 
         if (ulElements.length === 0) {

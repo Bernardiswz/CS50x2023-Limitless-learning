@@ -1,6 +1,6 @@
 .user-header-div {
     background-color: #E2E2D8;
-    height: 8.5vh;
+    height: 8vh;
     padding: 2vh;
     border: 1px solid rgba(192, 192, 192, 0.178);
 }
@@ -25,4 +25,31 @@
     max-height: 6vh;
     width: auto;
     user-select: none;
+}
+
+.pomodoro-chart-container {
+    width: 400vh;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+#pomodoro-chart {
+    margin-top: 2vh;
+    height: 45vh;
+    width: 35vh;
+}
+
+@media screen and (max-width:768px) {
+    .pomodoro-chart-container {
+        width: auto;
+        height: 45vh;
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    #pomodoro-chart {
+        height: 45vh;
+        width: auto;
+    }
 }
