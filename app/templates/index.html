@@ -10,23 +10,23 @@
     <div class="container-fluid user-header-div">
         <div class="user-header-content">
             <img src="../static/images/user-icon-lg.png" id="user-icon">
-            <h1 id="username-element">John</h1>
+            <h1 id="username-element">{{ user_data["username"] }}</h1>
 
             <div id="preferences-div">
                 <div class="row preferences-elements">
-                    <div class="col-sm">
-                        <div>Pomodoro</div>
-                        <div>25</div>
+                    <div class="col-sm indexes">
+                        <div>Pomodoros finished</div>
+                        <div>{{ user_data["user_stats"]["pomodoros_finished"] }}</div>
                     </div>
 
-                    <div class="col-sm">
-                        <div>Break</div>
-                        <div>5</div>
+                    <div class="col-sm indexes">
+                        <div>Finished flashcards</div>
+                        <div>{{ user_data["user_stats"]["flashcards_finished"] }}</div>
                     </div>
 
-                    <div class="col-sm">
-                        <div>Long Break</div>
-                        <div>15</div>
+                    <div class="col-sm indexes">
+                        <div>Flashcards amount</div>
+                        <div id="pomodoro-break-index">{{ user_data["user_stats"]["flashcards_count"] }}</div>
                     </div>
                 </div>
             </div>
@@ -36,6 +36,10 @@
 
     <div class="container pomodoro-chart-container">
        <canvas id="pomodoro-chart"></canvas> 
+    </div>
+
+    <div class="container flashcards-chart-container">
+        <canvas id="flashcards-chart"></canvas>
     </div>
 
     <script src="../static/js/node_modules/jquery/dist/jquery.min.js"></script>

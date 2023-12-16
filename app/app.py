@@ -29,7 +29,10 @@ def after_request(response):
 @app.route("/")
 @login_required
 def index():
-    return render_template("index.html")
+    user_id = session.get("user_id")
+    user_data = query_user_data(user_id)
+
+    return render_template("index.html", user_data=user_data)
 
 
 @app.route("/register", methods=["GET", "POST"])

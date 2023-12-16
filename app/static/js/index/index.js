@@ -1,7 +1,7 @@
 const IndexModule = (function() {
     const indexVarObject = {
-        usernameElement: document.getElementById("username-element"),
-        pomodoroChart: document.getElementById("pomodoro-chart")
+        pomodoroChart: document.getElementById("pomodoro-chart"),
+        flashcardsChart: document.getElementById("flashcards-chart")
     };
 
     function initIndex() {
@@ -9,29 +9,55 @@ const IndexModule = (function() {
     }
 
     function updatePageElements(data) {
-        createCharts(data);
-        updateUserHeader(data);
-        // console.log(data);
+        createPomodoroChart(data);
     }
 
-    function updateUserHeader(userData) {
-        indexVarObject.usernameElement.textContent = userData.username.username
-    }
-
-    function createCharts(userData) {
-        const userHistory = userData.userHistory;
+    function createPomodoroChart(userData) {
+        const userHistory = userData.pomodoros_history;
     
         // Group user history by day and count finished_pomodoros for each day
-        const dailyCounts = userHistory.reduce((accumulator, entry) => {
+        const pomodoroDailyCounts = userHistory.reduce((accumulator, entry) => {
             const date = entry.timestamp.split(' ')[0]; // Extract the date part
             accumulator[date] = (accumulator[date] || 0) + (entry.action === 'finished_pomodoro' ? 1 : 0);
             return accumulator;
         }, {});
     
-        const labels = Object.keys(dailyCounts);
-        const data = Object.values(dailyCounts);
+        const labels = Object.keys(pomodoroDailyCounts);
+        const data = Object.values(pomodoroDailyCounts);
     
         new Chart(indexVarObject.pomodoroChart, {
+            type: "bar",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "Number of finished Pomodoros",
+                    data: data,
+                    borderWidth: 1,
+                    barPercentage: 0.4,
+                    backgroundColor: "rgba(46, 102, 135, 0.85)",
+                    borderColor: "rgba(35, 77, 102, 1)"
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+    }
+
+    function createFlashcardsChart(userData) {
+        const userFlashcards = userData.user_flashcards;
+
+        // Group user history by day and count finished_pomodoros for each day
+        const pomodoroDailyCounts = userFlashcards.reduce((accumulator, entry) => {
+            const date = entry.timestamp.split(' ')[0];
+            accumulator[date] = (accumulator[date] || 0) + (entry.action === 'finished_pomodoro' ? 1 : 0);
+            return accumulator;
+        }, {});
+    
+        const labels = Object.keys(pomodoroDailyCounts);
+        const data = Object.values(pomodoroDailyCounts);
+
+        new Chart(indexVarObject.flashcardsChart, {
             type: "bar",
             data: {
                 labels: labels,
@@ -58,6 +84,7 @@ const IndexModule = (function() {
                 operation: "queryUserData"
             },
             success: function(data) {
+                console.log(JSON.stringify(data, null, 2));
                 updatePageElements(data.userData);
             },
             error: function(error) {

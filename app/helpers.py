@@ -345,9 +345,7 @@ def query_user_data(user_id):
 
         # Query username
         cursor.execute("SELECT username FROM users WHERE user_id = ?", (user_id,))
-        username = {
-            "username": cursor.fetchone()[0]
-        }
+        username = cursor.fetchone()[0]
 
         # Querying preferences
         cursor.execute("SELECT minutes, timer_break, long_break, lb_interval FROM preferences WHERE user_id = ?", (user_id,))
@@ -362,41 +360,65 @@ def query_user_data(user_id):
         # Query user flashcards and append a dict of its respective ratings
         user_flashcards = get_flashcards(user_id)
 
+        # Var to count finished flashcards as they are added to the dict
+        flashcards_finished = 0
+
         for flashcard in user_flashcards:
             current_flashcard_id = flashcard["flashcard_id"]
-            query_flascard_rating = query_flashcard_ratings(current_flashcard_id)
-            flashcard["ratings"] = query_flascard_rating
+            query_flashcard_rating = query_flashcard_ratings(current_flashcard_id)
 
-        # Query stats
+            for rating in query_flashcard_rating:
+                formatted_timestamp = format_timestamp(rating["timestamp"])
+                rating["timestamp"] = formatted_timestamp.strftime("%d/%m/%Y")
+
+            flashcard["ratings"] = query_flashcard_rating
+
+            
+
+            # Create count key for ratings
+            flashcard_ratings = get_flashcard_ratings(current_flashcard_id)
+            ratings_count = count_flashcard_ratings(flashcard_ratings)
+
+            for value in ratings_count.values():
+                flashcards_finished += value
+
+        
+        # Queries for stats
+        cursor.execute("SELECT COUNT(*) FROM flashcards WHERE user_id = ?", (user_id,))
+        flashcards_count = cursor.fetchone()[0]
+
         cursor.execute("SELECT pomodoros_finished FROM user_data WHERE user_id = ?", (user_id,))
-        stats_data = cursor.fetchone()
+        pomodoros_finished = cursor.fetchone()[0]
+
 
         user_stats_dict = {
-            "pomodoros_finished": stats_data[0]
+            "pomodoros_finished": pomodoros_finished,
+            "flashcards_finished": flashcards_finished,
+            "flashcards_count": flashcards_count,
         }
 
         # Query history
         cursor.execute("SELECT action, timestamp FROM history WHERE user_id = ? and action = 'finished_pomodoro' ORDER BY timestamp ASC", 
                        (user_id,))
-        user_history_data = cursor.fetchall()
-        user_history_list = []
+        finished_pomodoros = cursor.fetchall()
+        pomodoros_history_list = []
 
-        for row in user_history_data:
+        for row in finished_pomodoros:
             formatted_timestamp = format_timestamp(row[1])
 
-            history_dict = {
+            pomodoros_finished_dict = {
                 "action": row[0],
                 "timestamp": formatted_timestamp.strftime("%d/%m/%Y")
             }
 
-            user_history_list.append(history_dict)
+            pomodoros_history_list.append(pomodoros_finished_dict)
 
         user_data_dict = {
             "username": username, 
-            "userPreferences": user_preferences_dict, 
-            "userFlashcards": user_flashcards, 
-            "userStats": user_stats_dict,
-            "userHistory": user_history_list
+            "user_preferences": user_preferences_dict, 
+            "user_flashcards": user_flashcards, 
+            "user_stats": user_stats_dict,
+            "pomodoros_history": pomodoros_history_list
         }
 
 
