@@ -1,7 +1,7 @@
 const IndexModule = (function() {
     const indexVarObject = {
         usernameElement: document.getElementById("username-element"),
-        pomodoroChart: document.getElementById("pomodoroChart")
+        pomodoroChart: document.getElementById("pomodoro-chart")
     };
 
     function initIndex() {
@@ -9,34 +9,43 @@ const IndexModule = (function() {
     }
 
     function updatePageElements(data) {
-        createCharts();
-        console.log(data);
+        createCharts(data);
+        updateUserHeader(data);
+        // console.log(data);
     }
 
-    function createCharts() {
-        const pomodoroChart = document.getElementById("pomodoro-chart");
+    function updateUserHeader(userData) {
+        indexVarObject.usernameElement.textContent = userData.username.username
+    }
 
-        new Chart(pomodoroChart, {
-            type: "line",
+    function createCharts(userData) {
+        const userHistory = userData.userHistory;
+    
+        // Group user history by day and count finished_pomodoros for each day
+        const dailyCounts = userHistory.reduce((accumulator, entry) => {
+            const date = entry.timestamp.split(' ')[0]; // Extract the date part
+            accumulator[date] = (accumulator[date] || 0) + (entry.action === 'finished_pomodoro' ? 1 : 0);
+            return accumulator;
+        }, {});
+    
+        const labels = Object.keys(dailyCounts);
+        const data = Object.values(dailyCounts);
+    
+        new Chart(indexVarObject.pomodoroChart, {
+            type: "bar",
             data: {
-                labels: ["Red", "Blue"],
+                labels: labels,
                 datasets: [{
-                    label: "# of Votes",
-                    data: [12, 19],
-                    borderWidth: 1
+                    label: "Number of finished Pomodoros",
+                    data: data,
+                    borderWidth: 1,
+                    barPercentage: 0.4,
+                    backgroundColor: "rgba(46, 102, 135, 0.85)",
+                    borderColor: "rgba(35, 77, 102, 1)"
                 }]
             },
             options: {
-                responsive: true,
-                animation: {
-                    duration: 0,
-                },
-
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
+                responsive: true
             }
         });
     }

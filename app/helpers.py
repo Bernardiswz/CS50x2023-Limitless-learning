@@ -256,6 +256,11 @@ def get_flashcard_by_user_data(user_id, topic, question, answer):
             return None
         
 
+def format_timestamp(timestamp):
+    formatted_timestamp = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
+    return formatted_timestamp
+
+
 def get_flashcard_content_by_id(flashcard_id):
     with get_db() as db:
         cursor = db.cursor()
@@ -371,24 +376,27 @@ def query_user_data(user_id):
         }
 
         # Query history
-        cursor.execute("SELECT action, timestamp FROM history WHERE user_id = ?", (user_id,))
+        cursor.execute("SELECT action, timestamp FROM history WHERE user_id = ? and action = 'finished_pomodoro' ORDER BY timestamp ASC", 
+                       (user_id,))
         user_history_data = cursor.fetchall()
         user_history_list = []
 
         for row in user_history_data:
+            formatted_timestamp = format_timestamp(row[1])
+
             history_dict = {
                 "action": row[0],
-                "timestamp": row[1]
+                "timestamp": formatted_timestamp.strftime("%d/%m/%Y")
             }
 
             user_history_list.append(history_dict)
 
         user_data_dict = {
             "username": username, 
-            "user_preferences": user_preferences_dict, 
-            "user_flashcards": user_flashcards, 
-            "user_stats": user_stats_dict,
-            "user_history": user_history_list
+            "userPreferences": user_preferences_dict, 
+            "userFlashcards": user_flashcards, 
+            "userStats": user_stats_dict,
+            "userHistory": user_history_list
         }
 
 
