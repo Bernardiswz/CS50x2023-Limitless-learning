@@ -10,23 +10,23 @@
     <div class="container-fluid user-header-div">
         <div class="user-header-content">
             <img src="../static/images/user-icon-lg.png" id="user-icon">
-            <h1 id="username-element">{{ user_data["username"] }}</h1>
+            <h1 id="username-element">{{ user_data.username }}</h1>
 
             <div id="preferences-div">
                 <div class="row preferences-elements">
                     <div class="col-sm indexes">
                         <div>Pomodoros finished</div>
-                        <div>{{ user_data["user_stats"]["pomodoros_finished"] }}</div>
+                        <div>{{ user_data.user_stats.pomodoros_finished }}</div>
                     </div>
 
                     <div class="col-sm indexes">
                         <div>Finished flashcards</div>
-                        <div>{{ user_data["user_stats"]["flashcards_finished"] }}</div>
+                        <div>{{ user_data.user_stats.flashcards_finished }}</div>
                     </div>
 
                     <div class="col-sm indexes">
                         <div>Flashcards amount</div>
-                        <div id="pomodoro-break-index">{{ user_data["user_stats"]["flashcards_count"] }}</div>
+                        <div id="pomodoro-break-index">{{ user_data.user_stats.flashcards_count }}</div>
                     </div>
                 </div>
             </div>
@@ -34,13 +34,30 @@
         </div>
     </div>
 
-    <div class="container pomodoro-chart-container">
-       <canvas id="pomodoro-chart"></canvas> 
+    <div>
+        <div class="title-label">Pomodoro Chart</div>
+        <div class="container pomodoro-chart-container">
+            <canvas id="pomodoro-chart"></canvas> 
+        </div>
     </div>
+    
 
-    <div class="container flashcards-chart-container">
-        <canvas id="flashcards-chart"></canvas>
-    </div>
+    {% if user_data.user_flashcards %}
+        <div class="title-label">Flashcards</div>
+        <div class="select-container">
+
+            <select class="form-select flashcards-select">
+                <option selected disabled>Flashcards</option>
+                {% for flashcard in user_data.user_flashcards %}
+                    <option value="{{ flashcard.question }}">{{ flashcard.question }}</option>
+                {% endfor %}
+            </select>
+
+            <div class="container flashcards-chart-container">
+                <canvas id="flashcards-chart"></canvas>
+            </div>
+        </div>
+    {% endif %}
 
     <script src="../static/js/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="../static/js/node_modules/chart.js/dist/chart.umd.js"></script>
