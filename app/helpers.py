@@ -373,8 +373,6 @@ def query_user_data(user_id):
 
             flashcard["ratings"] = query_flashcard_rating
 
-            
-
             # Create count key for ratings
             flashcard_ratings = get_flashcard_ratings(current_flashcard_id)
             ratings_count = count_flashcard_ratings(flashcard_ratings)
