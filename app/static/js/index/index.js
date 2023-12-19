@@ -3,27 +3,9 @@ const IndexModule = (function() {
         pomodoroChart: document.getElementById("pomodoro-chart"),
         flashcardsChart: document.getElementById("flashcards-chart"),
         flashcardsSelect: document.getElementById("flashcards-select"),
+        currentFlashcardsChart: undefined,
         queriedUserData: undefined
     };
-
-    const flashcardsChart = new Chart(indexVarObject.flashcardsChart, {
-        type: "bar",
-        data: {
-            labels: [],
-            datasets: []
-        },
-        options: {
-            responsive: true,
-            scales: {
-                x: {
-                    stacked: true
-                },
-                y: {
-                    stacked: true
-                }
-            }
-        }
-    });
 
     function initIndex() {
         queryUserData()
@@ -86,20 +68,55 @@ const IndexModule = (function() {
         });
     }
 
-
     function createFlashcardsChart() {
-        new Chart(indexVarObject.pomodoroChart, {
-            type: "bar",
+        if (indexVarObject.currentFlashcardsChart) {
+            indexVarObject.currentFlashcardsChart.destroy();
+        }
+    
+        indexVarObject.currentFlashcardsChart = new Chart(indexVarObject.flashcardsChart, {
+            type: 'bar',
             data: {
                 labels: [],
-                datasets: []
+                datasets: [{
+                    label: 'Very Easy',
+                    data: [],
+                    backgroundColor: 'rgba(25, 135, 84, 0.85)',
+                    borderColor: 'rgba(25, 135, 84, 1)',
+                    borderWidth: 1,
+                    fill: false
+                }, {
+                    label: 'Easy',
+                    data: [],
+                    backgroundColor: 'rgba(13, 110, 253, 0.85)',
+                    borderColor: 'rgba(255, 206, 86, 1)',
+                    borderWidth: 1,
+                    fill: false
+                }, {
+                    label: 'Medium',
+                    data: [],
+                    backgroundColor: 'rgba(255, 193, 7, 0.85)',
+                    borderColor: 'rgba(255, 193, 7, 1)',
+                    borderWidth: 1,
+                    fill: false
+                }, {
+                    label: 'Hard',
+                    data: [],
+                    backgroundColor: 'rgba(220, 53, 69, 0.85)',
+                    borderColor: 'rgba(220, 53, 69, 1)',
+                    borderWidth: 1,
+                    fill: false
+                }, {
+                    label: 'Very Hard',
+                    data: [],
+                    backgroundColor: 'rgba(33, 37, 41, 0.85)',
+                    borderColor: 'rgba(33, 37, 41, 1)',
+                    borderWidth: 1,
+                    fill: false
+                }]
             },
             options: {
                 responsive: true,
                 scales: {
-                    x: {
-                        stacked: true
-                    },
                     y: {
                         stacked: true
                     }
@@ -108,48 +125,53 @@ const IndexModule = (function() {
         });
     }
     
-
     function updateFlashcardsChart(flashcard) {
-        const dailyRatingsCounts = {};
-
-        // Extract date from timestamp
-        const date = flashcard.timestamp.split(' ')[0];
+        console.log(flashcard);
     
-        // Check if the date is already in the object; if not, initialize it
-        if (!dailyRatingsCounts[date]) {
-            dailyRatingsCounts[date] = {};
-        }
+        // Create a new chart
+        createFlashcardsChart();
+    
+        // Initialize an object to store counts for each rating category on a given day
+        const dailyRatingsCounts = {};
     
         // Iterate through ratings for the flashcard
-        flashcard.ratings.forEach(rating => {
+        flashcard.ratings.forEach(ratingEntry => {
+            // Extract the date from the timestamp
+            const date = ratingEntry.timestamp.split(' ')[0];
+    
             // Check if the rating is already in the object; if not, initialize it
-            if (!dailyRatingsCounts[date][rating.rating]) {
-                dailyRatingsCounts[date][rating.rating] = 0;
+            if (!dailyRatingsCounts[date]) {
+                dailyRatingsCounts[date] = {
+                    'very-easy': null,
+                    'easy': null,
+                    'medium': null,
+                    'hard': null,
+                    'very-hard': null
+                };
             }
     
-            // Increment the count for the rating
-            dailyRatingsCounts[date][rating.rating]++;
+            // Increment the count for the corresponding rating category
+            dailyRatingsCounts[date][ratingEntry.rating]++;
         });
     
         // Extract labels and data for the chart
         const labels = Object.keys(dailyRatingsCounts);
         const data = Object.values(dailyRatingsCounts);
     
-        // Assuming you have a dataset for each rating (very-easy, medium, hard)
-        const datasets = indexVarObject.flashcardsChart.data.datasets;
-    
         // Update the existing datasets with new data
-        datasets.forEach(dataset => {
-            const rating = dataset.label.toLowerCase(); // Convert label to lowercase
-            dataset.data = data.map(entry => entry[rating] || 0);
+        indexVarObject.currentFlashcardsChart.data.labels = labels;
+        indexVarObject.currentFlashcardsChart.data.datasets.forEach(dataset => {
+            const rating = dataset.label.toLowerCase();
+            const uniqueLabel = rating; // Add timestamp or any other unique identifier if needed
+            dataset.data = labels.map(date => dailyRatingsCounts[date][rating] || null);
+            dataset.label = uniqueLabel; // Update the dataset label
+            dataset.skipNull = true; // Add this line
         });
     
-        // Update labels
-        indexVarObject.flashcardsChart.data.labels = labels;
-    
         // Update the chart
-        indexVarObject.flashcardsChart.update();
+        indexVarObject.currentFlashcardsChart.update();
     }
+    
 
     function queryUserData() {
         return new Promise((resolve, reject) => {
