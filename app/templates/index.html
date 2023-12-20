@@ -45,19 +45,44 @@
     {% if user_data.user_flashcards %}
         <div class="title-label">Flashcards</div>
         <div class="select-container">
-
             <select class="form-select flashcards-select" id="flashcards-select">
                 <option selected disabled>Flashcards</option>
                 {% for flashcard in user_data.user_flashcards %}
                     <option value="{{ flashcard.flashcard_id }}">{{ flashcard.question }}</option>
                 {% endfor %}
             </select>
+        </div>
 
-            <div class="container flashcards-chart-container">
-                <canvas id="flashcards-chart"></canvas>
+        <div id="flashcard-data"></div>
+
+        <div class="row" id="flashcard-ratings-div">
+            <div class="col-sm flashcard-ratings very-easy-color">
+                <div class="rating-label">Very Easy</div>
+                <div>0</div>
+            </div>
+
+            <div class="col-sm flashcard-ratings easy-color">
+                <div class="rating-label">Easy</div>
+                <div>0</div>
+            </div>
+
+            <div class="col-sm flashcard-ratings medium-color">
+                <div class="rating-label">Medium</div>
+                <div>0</div>
+            </div>
+
+            <div class="col-sm flashcard-ratings hard-color">
+                <div class="rating-label">Hard</div>
+                <div>0</div>
+            </div>
+
+            <div class="col-sm flashcard-ratings very-hard-color">
+                <div class="rating-label">Very Hard</div>
+                <div>0</div>
             </div>
         </div>
     {% endif %}
+    
 
     <script src="../static/js/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="../static/js/node_modules/chart.js/dist/chart.umd.js"></script>

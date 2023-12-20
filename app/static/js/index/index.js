@@ -3,7 +3,7 @@ const IndexModule = (function() {
         pomodoroChart: document.getElementById("pomodoro-chart"),
         flashcardsChart: document.getElementById("flashcards-chart"),
         flashcardsSelect: document.getElementById("flashcards-select"),
-        currentFlashcardsChart: undefined,
+        flashcardDataDiv: document.getElementById("flashcard-data"),
         queriedUserData: undefined
     };
 
@@ -27,7 +27,8 @@ const IndexModule = (function() {
         var selectedFlashcard = indexVarObject.flashcardsSelect.options[indexVarObject.flashcardsSelect.selectedIndex];
         var selectedFlashcardId = selectedFlashcard.value;
         var matchingFlashcard = getFlashcardById(selectedFlashcardId);
-        updateFlashcardsChart(matchingFlashcard);
+        console.log(matchingFlashcard);
+        createFlashcardElement(matchingFlashcard);
     }
 
     function getFlashcardById(flashcardId) {
@@ -41,8 +42,8 @@ const IndexModule = (function() {
     
         // Group user history by day and count finished_pomodoros for each day
         const pomodoroDailyCounts = userHistory.reduce((accumulator, entry) => {
-            const date = entry.timestamp.split(' ')[0]; // Extract the date part
-            accumulator[date] = (accumulator[date] || 0) + (entry.action === 'finished_pomodoro' ? 1 : 0);
+            const date = entry.timestamp.split(" ")[0]; // Extract the date part
+            accumulator[date] = (accumulator[date] || 0) + (entry.action === "finished_pomodoro" ? 1 : 0);
             return accumulator;
         }, {});
     
@@ -67,112 +68,40 @@ const IndexModule = (function() {
             }
         });
     }
+    
+    function createFlashcardElement(flashcard) {
+        var ulElements = indexVarObject.flashcardDataDiv.querySelectorAll("ul");
+        var flashcardRatingsDiv = document.getElementById("flashcards-ratings-div");
 
-    function createFlashcardsChart() {
-        if (indexVarObject.currentFlashcardsChart) {
-            indexVarObject.currentFlashcardsChart.destroy();
+        // If found already existing flashcard element, delete it to make room for the new one 
+        if (ulElements) {
+            ulElements.forEach(element => {
+                element.remove();
+            });
+            flashcardRatingsDiv.remove();
         }
     
-        indexVarObject.currentFlashcardsChart = new Chart(indexVarObject.flashcardsChart, {
-            type: 'bar',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'Very Easy',
-                    data: [],
-                    backgroundColor: 'rgba(25, 135, 84, 0.85)',
-                    borderColor: 'rgba(25, 135, 84, 1)',
-                    borderWidth: 1,
-                    fill: false
-                }, {
-                    label: 'Easy',
-                    data: [],
-                    backgroundColor: 'rgba(13, 110, 253, 0.85)',
-                    borderColor: 'rgba(255, 206, 86, 1)',
-                    borderWidth: 1,
-                    fill: false
-                }, {
-                    label: 'Medium',
-                    data: [],
-                    backgroundColor: 'rgba(255, 193, 7, 0.85)',
-                    borderColor: 'rgba(255, 193, 7, 1)',
-                    borderWidth: 1,
-                    fill: false
-                }, {
-                    label: 'Hard',
-                    data: [],
-                    backgroundColor: 'rgba(220, 53, 69, 0.85)',
-                    borderColor: 'rgba(220, 53, 69, 1)',
-                    borderWidth: 1,
-                    fill: false
-                }, {
-                    label: 'Very Hard',
-                    data: [],
-                    backgroundColor: 'rgba(33, 37, 41, 0.85)',
-                    borderColor: 'rgba(33, 37, 41, 1)',
-                    borderWidth: 1,
-                    fill: false
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        stacked: true
-                    }
-                }
-            }
-        });
-    }
-    
-    function updateFlashcardsChart(flashcard) {
-        console.log(flashcard);
-    
-        // Create a new chart
-        createFlashcardsChart();
-    
-        // Initialize an object to store counts for each rating category on a given day
-        const dailyRatingsCounts = {};
-    
-        // Iterate through ratings for the flashcard
-        flashcard.ratings.forEach(ratingEntry => {
-            // Extract the date from the timestamp
-            const date = ratingEntry.timestamp.split(' ')[0];
-    
-            // Check if the rating is already in the object; if not, initialize it
-            if (!dailyRatingsCounts[date]) {
-                dailyRatingsCounts[date] = {
-                    'very-easy': null,
-                    'easy': null,
-                    'medium': null,
-                    'hard': null,
-                    'very-hard': null
-                };
-            }
-    
-            // Increment the count for the corresponding rating category
-            dailyRatingsCounts[date][ratingEntry.rating]++;
-        });
-    
-        // Extract labels and data for the chart
-        const labels = Object.keys(dailyRatingsCounts);
-        const data = Object.values(dailyRatingsCounts);
-    
-        // Update the existing datasets with new data
-        indexVarObject.currentFlashcardsChart.data.labels = labels;
-        indexVarObject.currentFlashcardsChart.data.datasets.forEach(dataset => {
-            const rating = dataset.label.toLowerCase();
-            const uniqueLabel = rating; // Add timestamp or any other unique identifier if needed
-            dataset.data = labels.map(date => dailyRatingsCounts[date][rating] || null);
-            dataset.label = uniqueLabel; // Update the dataset label
-            dataset.skipNull = true; // Add this line
-        });
-    
-        // Update the chart
-        indexVarObject.currentFlashcardsChart.update();
-    }
-    
+        const flashcardElement = document.createElement("ul");
+        flashcardElement.classList.add("list-group", "flashcard-element-ul");
 
+        flashcardElement.innerHTML = `
+            <div class="list-group-item flex-column align-items-start buttons flashcard-element">
+                <div class="flashcard-id" style="display: none;">Flashcard Id</div>
+                <div class="flashcard-answer" style="display: none;">Flashcard Answer</div>
+                <div class="d-flex w-100 justify-content-between">
+                    <p class="mb-1 flashcard-topic">${flashcard.topic}</p>
+                    <small class="time-ago">${flashcard.timestamp}</small>
+                </div>
+                <h4 class="mb-1 flashcard-question">${flashcard.question}</h4>
+                <small class="timestamp">Answer: ${flashcard.answer}</small>
+            </div>
+        `;
+        
+        // const flashcardRatings = document.createElement("div");
+
+        indexVarObject.flashcardDataDiv.appendChild(flashcardElement);
+    }
+    
     function queryUserData() {
         return new Promise((resolve, reject) => {
             $.ajax({
