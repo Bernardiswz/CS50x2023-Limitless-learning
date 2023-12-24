@@ -102,6 +102,110 @@ def authenticate_user(username, password):
         return user_data[0]  # Return user_id
 
 
+
+
+def get_date_difference(date):
+    date_object = datetime.strptime(date, "%d/%m/%Y")
+    current_date = datetime.now()
+    
+    date_difference = current_date - date_object
+    days_difference = date_difference.days
+
+    return days_difference
+
+
+def format_timestamp(timestamp):
+    formatted_timestamp = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
+    return formatted_timestamp
+
+# Function to check whether an element is valid to insert into preferences
+def is_valid_element(element):
+    try:
+        num = int(element)
+        return num > 0
+
+    except ValueError:
+        return False
+
+def update_preferences(user_id, preferences_dict):
+    with get_db() as db:
+        cursor = db.cursor()
+
+        for key, value in preferences_dict.items():
+            if is_valid_element(value):
+                query = f"UPDATE preferences SET {key} = ? WHERE user_id = ?"
+
+                cursor.execute(query, (value, user_id))
+        
+        db.commit()
+
+
+def register_history_action(user_id, action):
+    with get_db() as db:
+        cursor = db.cursor()
+
+        cursor.execute("INSERT INTO history (user_id, action) VALUES(?, ?)", (user_id, action))
+        db.commit()
+
+
+def increment_pomodoros(user_id):
+    action = "finished_pomodoro"
+    with get_db() as db:
+        cursor = db.cursor()
+        cursor.execute("UPDATE user_data SET pomodoros_finished = pomodoros_finished + 1 WHERE user_id = ?", (user_id,))
+        
+        register_history_action(user_id, action)
+        
+        db.commit()
+
+
+def create_flashcard(user_id, topic, question, answer):
+    with get_db() as db:
+        cursor = db.cursor()
+
+        cursor.execute("INSERT INTO flashcards (user_id, topic, question, answer) VALUES(?, ?, ?, ?)",
+                       (user_id, topic, question, answer))
+
+        db.commit()
+
+
+def update_flashcard(elements_dict):
+    with get_db() as db:
+        cursor = db.cursor()
+
+        flashcard_id = elements_dict.pop("flashcard_id")
+
+        for key, value in elements_dict.items():
+            query = f"UPDATE flashcards SET {key} = ? WHERE flashcard_id = ?"
+            cursor.execute(query, (value, flashcard_id))
+        
+        db.commit()   
+
+
+def delete_flashcard(flashcard_id):
+    with get_db() as db:
+        cursor = db.cursor()
+
+        cursor.execute("DELETE FROM flashcards WHERE flashcard_id = ?", (flashcard_id,))
+        db.commit()     
+
+
+def validate_update_inputs(inputs_dict):
+    flashcard_id = inputs_dict.pop("flashcard_id")
+
+    flashcard_to_edit = get_flashcard_content_by_id(flashcard_id)
+
+    # Include flashcard_id in returning dict for convenience
+    valid_input_dict = {"flashcard_id": flashcard_id}
+
+    # If input doesn't match the flashcard it is considered valid, to prevent useless queries
+    for key, value in inputs_dict.items():
+        if value != flashcard_to_edit[key]:
+            valid_input_dict[key] = value
+
+    return valid_input_dict
+
+
 def get_flashcards(user_id):
     user_flashcards = []
 
@@ -139,6 +243,17 @@ def get_flashcard_ratings(flashcard_id):
         return flashcard_ratings
 
 
+def get_most_recent_rating(flashcard_id):
+    with get_db() as db:
+        cursor = db.cursor()
+
+        cursor.execute("SELECT rating FROM flashcards_rating WHERE flashcard_id = ? ORDER BY timestamp DESC LIMIT 1",
+                       (flashcard_id,))
+        most_recent_rating = cursor.fetchone()
+
+        return most_recent_rating
+    
+
 def count_flashcard_ratings(ratings_dict):
     rating_count_dict = {
         "very-easy": 0,
@@ -155,83 +270,32 @@ def count_flashcard_ratings(ratings_dict):
     return rating_count_dict
 
 
-def get_most_recent_rating(flashcard_id):
+def rate_flashcard(flashcard_id, rating):
     with get_db() as db:
         cursor = db.cursor()
 
-        cursor.execute("SELECT rating FROM flashcards_rating WHERE flashcard_id = ? ORDER BY timestamp DESC LIMIT 1",
-                       (flashcard_id,))
-        most_recent_rating = cursor.fetchone()
+        cursor.execute("INSERT INTO flashcards_rating (flashcard_id, rating) VALUES(?, ?)", (flashcard_id, rating))
 
-        return most_recent_rating
-
-
-def get_date_difference(date):
-    date_object = datetime.strptime(date, "%d/%m/%Y")
-    current_date = datetime.now()
-    
-    date_difference = current_date - date_object
-    days_difference = date_difference.days
-
-    return days_difference
-
-
-# Function to check whether an element is valid to insert into preferences
-def is_valid_element(element):
-    try:
-        num = int(element)
-        return num > 0
-
-    except ValueError:
-        return False
-
-
-def register_history_action(user_id, action):
-    with get_db() as db:
-        cursor = db.cursor()
-
-        cursor.execute("INSERT INTO history (user_id, action) VALUES(?, ?)", (user_id, action))
         db.commit()
 
 
-
-def increment_pomodoros(user_id):
-    action = "finished_pomodoro"
+def query_flashcard_ratings(flashcard_id):
     with get_db() as db:
         cursor = db.cursor()
-        cursor.execute("UPDATE user_data SET pomodoros_finished = pomodoros_finished + 1 WHERE user_id = ?", (user_id,))
-        
-        register_history_action(user_id, action)
-        
-        db.commit()
+        cursor.execute("SELECT rating, timestamp FROM flashcards_rating WHERE flashcard_id = ?", (flashcard_id,))
+        ratings = cursor.fetchall()
+        ratings_list = []
+
+        for rating in ratings:
+            ratings_dict = {
+                "rating": rating[0],
+                "timestamp": rating[1]
+            }
+
+            ratings_list.append(ratings_dict)
+        return ratings_list
 
 
-def update_preferences(user_id, preferences_dict):
-    if not user_id:
-        abort(400)
-
-    with get_db() as db:
-        cursor = db.cursor()
-
-        for key, value in preferences_dict.items():
-            if is_valid_element(value):
-                query = f"UPDATE preferences SET {key} = ? WHERE user_id = ?"
-
-                cursor.execute(query, (value, user_id))
-        
-        db.commit()
-
-
-def create_flashcard(user_id, topic, question, answer):
-    with get_db() as db:
-        cursor = db.cursor()
-
-        cursor.execute("INSERT INTO flashcards (user_id, topic, question, answer) VALUES(?, ?, ?, ?)",
-                       (user_id, topic, question, answer))
-
-        db.commit()
-
-        
 def get_flashcard_by_user_data(user_id, topic, question, answer):
     with get_db() as db:
         cursor = db.cursor()
@@ -256,11 +320,6 @@ def get_flashcard_by_user_data(user_id, topic, question, answer):
             return None
         
 
-def format_timestamp(timestamp):
-    formatted_timestamp = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
-    return formatted_timestamp
-
-
 def get_flashcard_content_by_id(flashcard_id):
     with get_db() as db:
         cursor = db.cursor()
@@ -274,69 +333,6 @@ def get_flashcard_content_by_id(flashcard_id):
         }
         
         return flashcard_dict
-
-
-def rate_flashcard(flashcard_id, rating):
-    with get_db() as db:
-        cursor = db.cursor()
-
-        cursor.execute("INSERT INTO flashcards_rating (flashcard_id, rating) VALUES(?, ?)", (flashcard_id, rating))
-
-        db.commit()
-
-
-def validate_update_inputs(inputs_dict):
-    flashcard_id = inputs_dict.pop("flashcard_id")
-
-    flashcard_to_edit = get_flashcard_content_by_id(flashcard_id)
-
-    # Include flashcard_id in returning dict for convenience
-    valid_input_dict = {"flashcard_id": flashcard_id}
-
-    # If input doesn't match the flashcard it is considered valid, to prevent useless queries
-    for key, value in inputs_dict.items():
-        if value != flashcard_to_edit[key]:
-            valid_input_dict[key] = value
-
-    return valid_input_dict
-
-
-def update_flashcard(elements_dict):
-    with get_db() as db:
-        cursor = db.cursor()
-
-        flashcard_id = elements_dict.pop("flashcard_id")
-
-        for key, value in elements_dict.items():
-            query = f"UPDATE flashcards SET {key} = ? WHERE flashcard_id = ?"
-            cursor.execute(query, (value, flashcard_id))
-        
-        db.commit()
-
-    
-def delete_flashcard(flashcard_id):
-    with get_db() as db:
-        cursor = db.cursor()
-
-        cursor.execute("DELETE FROM flashcards WHERE flashcard_id = ?", (flashcard_id,))
-        db.commit()
-
-
-def query_flashcard_ratings(flashcard_id):
-    with get_db() as db:
-        cursor = db.cursor()
-        cursor.execute("SELECT rating, timestamp FROM flashcards_rating WHERE flashcard_id = ?", (flashcard_id,))
-        ratings = cursor.fetchall()
-        ratings_list = []
-
-        for rating in ratings:
-            ratings_dict = {
-                "rating": rating[0],
-                "timestamp": rating[1]
-            }
-
-            ratings_list.append(ratings_dict)
-        return ratings_list
 
 
 def query_user_data(user_id):
@@ -419,7 +415,11 @@ def query_user_data(user_id):
             "pomodoros_history": pomodoros_history_list
         }
 
-
         return user_data_dict
+    
 
-        
+def format_user_data(user_data):
+    for flashcard in user_data["user_flashcards"]:
+        for rating in flashcard["ratings"]:
+            formatted_rating = " ".join(word.capitalize() for word in rating["rating"].split("-"))
+            rating["rating"] = formatted_rating

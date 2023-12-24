@@ -10,6 +10,7 @@ const PomodoroModule = (function() {
         minutesInput: document.getElementById("minutes-input"),
         breakInput: document.getElementById("break-input"),
         longBreakInput: document.getElementById("long-break-input"),
+        lbIntervalInput: document.getElementById("lb-interval-input")
     };
 
     const pomodoroVarObject = {
@@ -18,6 +19,7 @@ const PomodoroModule = (function() {
         minutes: parseInt(sessionStorage.getItem("minutes-input")) || parseInt(pomodoroElements.minutesInput.value),
         timerBreak: parseInt(pomodoroElements.breakInput.value),
         longBreak: parseInt(pomodoroElements.longBreakInput.value),
+        lbInterval: parseInt(pomodoroElements.lbIntervalInput.value),
 
         // Initializing variables of time and to dynamism between the on and off states of the button
         time: (parseInt(pomodoroElements.minutesInput.value) || 25) * 60,
@@ -78,9 +80,10 @@ const PomodoroModule = (function() {
             // Set timer accordingly to the current state the timer is in, if it isn't running
             if (!p.timerRunning) {
                 if (p.timeBreak) {
+                    if (p.isLongBreak) {
+                        setTimer(p.longBreak);
+                    }
                     setTimer(p.timerBreak);
-                } else if (p.isLongBreak) {
-                    setTimer(p.longBreak);
                 } else {
                     setTimer(p.minutes);
                 }
@@ -123,12 +126,12 @@ const PomodoroModule = (function() {
     function startBreak() {
         const p = pomodoroVarObject;
 
-        if (p.timerBreak && p.pomodoros < 4) {
+        if (p.timeBreak && p.pomodoros != p.lbInterval) {
             p.time = p.timerBreak * 60;
             p.isLongBreak = false;
             p.timerElement.textContent = `${p.timerBreak}:00`;
             
-        } else if (p.timerBreak && p.pomodoros === 4) {
+        } else if (p.timeBreak && p.pomodoros === p.lbInterval) {
             p.time = p.longBreak * 60;
             p.pomodoros = 0;
             p.isLongBreak = true;

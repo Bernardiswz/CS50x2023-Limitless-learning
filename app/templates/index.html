@@ -15,7 +15,7 @@
             <div id="preferences-div">
                 <div class="row preferences-elements">
                     <div class="col-sm indexes">
-                        <div>Pomodoros finished</div>
+                        <div>Finished Pomodoros</div>
                         <div>{{ user_data.user_stats.pomodoros_finished }}</div>
                     </div>
 
@@ -25,7 +25,7 @@
                     </div>
 
                     <div class="col-sm indexes">
-                        <div>Flashcards amount</div>
+                        <div>Flashcards Amount</div>
                         <div id="pomodoro-break-index">{{ user_data.user_stats.flashcards_count }}</div>
                     </div>
                 </div>
@@ -53,32 +53,43 @@
             </select>
         </div>
 
-        <div id="flashcard-data"></div>
+        <div class="flashcard-element-ul" id="flashcard-data" style="display: none;">
+            <ul class="list-group flashcard-element-ul">
+                <div class="list-group-item flex-column align-items-start buttons flashcard-element">
+                    <div class="d-flex w-100 justify-content-between">
+                        <p id="flashcard-topic"></p>
+                        <small id="flashcard-timestamp"></small>
+                    </div>
+                    <h4 class="mb-1" id="flashcard-question"></h4>
+                    <small id="flashcard-answer"></small>
+                </div>
+            </ul>
+        </div>
 
-        <div class="row" id="flashcard-ratings-div">
+        <div class="row" id="flashcard-ratings-div" style="display: none;">
             <div class="col-sm flashcard-ratings very-easy-color">
                 <div class="rating-label">Very Easy</div>
-                <div>0</div>
+                <div id="very-easy-count">0</div>
             </div>
 
             <div class="col-sm flashcard-ratings easy-color">
                 <div class="rating-label">Easy</div>
-                <div>0</div>
+                <div id="easy-count">0</div>
             </div>
 
             <div class="col-sm flashcard-ratings medium-color">
                 <div class="rating-label">Medium</div>
-                <div>0</div>
+                <div id="medium-count">0</div>
             </div>
 
             <div class="col-sm flashcard-ratings hard-color">
                 <div class="rating-label">Hard</div>
-                <div>0</div>
+                <div id="hard-count">0</div>
             </div>
 
             <div class="col-sm flashcard-ratings very-hard-color">
                 <div class="rating-label">Very Hard</div>
-                <div>0</div>
+                <div id="very-hard-count">0</div>
             </div>
         </div>
     {% endif %}

@@ -1,7 +1,19 @@
+/* General elements */
 body {
     display: flex;
     flex-direction: column;
     min-height: 135vh;
+}
+
+.title-label {
+    font-family: 'Inclusive Sans', sans-serif;
+    font-size: 3.2vh;
+    color: #383838d3;
+    line-height: 1;
+    text-align: center;
+    padding-top: 1vh;
+    margin-top: 3vh;
+    user-select: none;
 }
 
 /* Header elements */
@@ -38,13 +50,6 @@ body {
     margin-left: auto;
 }
 
-#preferences-header {
-    color: #3d3d3d;
-    font-size: 3vh;
-    font-weight: 500;
-    transform: translateY(15%);
-}
-
 .preferences-elements {
     display: flex;
     justify-content: space-around;
@@ -79,18 +84,7 @@ body {
     width: 30vh;
 }
 
-/* Flashcards display and selection */
-.title-label {
-    font-family: 'Inclusive Sans', sans-serif;
-    font-size: 3.2vh;
-    color: #383838d3;
-    line-height: 1;
-    text-align: center;
-    padding-top: 1vh;
-    margin-top: 3vh;
-    user-select: none;
-}
-
+/* Flashcards select */
 .select-container {
     text-align: center;
     margin-top: 2vh;
@@ -108,9 +102,9 @@ body {
 
 .flashcards-select:hover option:hover {
     background-color: #577E99;
-    /* background-color: #b5ddfb8f; */
 }
 
+/* Flashcard data display */
 #flashcards-data {
     display: flex;
     flex-direction: column;
@@ -181,6 +175,19 @@ body {
 }
 
 @media screen and (max-width:768px) {
+    #username-element {
+        font-size: 2.6vh;
+        margin-left: 2vh;
+    }
+
+    .preferences-elements {
+        font-size: 1.4vh;
+    }
+    
+    .indexes {
+        margin-right: -2vh;
+    }
+
     .pomodoro-chart-container {
         width: auto;
         height: 45vh;

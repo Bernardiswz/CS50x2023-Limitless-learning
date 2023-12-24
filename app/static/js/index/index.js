@@ -1,9 +1,26 @@
 const IndexModule = (function() {
+    const flashcardElementsObj = {
+        flashcardTopic: document.getElementById("flashcard-topic"),
+        flashcardQuestion: document.getElementById("flashcard-question"),
+        flashcardAnswer: document.getElementById("flashcard-answer"),
+        flashcardTimestamp: document.getElementById("flashcard-timestamp"),
+        veryEasyCount: document.getElementById("very-easy-count"),
+        easyCount: document.getElementById("easy-count"),
+        mediumCount: document.getElementById("medium-count"),
+        hardCount: document.getElementById("hard-count"),
+        veryHardCount: document.getElementById("very-hard-count")
+    }
+
     const indexVarObject = {
         pomodoroChart: document.getElementById("pomodoro-chart"),
         flashcardsChart: document.getElementById("flashcards-chart"),
         flashcardsSelect: document.getElementById("flashcards-select"),
         flashcardDataDiv: document.getElementById("flashcard-data"),
+        flashcardRatingsDiv: document.getElementById("flashcard-ratings-div"),
+        flashcardAttributes: [flashcardElementsObj.flashcardTopic, flashcardElementsObj.flashcardQuestion, 
+            flashcardElementsObj.flashcardAnswer, flashcardElementsObj.flashcardTimestamp],
+        flashcardRatings: [flashcardElementsObj.veryEasyCount, flashcardElementsObj.easyCount, flashcardElementsObj.mediumCount,
+            flashcardElementsObj.hardCount, flashcardElementsObj.veryHardCount],
         queriedUserData: undefined
     };
 
@@ -70,36 +87,38 @@ const IndexModule = (function() {
     }
     
     function createFlashcardElement(flashcard) {
-        var ulElements = indexVarObject.flashcardDataDiv.querySelectorAll("ul");
-        var flashcardRatingsDiv = document.getElementById("flashcards-ratings-div");
-
-        // If found already existing flashcard element, delete it to make room for the new one 
-        if (ulElements) {
-            ulElements.forEach(element => {
-                element.remove();
-            });
-            flashcardRatingsDiv.remove();
-        }
-    
-        const flashcardElement = document.createElement("ul");
-        flashcardElement.classList.add("list-group", "flashcard-element-ul");
-
-        flashcardElement.innerHTML = `
-            <div class="list-group-item flex-column align-items-start buttons flashcard-element">
-                <div class="flashcard-id" style="display: none;">Flashcard Id</div>
-                <div class="flashcard-answer" style="display: none;">Flashcard Answer</div>
-                <div class="d-flex w-100 justify-content-between">
-                    <p class="mb-1 flashcard-topic">${flashcard.topic}</p>
-                    <small class="time-ago">${flashcard.timestamp}</small>
-                </div>
-                <h4 class="mb-1 flashcard-question">${flashcard.question}</h4>
-                <small class="timestamp">Answer: ${flashcard.answer}</small>
-            </div>
-        `;
+        const getFlashcardRatingsCount = countRatings(flashcard.ratings);
         
-        // const flashcardRatings = document.createElement("div");
+        flashcardElementsObj.veryEasyCount.textContent = getFlashcardRatingsCount["very-easy"];
+        flashcardElementsObj.easyCount.textContent = getFlashcardRatingsCount["easy"];
+        flashcardElementsObj.mediumCount.textContent = getFlashcardRatingsCount["medium"];
+        flashcardElementsObj.hardCount.textContent = getFlashcardRatingsCount["hard"];
+        flashcardElementsObj.veryHardCount.textContent = getFlashcardRatingsCount["very-hard"];
 
-        indexVarObject.flashcardDataDiv.appendChild(flashcardElement);
+        flashcardElementsObj.flashcardTopic.textContent = `Topic: ${flashcard.topic}`;
+        flashcardElementsObj.flashcardQuestion.textContent = flashcard.question;
+        flashcardElementsObj.flashcardAnswer.textContent = `Answer: ${flashcard.answer}`;
+        flashcardElementsObj.flashcardTimestamp.textContent = `Created in ${flashcard.timestamp}`;
+        indexVarObject.flashcardDataDiv.style.display = "block";
+        indexVarObject.flashcardRatingsDiv.style.display = "flex";
+    }
+
+    function countRatings(ratings) {
+        var ratingsDict = {
+            "very-easy": 0,
+            "easy": 0,
+            "medium": 0,
+            "hard": 0,
+            "very-hard": 0
+        }
+
+        for (let currentRating of ratings) {
+            if (currentRating["rating"] in ratingsDict) {
+                ratingsDict[`${currentRating["rating"]}`]++;
+            }
+        }
+
+        return ratingsDict;
     }
     
     function queryUserData() {

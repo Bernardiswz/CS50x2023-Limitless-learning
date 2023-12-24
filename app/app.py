@@ -1,6 +1,5 @@
 """
-This is a Flask web application that providdes information about the importance of learning
-and offers various learning resources. See the README for more information.
+This is a Flask web application that offers various learning tools nad resources. Check the README for more information.
 """
 from flask import Flask, g, jsonify, redirect, render_template, request, session, abort
 from flask_session import Session
@@ -112,16 +111,16 @@ def error(error):
 @app.route("/update_data", methods=["POST"])
 @login_required
 def update_data():
-    user = session.get("user_id")
+    user_id = session.get("user_id")
     operation = request.form.get("operation")
 
-    is_valid_operation = is_valid_paramether(user, operation)
+    is_valid_operation = is_valid_paramether(user_id, operation)
 
     if not is_valid_operation:
         abort(400)
 
     if operation == "incrementPomodoros":
-        increment_pomodoros(user)
+        increment_pomodoros(user_id)
 
         return jsonify({
             'sucess': True
@@ -131,9 +130,12 @@ def update_data():
         minutes = request.form.get("minutes")
         timer_break = request.form.get("timerBreak")
         long_break = request.form.get("longBreak")
+        lb_interval = request.form.get("lbInterval")
 
-        valid_preferences = get_valid_paramethers(minutes=minutes, timer_break=timer_break, long_break=long_break)
-        update_preferences(user_id=user, preferences_dict=valid_preferences)
+        print(lb_interval)
+
+        valid_preferences = get_valid_paramethers(minutes=minutes, timer_break=timer_break, long_break=long_break, lb_interval=lb_interval)
+        update_preferences(user_id=user_id, preferences_dict=valid_preferences)
 
         return jsonify({
             'minutes': minutes,
@@ -146,8 +148,8 @@ def update_data():
         question = request.form.get("question")
         answer = request.form.get("answer")
 
-        create_flashcard(user_id=user, topic=topic, question=question, answer=answer)
-        created_flashcard = get_flashcard_by_user_data(user_id=user, topic=topic, question=question, answer=answer)
+        create_flashcard(user_id=user_id, topic=topic, question=question, answer=answer)
+        created_flashcard = get_flashcard_by_user_data(user_id=user_id, topic=topic, question=question, answer=answer)
 
         date_difference = get_date_difference(created_flashcard["timestamp"])
         created_flashcard["time_ago"] = date_difference
@@ -203,17 +205,28 @@ def update_data():
         })
     
     elif operation == "queryUserData":
-        user_data = query_user_data(user)
+        user_data = query_user_data(user_id)
         return jsonify({
             "userData": user_data
         })
 
 
-@app.route("/pomodoro", methods=["GET", "POST"])
+@app.route("/history")
+@login_required
+def history():
+    user_id = session.get("user_id")
+    user_data = query_user_data(user_id)
+    format_user_data(user_data)
+    print(user_data)
+
+    return render_template("history.html", user_data=user_data)
+
+
+@app.route("/pomodoro")
 @login_required
 def pomodoro():
     # Get default options from the current user if no form is submitted
-    user = session.get("user_id")
+    user_id = session.get("user_id")
 
     # Initialize variables to hold the values of the database query
     minutes = None
@@ -224,16 +237,16 @@ def pomodoro():
     """Querying the database to retrieve the user's preferences of the pomodoro timer"""
     with get_db() as db:
         cursor = db.cursor()
-        cursor.execute("SELECT minutes, timer_break, long_break, lb_interval FROM preferences WHERE user_id = ?", (user,))
+        cursor.execute("SELECT minutes, timer_break, long_break, lb_interval FROM preferences WHERE user_id = ?", (user_id,))
         user_data = cursor.fetchone()
 
         if user_data:
             minutes, timer_break, long_break, lb_interval = user_data
 
-    return render_template("pomodoro.html", minutes=minutes, timer_break=timer_break, long_break=long_break)
+    return render_template("pomodoro.html", minutes=minutes, timer_break=timer_break, long_break=long_break, lb_interval=lb_interval)
 
 
-@app.route("/flashcards", methods=["GET", "POST"])
+@app.route("/flashcards")
 @login_required
 def flashcards():
     user_id = session.get("user_id")

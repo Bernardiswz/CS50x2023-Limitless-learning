@@ -8,10 +8,9 @@ const PomodoroSettingsModule = (function() {
         dialogVisible: false
     };
 
-
     function initPomodoroSettings() {
         settingsElements.settingsButton.addEventListener("click", toggleDialog);
-        settingsElements.closeButton.addEventListener("click", buttonEventListeners);
+        settingsElements.closeButton.addEventListener("click", (event) => buttonEventListeners(event));
     }   
 
     function checkInputs() {
@@ -40,10 +39,23 @@ const PomodoroSettingsModule = (function() {
         settingsElements.dialogVisible = false;
     }
 
+    function buttonEventListeners(event) {
+        event.preventDefault();
+        
+        if (checkInputs()) {
+            hideDialog();
+        }
+
+        if (!settingsElements.dialogVisible) {
+            updatePreferencesOnServer();
+        }
+    }
+
     function updatePreferencesOnServer() {
         var minutes = $("#minutes-input").val();
         var timerBreak = $("#break-input").val();
         var longBreak = $("#long-break-input").val();
+        var lbInterval = $("#lb-interval-input").val();
 
         $.ajax({
             type: "POST",
@@ -52,7 +64,8 @@ const PomodoroSettingsModule = (function() {
                 operation: "updatePomodoro",
                 minutes: minutes,
                 timerBreak: timerBreak,
-                longBreak: longBreak
+                longBreak: longBreak,
+                lbInterval: lbInterval
             },
             success: function(data) {
                 var preferencesUpdateSucess = true;
@@ -63,16 +76,6 @@ const PomodoroSettingsModule = (function() {
                 var preferencesUpdateSucess = false;
             }
         });
-    }
-
-    function buttonEventListeners() {
-        if (checkInputs()) {
-            hideDialog();
-        }
-
-        if (!settingsElements.dialogVisible) {
-            updatePreferencesOnServer();
-        }
     }
 
     return {

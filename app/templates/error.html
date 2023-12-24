@@ -4,16 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Linking fonts -->
-
-    <!-- Inter and Inclusive Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300&family=Inclusive+Sans&display=swap">
-
-    <!-- Include Bootstrap's CSS -->
     <link rel="stylesheet" href="../static/js/node_modules/bootstrap/dist/css/bootstrap.min.css">
-    <!-- Link external styling file -->
     <link rel="stylesheet" href="../static/css/error.css">
 
     <title>{% block title %}{% endblock %}</title>
@@ -24,7 +17,7 @@
     <nav class="navbar bg-navy" id="navbar">
         <div class="container-fluid">
             <a class="navbar-elements navbar-brand" href="/" >
-                <img src="../static/images/logo_inverse.png" id="navbar-logo"> 
+                <img src="../static/images/logo-inverse.png" id="navbar-logo"> 
                 </a>
             {% block element %}{% endblock %}
         </div>
