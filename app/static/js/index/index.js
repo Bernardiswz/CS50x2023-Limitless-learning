@@ -29,7 +29,9 @@ const IndexModule = (function() {
             .then(userData => {
                 updatePageElements(userData);
 
-                indexVarObject.flashcardsSelect.addEventListener("change", initSelectFunctionality);
+                if (indexVarObject.flashcardsSelect) {
+                    indexVarObject.flashcardsSelect.addEventListener("change", initSelectFunctionality);
+                }
             })
             .catch(error => {
                 console.error(error);
@@ -44,7 +46,6 @@ const IndexModule = (function() {
         var selectedFlashcard = indexVarObject.flashcardsSelect.options[indexVarObject.flashcardsSelect.selectedIndex];
         var selectedFlashcardId = selectedFlashcard.value;
         var matchingFlashcard = getFlashcardById(selectedFlashcardId);
-        console.log(matchingFlashcard);
         createFlashcardElement(matchingFlashcard);
     }
 
@@ -125,7 +126,7 @@ const IndexModule = (function() {
         return new Promise((resolve, reject) => {
             $.ajax({
                 type: "POST",
-                url: "/update_data",
+                url: "/operations_server_side",
                 data: {
                     operation: "queryUserData"
                 },

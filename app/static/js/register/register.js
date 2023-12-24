@@ -1,144 +1,166 @@
-/* Const variables of minimum password length and the minimum and maximun username lengths */
-const minPasswordLen = 10;
-const validMinLength = 6;
-const validMaxLength = 25;
+const registerModule = (() => {
+    const registerVarObject = {
+        minPasswordLen: 10,
+        validMinLength: 6,
+        validMaxLength: 25,
+        passwordIndex: document.getElementById("password-index"),
+        nameInput: document.getElementById("username"),
+        passwordInput: document.getElementById("password"),
+        confirmPasswordInput: document.getElementById("confirm-password"),
+        registerForm: document.getElementById("register-form")
+    }
 
-// Check password client side
-function checkPassword() {
-    // Variables to handle the password strength verification
-    const passwordIndex = document.getElementById("password-index");
-    var passwordInput = document.getElementById("password");
-    var password = passwordInput.value;
-    var passwordValid = passwordHasSpace(password);
-    const sanitizedPassword = sanitizePassword(password);
-    var result = zxcvbn(password);
-    
-    // Dynamically display password feedback
-    if (!passwordValid) {
-        if (password && result.score >= 3) {
-            passwordIndex.textContent = "Strong password"
-            passwordIndex.style.display = "block";
-            passwordIndex.style.color = "#4dc959";
-        } else if (password && result.score === 2) {
-            passwordIndex.textContent = `Average password. ${result.feedback.suggestions.join(", ")}`
-            passwordIndex.style.display = "block";
-            passwordIndex.style.color = "#E99A27";
-        } else if (password && result.score === 1) {
-            passwordIndex.textContent = `Weak password. ${result.feedback.suggestions.join(", ")}`
-            passwordIndex.style.display = "block";
-            passwordIndex.style.color = "#b31010";
-        } else if (password && password.length < minPasswordLen) {
-            passwordIndex.textContent = "Minimum length for passwords is 10 characters";
-            passwordIndex.style.display = "block";
+    function initRegister() {
+        const r = registerVarObject;
+        r.nameInput.addEventListener("input", checkUsername);
+        r.passwordInput.addEventListener("input", checkPassword);
+        r.confirmPasswordInput.addEventListener("input", checkConfirmPassword);
+        r.registerForm.addEventListener("submit", (event) => checkInputs(event));
+    }
+
+    function checkPassword() {
+        const r = registerVarObject;
+        var password = r.passwordInput.value;
+        var passwordValid = passwordHasSpace(password);
+        const sanitizedPassword = sanitizePassword(password);
+        var result = zxcvbn(password);
+        var confirmPassword = password === r.confirmPasswordInput.value;
+        var inputtedConfirmPassword = r.confirmPasswordInput.value;
+
+        // Dynamically display password feedback
+        if (!passwordValid) {
+            if (password && result.score >= 3) {
+                r.passwordIndex.textContent = "Strong password"
+                r.passwordIndex.style.display = "block";
+                r.passwordIndex.style.color = "#4dc959";
+            } else if (password && result.score === 2) {
+                r.passwordIndex.textContent = `Average password. ${result.feedback.suggestions.join(", ")}`
+                r.passwordIndex.style.display = "block";
+                r.passwordIndex.style.color = "#E99A27";
+            } else if (password && result.score === 1) {
+                r.passwordIndex.textContent = `Weak password. ${result.feedback.suggestions.join(", ")}`
+                r.passwordIndex.style.display = "block";
+                r.passwordIndex.style.color = "#b31010";
+            } else if (password && result.score === 0) {
+                r.passwordIndex.textContent = `Very weak password. ${result.feedback.suggestions.join(", ")}`
+                r.passwordIndex.style.display = "block";
+                r.passwordIndex.style.color = "#b31010";
+            } else if (password && password.length < r.minPasswordLen && confirmPassword) {
+                r.passwordIndex.textContent = "Minimum length for passwords is 10 characters";
+                r.passwordIndex.style.display = "block";
+            } else if (password && inputtedConfirmPassword) {
+                if (password !== inputtedConfirmPassword) {
+                    r.passwordIndex.textContent = "Passwords must match";
+                    r.passwordIndex.style.color = "#000000";
+                    r.passwordIndex.style.display = "block";
+                }                
+            } else {
+                r.passwordIndex.textContent = "";
+                r.passwordIndex.style.display = "none";
+                r.passwordIndex.style.color = "#000000";
+            }
         } else {
-            passwordIndex.textContent = "";
-            passwordIndex.style.display = "none";
-            passwordIndex.style.color = "#000000";
+            // Warns user of no special characters allowed
+            r.passwordInput.value = sanitizedPassword;
+            r.passwordIndex.textContent = "No space characters allowed on password";
+            r.passwordIndex.style.display = "block";
         }
-    } else {
-        // Warns user of no special characters allowed
-        passwordInput.value = sanitizedPassword;
-        passwordIndex.textContent = "No space characters allowed on password";
-        passwordIndex.style.display = "block";
-    }
-}
-
-// Check for special characters input in username and set minimum length
-function checkUsername() {
-    const passwordIndex = document.getElementById("password-index");
-    var nameInput = document.getElementById("username");
-    var username = nameInput.value;
-    var nameValid = !hasSpecialCharacter(username);
-    const sanitizedUsername = sanitizeInput(username);
-
-    if (username && !nameValid) {
-        nameInput.value = sanitizedUsername;
-        passwordIndex.style.display = "block";
-        passwordIndex.textContent = "No other special characters allowed on names";
-    } else if (username && username.length < validMinLength) {
-        passwordIndex.style.display = "block";
-        passwordIndex.textContent = "Minimum username length is 6 characters";
-    } else if (username && username.length > validMaxLength) {
-        passwordIndex.style.display = "block";
-        passwordIndex.textContent = "Maximum username length is 25 characters";
-    } else {
-        passwordIndex.style.display = "none";
-        passwordIndex.textContent = "";
-    }
-}
-
-// Checks for whether password and confirm password match
-function confirmPassword() {
-    const password = document.getElementById("password").value;
-    const confirmPassword = document.getElementById("confirm-password").value;
-
-    if (password === confirmPassword) {
-        return true;
-    } else {
-        alert("Passwords must match.")
-        return false;
-    }
-}
-
-// Checks for space in passwords
-function passwordHasSpace(password) {
-    var space = /\s/;
-    return space.test(password);
-}
-
-// Sanitizes passwords from spaces
-function sanitizePassword(password) {
-    var sanitizePassword = password.replace(/\s/, "");
-    return sanitizePassword;
-}
-
-// Sanitizes user input server side to remove special characters
-function sanitizeInput(inputString) {
-    var sanitizedValue = inputString.replace(/[!@#$%^&*()+{}\[\]:;<>,.?~\\/\-\s]/g, "");
-    return sanitizedValue;
-}
-
-// Checks for special not valid characters on user input
-function hasSpecialCharacter(userInput) {
-    var specialCharacterRegex = /[!@#$%^&*()+{}\[\]:;<>,.?~\\/\-\s]/;
-    return specialCharacterRegex.test(userInput);
-}
-
-// Compact functions to check user input
-function checkInputs(event) {
-    const nameInput = document.getElementById("username");
-    const passwordInput = document.getElementById("password");
-    const passwordIndex = document.getElementById("password-index");
-    const isUsernameValid = !hasSpecialCharacter(nameInput.value);
-    const matchingPasswords = confirmPassword();
-    const validationExpression = (
-        nameInput.value.length >= validMinLength &&
-        nameInput.value.length <= validMaxLength &&
-        passwordInput.value.length >= minPasswordLen
-    );
-
-    // Perform validation checks
-    const isValid = isUsernameValid && matchingPasswords && validationExpression;
-
-    if (!isValid) {
-        event.preventDefault();
-        passwordIndex.textContent = "Invalid input, please check username and password."
     }
 
-    return isValid;
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-    // Add initial event listeners
-    const passwordIndex = document.getElementById("password-index");
-    const nameInput = document.getElementById("username");
-    const passwordInput = document.getElementById("password");
-    nameInput.addEventListener("input", checkUsername);
-    passwordInput.addEventListener("input", checkPassword);
-
-    // Add event listener directly to form's onsubmit attribute
-    const registerForm = document.getElementById("register-form");
-    if (registerForm) {
-        registerForm.addEventListener("submit", checkInputs);
+    function checkConfirmPassword() {
+        const r = registerVarObject;
+        var confirmPassword = r.confirmPasswordInput.value;
+        var confirmPasswordValid = passwordHasSpace(confirmPassword);
+        const sanitizedConfirmPassword = sanitizePassword(confirmPassword);
+        r.confirmPasswordInput.value = sanitizedConfirmPassword;
     }
-});
+    
+    // Check for special characters input in username and set minimum length
+    function checkUsername() {
+        const r = registerVarObject;
+        var username = r.nameInput.value;
+        var nameValid = !hasSpecialCharacter(username);
+        const sanitizedUsername = sanitizeInput(username);
+
+        if (username && !nameValid) {
+            r.nameInput.value = sanitizedUsername;
+            r.passwordIndex.style.display = "block";
+            r.passwordIndex.textContent = "No other special characters allowed on names";
+        } else if (username && username.length < r.validMinLength) {
+            r.passwordIndex.style.display = "block";
+            r.passwordIndex.style.color = "#000000";
+            r.passwordIndex.textContent = "Minimum username length is 6 characters";
+        } else if (username && username.length > r.validMaxLength) {
+            r.passwordIndex.style.display = "block";
+            r.passwordIndex.textContent = "Maximum username length is 25 characters";
+        } else {
+            r.passwordIndex.style.display = "none";
+            r.passwordIndex.textContent = "";
+        }
+    }
+
+    function confirmPassword() {
+        const r = registerVarObject;
+        const password = r.passwordInput.value;
+        const confirmPassword = r.confirmPasswordInput.value;
+    
+        if (password === confirmPassword) {
+            return true;
+        } else {
+            alert("Passwords must match.")
+            return false;
+        }
+    }
+
+    // Checks for space in passwords
+    function passwordHasSpace(password) {
+        var space = /\s/;
+        return space.test(password);
+    }
+
+    // Sanitizes passwords from spaces
+    function sanitizePassword(password) {
+        var sanitizePassword = password.replace(/\s/, "");
+        return sanitizePassword;
+    }
+
+    // Sanitizes user input server side to remove special characters
+    function sanitizeInput(inputString) {
+        var sanitizedValue = inputString.replace(/[!@#$%^&*()+{}\[\]:;<>,.?~\\/\-\s]/g, "");
+        return sanitizedValue;
+    }
+
+    // Checks for special not valid characters on user input
+    function hasSpecialCharacter(userInput) {
+        var specialCharacterRegex = /[!@#$%^&*()+{}\[\]:;<>,.?~\\/\-\s]/;
+        return specialCharacterRegex.test(userInput);
+    }
+
+    // Compact functions to check user input
+    function checkInputs(event) {
+        const r = registerVarObject;
+        const isUsernameValid = !hasSpecialCharacter(r.nameInput.value);
+        const matchingPasswords = confirmPassword();
+        const validationExpression = (
+            r.nameInput.value.length >= r.validMinLength &&
+            r.nameInput.value.length <= r.validMaxLength &&
+            r.passwordInput.value.length >= r.minPasswordLen
+        );
+
+        // Perform validation checks
+        const isValid = isUsernameValid && matchingPasswords && validationExpression;
+
+        if (!isValid) {
+            event.preventDefault();
+            r.passwordIndex.textContent = "Invalid input, please check username and password."
+        }
+
+        return isValid;
+    }
+
+    return {
+        initRegister: initRegister
+    };
+})();
+
+$(document).ready(registerModule.initRegister());

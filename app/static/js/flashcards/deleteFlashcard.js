@@ -23,10 +23,6 @@ const DeleteFlashcardsModule = (function() {
         }
     }
 
-    function triggerDialogOverlay() {
-        deleteVariablesObject.dialogOverlay.style.display = "block";
-    }
-
     function handleDeleteButtonClick(buttonsContainer) {
         deleteVariablesObject.deleteFlashcardDialog.style.display = "block";
         deleteVariablesObject.dialogOverlay.style.display = "block";
@@ -38,7 +34,8 @@ const DeleteFlashcardsModule = (function() {
         deleteVariablesObject.dialogOverlay.style.display = "none";
     }
 
-    function handleConfirmDelete() {
+    function handleConfirmDelete(event) {
+        event.preventDefault();
         deleteVariablesObject.deleteFlashcardDialog.style.display = "none";
         deleteVariablesObject.dialogOverlay.style.display = "none";
         
@@ -63,16 +60,13 @@ const DeleteFlashcardsModule = (function() {
     function deleteFlashcardOnServer(deleteFlashcardId) {
         $.ajax({
             type: "POST",
-            url: "/update_data",
+            url: "/operations_server_side",
             data: {
                 operation: "deleteFlashcard",
                 flashcardId: deleteFlashcardId,
             },
             success: function(data) {
-                console.log("sucess sending to server");
-
                 const flashcardToDelete = data.flashcardToDeleteId;
-
                 deleteFlashcardElementOnPage(flashcardToDelete);
             },
             error: function(error) {
@@ -89,7 +83,7 @@ const DeleteFlashcardsModule = (function() {
         });
 
         if (anchorElements.length > 0) {
-            anchorElements.closest('.list-group-item').remove();
+            anchorElements.closest("ul").remove();
         }
     }
 

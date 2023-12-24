@@ -75,7 +75,7 @@ const CreateFlashcardsModule = (function() {
 
         $.ajax({
             type: "POST",
-            url: "/update_data",
+            url: "/operations_server_side",
             data: {
                 operation: "createFlashcard",
                 topic: topic,

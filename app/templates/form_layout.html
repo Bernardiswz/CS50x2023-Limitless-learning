@@ -5,35 +5,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Linking Inter and Inclusive Sans fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300&family=Inclusive+Sans&display=swap">
-
-    <!-- Include Bootstrap's CSS -->
     <link rel="stylesheet" href="/static/js/node_modules/bootstrap/dist/css/bootstrap.min.css">
-
-    <!-- Link external styling file -->
     <link rel="stylesheet" href="../static/css/form_layout.css">
+    <link rel="icon" href="../static/images/page-icon.png">
 
     <title>{% block title %}{% endblock %}</title>
-
 </head>
 
 <body>
     <nav class="navbar bg-navy" id="navbar">
         <div class="container-fluid">
             {% block element %}{% endblock %}
+            <img src="../static/images/logo-inverse.png" id="navbar-logo">
         </div>
+         
     </nav>
     
     <main>
         {% block main %}{% endblock %}
     </main>
 
-    <!-- Include Bootstrap's Js -->
     <script src="/static/js/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Including zxcvbn to check password security -->
     <script src="../static/js/node_modules/zxcvbn/dist/zxcvbn.js"></script>
 </body>
 

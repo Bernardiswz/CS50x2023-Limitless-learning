@@ -1,7 +1,9 @@
-from flask import abort, render_template, redirect, session, g
+"""
+This is the helper file, it provides with the required db queries functions and related utilities
+"""
+from flask import render_template, redirect, session, g
 from werkzeug.security import check_password_hash, generate_password_hash
 from functools import wraps
-from itertools import islice
 from datetime import datetime
 import sqlite3
 
@@ -102,18 +104,6 @@ def authenticate_user(username, password):
         return user_data[0]  # Return user_id
 
 
-
-
-def get_date_difference(date):
-    date_object = datetime.strptime(date, "%d/%m/%Y")
-    current_date = datetime.now()
-    
-    date_difference = current_date - date_object
-    days_difference = date_difference.days
-
-    return days_difference
-
-
 def format_timestamp(timestamp):
     formatted_timestamp = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
     return formatted_timestamp
@@ -138,6 +128,23 @@ def update_preferences(user_id, preferences_dict):
                 cursor.execute(query, (value, user_id))
         
         db.commit()
+
+
+def query_preferences(user_id):
+    with get_db() as db:
+        cursor = db.cursor()
+        cursor.execute("SELECT minutes, timer_break, long_break, lb_interval FROM preferences WHERE user_id = ?", (user_id,))
+        user_data = cursor.fetchone()
+
+        if user_data:
+            user_data_dict = {
+                "minutes": user_data[0],
+                "timer_break": user_data[1],
+                "long_break": user_data[2],
+                "lb_interval": user_data[3]
+            }            
+
+            return user_data_dict
 
 
 def register_history_action(user_id, action):
@@ -226,7 +233,7 @@ def get_flashcards(user_id):
                 "topic": row[1],
                 "question": row[2],
                 "answer" : row[3],
-                "timestamp": timestamp.strftime("%d/%m/%Y")
+                "timestamp": timestamp.strftime("%m/%d/%Y")
             }
             
             user_flashcards.append(flashcard_dict)
@@ -312,7 +319,7 @@ def get_flashcard_by_user_data(user_id, topic, question, answer):
             timestamp_str = flashcard_dict["timestamp"]
             timestamp = datetime.strptime(timestamp_str, "%Y-%m-%d %H:%M:%S")
 
-            flashcard_dict["timestamp"] = timestamp.strftime("%d/%m/%Y")
+            flashcard_dict["timestamp"] = timestamp.strftime("%m/%d/%Y")
 
             return flashcard_dict
         
@@ -365,7 +372,7 @@ def query_user_data(user_id):
 
             for rating in query_flashcard_rating:
                 formatted_timestamp = format_timestamp(rating["timestamp"])
-                rating["timestamp"] = formatted_timestamp.strftime("%d/%m/%Y")
+                rating["timestamp"] = formatted_timestamp.strftime("%m/%d/%Y")
 
             flashcard["ratings"] = query_flashcard_rating
 
@@ -402,7 +409,7 @@ def query_user_data(user_id):
 
             pomodoros_finished_dict = {
                 "action": row[0],
-                "timestamp": formatted_timestamp.strftime("%d/%m/%Y")
+                "timestamp": formatted_timestamp.strftime("%m/%d/%Y")
             }
 
             pomodoros_history_list.append(pomodoros_finished_dict)

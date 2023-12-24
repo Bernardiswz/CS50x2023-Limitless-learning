@@ -10,7 +10,11 @@
 .bg-navy {
     background: linear-gradient(90deg, #234d66, #163c52);
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
-    height: 5.5vh;
+    height: 8vh;
+}
+
+#navbar-logo {
+    max-height: 6vh;
 }
 
 .body-container {

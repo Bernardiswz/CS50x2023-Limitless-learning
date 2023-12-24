@@ -45,25 +45,26 @@
             <div class="inputs-row-container" id="inputs">
                 <div class="column-container">
                     <label class="input-names" for="minutes-input">Minutes</label>
-                    <input autocomplete="off" value="{{ minutes }}" class="settings-input" name="minutes" type="number" id="minutes-input" min="1"
-                    pattern="[1-9][0-9]*" title="Please enter a valid positive integer for minutes.">
+                    <input autocomplete="off" value="{{ user_preferences.minutes }}" class="settings-input" name="minutes" type="number" 
+                    id="minutes-input" min="1" pattern="[1-9][0-9]*" title="Please enter a valid positive integer for minutes.">
                 </div>
 
                 <div class="column-container">
                     <label class="input-names" for="break-input">Break</label>
-                    <input autocomplete="off" value="{{ timer_break }}" class="settings-input" name="break" type="number" id="break-input" min="1">
+                    <input autocomplete="off" value="{{ user_preferences.timer_break }}" class="settings-input" name="break" type="number" 
+                    id="break-input" min="1">
                 </div>
 
                 <div class="column-container">
                     <label class="input-names" for="long-break-input">Long break</label>
-                    <input autocomplete="off" value="{{ long_break }}" class="settings-input" name="long-break" type="number" id="long-break-input" 
-                    min="1">
+                    <input autocomplete="off" value="{{ user_preferences.long_break }}" class="settings-input" name="long-break" type="number" 
+                    id="long-break-input" min="1">
                 </div>
 
                 <div class="column-container">
                     <label class="input-names" for="lb-interval-input">Long break Interval</label>
-                    <input autocomplete="off" value="{{ lb_interval }}" class="settings-input" name="lb-interval-input" type="number" 
-                    id="lb-interval-input" min="1">
+                    <input autocomplete="off" value="{{ user_preferences.lb_interval }}" class="settings-input" name="lb-interval-input" 
+                    type="number" id="lb-interval-input" min="1">
                 </div>
             </div>
         </form>

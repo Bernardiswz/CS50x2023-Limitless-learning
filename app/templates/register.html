@@ -9,10 +9,9 @@
 {% endblock %}
 
 {% block main %}
-    <form id="register-form" action="/register" method="post" onsubmit="return checkInputs()">
+    <form id="register-form" action="/register" method="post">
         <div class="body-container">
             <div id="form-title">Register</div>
-            <!-- Element to check password strength -->
             <div id="password-index" style="display: none;">Strong</div>
 
             <div class="input-form">
@@ -25,5 +24,6 @@
         </div>
     </form>
 
+    <script src="../static/js/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="../static/js/register/register.js"></script>
 {% endblock %}

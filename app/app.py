@@ -1,9 +1,8 @@
 """
-This is a Flask web application that offers various learning tools nad resources. Check the README for more information.
+This is the main app file, the routes are stored here, helper files in helpers.py
 """
 from flask import Flask, g, jsonify, redirect, render_template, request, session, abort
 from flask_session import Session
-from datetime import datetime
 from helpers import *
 
 
@@ -41,8 +40,9 @@ def register():
         password = request.form.get("password")
         confirm_password = request.form.get("confirm_password")
 
-        # Validate user input
-        if not username or not password or not confirm_password:
+        is_valid_inputs = is_valid_paramether(username, password, confirm_password)
+
+        if not is_valid_inputs:
             abort(400)
 
         check_password = is_valid_password(password)
@@ -72,7 +72,9 @@ def login():
         password = request.form.get("password")
 
         # Validate user input
-        if not username or not password:
+        is_valid_inputs = is_valid_paramether(username, password)
+
+        if not is_valid_inputs:
             return abort(400)
 
         check_password = is_valid_password(password)
@@ -108,7 +110,50 @@ def error(error):
     return render_template("error.html", status_code=status_code, message=error_message)
 
 
-@app.route("/update_data", methods=["POST"])
+@app.route("/about")
+@login_required
+def about():
+    return render_template("about.html")
+
+
+@app.route("/pomodoro")
+@login_required
+def pomodoro():
+    # Get default options from the current user if no form is submitted
+    user_id = session.get("user_id")
+    
+    if not user_id:
+        return abort(400)
+
+    user_preferences = query_preferences(user_id)
+
+    return render_template("pomodoro.html", user_preferences=user_preferences)
+
+
+@app.route("/flashcards")
+@login_required
+def flashcards():
+    user_id = session.get("user_id")
+    user_flashcards = get_flashcards(user_id)
+
+    return render_template("flashcards.html", flashcards=user_flashcards)
+
+
+@app.route("/history")
+@login_required
+def history():
+    user_id = session.get("user_id")
+
+    if not user_id:
+        return abort(400)
+
+    user_data = query_user_data(user_id)
+    format_user_data(user_data)
+
+    return render_template("history.html", user_data=user_data)
+
+
+@app.route("/operations_server_side", methods=["POST"])
 @login_required
 def update_data():
     user_id = session.get("user_id")
@@ -132,8 +177,6 @@ def update_data():
         long_break = request.form.get("longBreak")
         lb_interval = request.form.get("lbInterval")
 
-        print(lb_interval)
-
         valid_preferences = get_valid_paramethers(minutes=minutes, timer_break=timer_break, long_break=long_break, lb_interval=lb_interval)
         update_preferences(user_id=user_id, preferences_dict=valid_preferences)
 
@@ -150,9 +193,6 @@ def update_data():
 
         create_flashcard(user_id=user_id, topic=topic, question=question, answer=answer)
         created_flashcard = get_flashcard_by_user_data(user_id=user_id, topic=topic, question=question, answer=answer)
-
-        date_difference = get_date_difference(created_flashcard["timestamp"])
-        created_flashcard["time_ago"] = date_difference
 
         return jsonify({
             'createdFlashcard': created_flashcard
@@ -184,7 +224,9 @@ def update_data():
     
     elif operation == "deleteFlashcard":
         flashcard_id = request.form.get("flashcardId")
-        print(flashcard_id)
+
+        if not flashcard_id:
+            return abort(400)
 
         delete_flashcard(flashcard_id)
 
@@ -194,6 +236,9 @@ def update_data():
     
     elif operation == "getFlashcardRatings":
         flashcard_id = request.form.get("flashcardId")
+
+        if not flashcard_id:
+            return abort(400)
 
         flashcard_ratings = get_flashcard_ratings(flashcard_id)
         flashcard_ratings_count = count_flashcard_ratings(flashcard_ratings)
@@ -209,59 +254,29 @@ def update_data():
         return jsonify({
             "userData": user_data
         })
-
-
-@app.route("/history")
-@login_required
-def history():
-    user_id = session.get("user_id")
-    user_data = query_user_data(user_id)
-    format_user_data(user_data)
-    print(user_data)
-
-    return render_template("history.html", user_data=user_data)
-
-
-@app.route("/pomodoro")
-@login_required
-def pomodoro():
-    # Get default options from the current user if no form is submitted
-    user_id = session.get("user_id")
-
-    # Initialize variables to hold the values of the database query
-    minutes = None
-    timer_break = None
-    long_break = None
-    lb_interval = None
-
-    """Querying the database to retrieve the user's preferences of the pomodoro timer"""
-    with get_db() as db:
-        cursor = db.cursor()
-        cursor.execute("SELECT minutes, timer_break, long_break, lb_interval FROM preferences WHERE user_id = ?", (user_id,))
-        user_data = cursor.fetchone()
-
-        if user_data:
-            minutes, timer_break, long_break, lb_interval = user_data
-
-    return render_template("pomodoro.html", minutes=minutes, timer_break=timer_break, long_break=long_break, lb_interval=lb_interval)
-
-
-@app.route("/flashcards")
-@login_required
-def flashcards():
-    user_id = session.get("user_id")
-    user_flashcards = get_flashcards(user_id)
     
-    for flashcard in user_flashcards:
-        flashcard["time_ago"] = get_date_difference(flashcard["timestamp"])
+    elif operation == "tryAuthentication":
+        username = request.form.get("username")
+        password = request.form.get("password")
 
-    return render_template("flashcards.html", flashcards=user_flashcards)
+        if not username and password:
+            return jsonify({
+                "successs": False
+            })
+        
+        try_authentication = authenticate_user(username, password)
 
-
-@app.route("/about")
-@login_required
-def about():
-    return render_template("about.html")
+        if not try_authentication:
+            return jsonify({
+                "success": False
+            })
+        
+        return jsonify({
+            "success": True
+        })
+    
+    else:
+        return abort(400)
 
 
 if __name__ == "__main__":

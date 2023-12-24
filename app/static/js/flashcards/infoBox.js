@@ -59,14 +59,13 @@ const InfoBoxModule = (function() {
     function getFlashcardRatings(flashcardId) {
         $.ajax({
             type: "POST",
-            url: "/update_data",
+            url: "/operations_server_side",
             data: {
                 operation: "getFlashcardRatings",
                 flashcardId: flashcardId
             },
             success: function(data) {
                 populateInfoboxDialog(data.flashcardRatingsCount);
-                console.log(data.mostRecentRating);
             },
             error: function(error) {
                 console.log(error);
