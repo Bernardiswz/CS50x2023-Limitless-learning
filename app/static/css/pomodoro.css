@@ -36,11 +36,6 @@
     flex-direction: row;
 }
 
-.input-names-container {
-    display: flex;
-    flex-direction: row;
-}
-
 .input-names {
     display: flex;
     flex-direction: row;

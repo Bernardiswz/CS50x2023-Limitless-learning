@@ -2,7 +2,7 @@
 body {
     display: flex;
     flex-direction: column;
-    min-height: 135vh;
+    min-height: 160vh;
 }
 
 .title-label {
@@ -172,6 +172,109 @@ body {
 
 .very-hard-color {
     color: #212529;
+}
+
+/* Delete progress dialogs */
+.delete-dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    height: 30%;
+    width: 60%;
+    transform: translate(-50%, -50%);
+    background-color:#ffffff;
+    border-radius: 4px;
+    border: 1px solid rgba(192, 192, 192, 0.582);
+    padding: 20px;
+    z-index: 999;
+}
+
+.dialog-title {
+    font-family: 'Inclusive Sans', sans-serif;
+    font-size: 3.2vh;
+    color: #383838d3;
+    line-height: 1;
+    text-align: center;
+    padding-top: 1vh;
+    user-select: none;
+}
+
+.dialog-thematic-break {
+    margin-top: 3.5vh;
+    margin-bottom: 0;
+}
+
+.close-button {
+    border: none;
+    background: transparent;
+    padding: 0;
+}
+
+.close-button-icon {
+    position: absolute;
+    width: 3vh;
+    height: 3vh;
+    margin: 10px;
+    top: 2vh;
+    right: 2vh;
+    max-width: 30%;
+    max-height: 30%;
+}
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.confirm-buttons {
+    margin-top: 2vh;
+}
+
+.input-names {
+    display: flex;
+    flex-direction: row;
+    font-family: 'Inclusive Sans', sans-serif;
+    font-size: 1.8vh;
+    color: #383838d3;
+    margin: 2px;
+}
+
+#dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+}
+
+#confirm-button-div {
+    justify-content: center;
+}
+
+#confirm-delete-button {
+    justify-content: center;
+    margin-top: 3vh;
+    width: 75%;
+    border: none;
+}
+
+/* Delete buttons div */
+.delete-data-div {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    margin-top: 7vh;
+}
+
+.delete-buttons {
+    height: 7vh;
+    width: 18vh;
+    margin-right: 6vh;
+    margin-left: 6vh;
 }
 
 @media screen and (max-width:768px) {

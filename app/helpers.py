@@ -104,6 +104,47 @@ def authenticate_user(username, password):
         return user_data[0]  # Return user_id
 
 
+def check_user_password(user_id, password):
+    with get_db() as db:
+        cursor = db.cursor()
+        cursor.execute("SELECT hash FROM users WHERE user_id = ?", (user_id,))
+        password_hash = cursor.fetchone()
+
+        if not check_password_hash(password_hash[0], password):
+            return False
+        
+        else:
+            return True
+
+
+def delete_user_progress(user_id):
+    with get_db() as db:
+        cursor = db.cursor()
+        cursor.execute("DELETE FROM history WHERE user_id = ?", (user_id,))
+        cursor.execute("UPDATE user_data SET pomodoros_finished = 0, flashcards_quantity = 0, flashcards_amount = 0 WHERE user_id = ?",
+                       (user_id,))
+        
+        cursor.execute("SELECT flashcard_id FROM flashcards WHERE user_id = ?", (user_id,))
+        flashcards_ids_list = cursor.fetchall()
+
+        for flashcard_id_tuple in flashcards_ids_list:
+            flashcard_id = flashcard_id_tuple[0]
+            cursor.execute("DELETE FROM flashcards_rating WHERE flashcard_id = ?", (flashcard_id, ))
+
+        db.commit()
+
+
+def delete_user_account(user_id):
+    with get_db() as db:
+        cursor = db.cursor()
+        delete_user_progress(user_id)
+        cursor.execute("DELETE FROM flashcards WHERE user_id = ?", (user_id,))
+        cursor.execute("DELETE FROM preferences WHERE user_id = ?", (user_id,))
+        cursor.execute("DELETE FROM user_data WHERE user_id = ?", (user_id,))
+        cursor.execute("DELETE FROM users WHERE user_id = ?", (user_id,))
+        db.commit()
+
+
 def format_timestamp(timestamp):
     formatted_timestamp = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
     return formatted_timestamp

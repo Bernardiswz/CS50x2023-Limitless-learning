@@ -146,5 +146,3 @@ const IndexModule = (function() {
         initIndex: initIndex
     }
 })();
-
-$(document).ready(IndexModule.initIndex);

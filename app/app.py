@@ -14,6 +14,15 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
+# Define routes that can only be accessed if the user isn't logged in
+@app.before_request
+def check_session():
+    restricted_routes = ["login", "register"]
+
+    if "user_id" in session and request.endpoint in restricted_routes:
+        return redirect("/")
+
+
 @app.after_request
 def after_request(response):
     # Make sure responses aren't cached
@@ -98,6 +107,7 @@ def login():
 
 
 @app.route("/logout")
+@login_required
 def logout():
     session.clear()
     return redirect("/")
@@ -275,6 +285,39 @@ def update_data():
             "success": True
         })
     
+    elif operation == "checkUserPassword":
+        password = request.form.get("password")
+
+        if not password:
+            return jsonify({
+                "success": False
+            })
+        
+        is_password_valid = check_user_password(user_id, password)
+        print(is_password_valid)
+
+        if is_password_valid:
+            return jsonify({
+                "success": True
+            })
+
+        else:
+            return jsonify({
+                "success": False
+            })
+
+    elif operation == "deleteUserProgress":
+        delete_user_progress(user_id)
+
+        return jsonify({
+            "succes": True
+        })
+    
+    elif operation == "deleteAccount":
+        delete_user_account(user_id)
+        session.clear()
+        return redirect("/")
+
     else:
         return abort(400)
 

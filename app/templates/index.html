@@ -94,8 +94,53 @@
         </div>
     {% endif %}
     
+    <div id="dialog-overlay" style="display: none;"></div>
+    <div class="delete-dialog" id="delete-progress-dialog" style="display: none;">
+        <form>
+            <div class="dialog-title">Delete progress?</div>
+            <hr class="dialog-thematic-break">
+
+            <button class="close-button" id="delete-progress-close-button" type="button">
+                <img src="../static/images/close-button.png" alt="Button Image" class="close-button-icon">
+            </button>
+
+            <div class="input-container">
+                <label class="input-names" for="confirm-progress-del-input">Insert password to confirm</label>
+                <input class="form-control" id="confirm-progress-del-input" autocomplete="off">
+                <button class="btn btn-danger confirm-buttons" id="confirm-delete-p-button">Confirm</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="delete-dialog" id="delete-account-dialog" style="display: none;">
+        <form>
+            <div class="dialog-title">Delete account?</div>
+            <hr class="dialog-thematic-break">
+
+            <button id="delete-account-close-button" class="close-button" type="button">
+                <img src="../static/images/close-button.png" alt="Button Image" class="close-button-icon">
+            </button>
+
+            <div class="input-container">
+                <label class="input-names" for="confirm-password-account">Insert password to confirm</label>
+                <input class="form-control" id="confirm-password-account" autocomplete="off">
+                <button class="btn btn-danger confirm-buttons" id="confirm-delete-a-button">Confirm</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="title-label">Delete data</div>
+    
+    <div class="delete-data-div">
+        <div class="row">
+            <button class="btn btn-warning delete-buttons" id="delete-progress-button">Delete progress</button>
+            <button class="btn btn-danger delete-buttons" id="delete-account-button">Delete account</button>
+        </div>
+    </div>
 
     <script src="../static/js/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="../static/js/node_modules/chart.js/dist/chart.umd.js"></script>
     <script src="../static/js/index/index.js"></script>
+    <script src="../static/js/index/deleteData.js"></script>
+    <script src="../static/js/index/initIndex.js"></script>
 {% endblock %}
