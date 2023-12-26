@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS preferences (
     minutes INTEGER NOT NULL DEFAULT 25,
     timer_break INTEGER NOT NULL DEFAULT 5,
     long_break INTEGER NOT NULL DEFAULT 15,
-    lb_interval INTEGER NOT NULL DEFAULT 4, --Amount of pomodoros until interval
+    lb_interval INTEGER NOT NULL DEFAULT 4, --Amount of pomodoros until long break interval
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 

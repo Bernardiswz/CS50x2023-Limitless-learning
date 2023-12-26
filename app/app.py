@@ -58,7 +58,7 @@ def register():
         check_username = is_valid_username(username)
 
         if not check_password or password != confirm_password or not check_username:
-            return abort(400)
+            abort(400)
 
         user_id = register_user(username, password)
 
@@ -73,37 +73,7 @@ def register():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    # Forget any user_id
-    session.clear()
-
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
-
-        # Validate user input
-        is_valid_inputs = is_valid_paramether(username, password)
-
-        if not is_valid_inputs:
-            return abort(400)
-
-        check_password = is_valid_password(password)
-        check_username = is_valid_username(username)
-
-        if not check_password or not check_username:
-            return abort(400)
-
-        user_id = authenticate_user(username, password)
-
-        if user_id is None:
-            return abort(409)
-        
-        # If matches update user id to match user id from db
-        session["user_id"] = user_id
-
-        return redirect("/")
-
-    else:
-        return render_template("login.html")
+    return render_template("login.html")
 
 
 @app.route("/logout")
@@ -133,7 +103,7 @@ def pomodoro():
     user_id = session.get("user_id")
     
     if not user_id:
-        return abort(400)
+        abort(400)
 
     user_preferences = query_preferences(user_id)
 
@@ -155,7 +125,7 @@ def history():
     user_id = session.get("user_id")
 
     if not user_id:
-        return abort(400)
+        abort(400)
 
     user_data = query_user_data(user_id)
     format_user_data(user_data)
@@ -163,9 +133,55 @@ def history():
     return render_template("history.html", user_data=user_data)
 
 
+@app.route("/operations_no_login", methods=["POST"])
+def try_authentication():
+    operation = request.form.get("operation")
+    is_valid_operation = is_valid_paramether(operation)
+
+    if not is_valid_operation:
+        return jsonify({
+                "success": False
+            })
+
+    if operation == "tryAuthentication":
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        # # Validate user input
+        is_valid_inputs = is_valid_paramether(username, password)
+
+        if not is_valid_inputs:
+            return jsonify({
+                "success": False
+            })
+
+
+        check_password = is_valid_password(password)
+        check_username = is_valid_username(username)
+
+        if not check_password or not check_username:
+            return jsonify({
+                "success": False
+            })
+
+        user_id = authenticate_user(username, password)
+
+        if user_id is None:
+            return jsonify({
+                "success": False
+            })
+        
+        # If matches update user id to match user id from db
+        session["user_id"] = user_id
+
+        return jsonify({
+            "success": True
+        })
+
+
 @app.route("/operations_server_side", methods=["POST"])
 @login_required
-def update_data():
+def operations():
     user_id = session.get("user_id")
     operation = request.form.get("operation")
 
@@ -215,7 +231,7 @@ def update_data():
         rate_flashcard(flashcard_id, rating)
 
         return jsonify({
-            'tora': 'torator'
+            "success": True
         })
 
     elif operation == "editFlashcard":
@@ -236,7 +252,7 @@ def update_data():
         flashcard_id = request.form.get("flashcardId")
 
         if not flashcard_id:
-            return abort(400)
+            abort(400)
 
         delete_flashcard(flashcard_id)
 
@@ -248,7 +264,7 @@ def update_data():
         flashcard_id = request.form.get("flashcardId")
 
         if not flashcard_id:
-            return abort(400)
+            abort(400)
 
         flashcard_ratings = get_flashcard_ratings(flashcard_id)
         flashcard_ratings_count = count_flashcard_ratings(flashcard_ratings)
@@ -265,25 +281,20 @@ def update_data():
             "userData": user_data
         })
     
-    elif operation == "tryAuthentication":
+    elif operation == "tryRegistering":
         username = request.form.get("username")
-        password = request.form.get("password")
 
-        if not username and password:
+        user_exists = check_existing_user(username)
+
+        if user_exists:
             return jsonify({
-                "successs": False
+                "user_exists": True
             })
         
-        try_authentication = authenticate_user(username, password)
-
-        if not try_authentication:
+        else:
             return jsonify({
-                "success": False
+                "user_exists": False
             })
-        
-        return jsonify({
-            "success": True
-        })
     
     elif operation == "checkUserPassword":
         password = request.form.get("password")
@@ -294,7 +305,6 @@ def update_data():
             })
         
         is_password_valid = check_user_password(user_id, password)
-        print(is_password_valid)
 
         if is_password_valid:
             return jsonify({
@@ -319,7 +329,7 @@ def update_data():
         return redirect("/")
 
     else:
-        return abort(400)
+        abort(400)
 
 
 if __name__ == "__main__":

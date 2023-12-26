@@ -90,6 +90,7 @@ const loginModule = (() => {
     }
 
     function checkInputs(event) {
+        event.preventDefault();
         const l = loginVarObject;
         const isUsernameValid = !hasSpecialCharacter(l.nameInput.value);
         const validationExpression = (
@@ -99,42 +100,40 @@ const loginModule = (() => {
         );
         const username = l.nameInput.value;
         const password = l.passwordInput.value;
-        const tryLogin = handleLogin(username, password);
 
-        if (!(isUsernameValid && validationExpression) || !tryLogin) {
+        if (!(isUsernameValid && validationExpression)) {
             event.preventDefault();
             l.passwordIndex.style.display = "block";
             l.passwordIndex.textContent = "Invalid request. Please check your username and password.";
         } else {
             l.passwordIndex.style.display = "none";
             l.passwordIndex.textContent = "";
+            handleLogin(username, password);
         }
     }
 
     function handleLogin(username, password) {
-        return new Promise((resolve, reject) => {
-            $.ajax({
-                type: "POST",
-                url: "/operations_server_side",
-                data: {
-                    operation: "tryAuthentication",
-                    username: username,
-                    password: password
-                },
-                success: function(data) {
-                    resolve(data);
-                    
-                    if (data.success) {
-                        return true;
-                    } else {
-                        return false
-                    }
-                },
-                error: function(error) {
-                    console.log(error);
-                    reject(error);
+        const l = loginVarObject;
+        $.ajax({
+            type: "POST",
+            url: "/operations_no_login",
+            data: {
+                operation: "tryAuthentication",
+                username: username,
+                password: password
+            },
+            success: function(data) {              
+                if (data.success == true) {
+                    window.location.href = "/";
+                } else if (data.success == false) {
+                    l.passwordIndex.style.display = "block";
+                    l.passwordIndex.textContent = "Invalid request. Please check your username and password.";
                 }
-            });
+            },
+            error: function(error) {
+                alert(error);
+                console.log(error);
+            }
         });
     }
 

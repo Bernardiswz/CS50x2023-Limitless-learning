@@ -267,6 +267,7 @@ body {
     display: flex;
     text-align: center;
     justify-content: center;
+    flex-direction: row;
     margin-top: 7vh;
 }
 
@@ -301,5 +302,19 @@ body {
     #pomodoro-chart {
         height: 45vh;
         width: auto;
+    }
+
+    .delete-buttons {
+        height: 16vh;
+        width: 18vh;
+        margin-right: 4vh;
+        margin-left: 4vh;
+    }
+
+    .delete-data-div {
+        display: flex;
+        text-align: center;
+        justify-content: center;
+        margin-top: 4vh;
     }
 }

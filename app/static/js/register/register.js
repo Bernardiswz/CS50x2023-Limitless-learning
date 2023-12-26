@@ -70,7 +70,6 @@ const registerModule = (() => {
     function checkConfirmPassword() {
         const r = registerVarObject;
         var confirmPassword = r.confirmPasswordInput.value;
-        var confirmPasswordValid = passwordHasSpace(confirmPassword);
         const sanitizedConfirmPassword = sanitizePassword(confirmPassword);
         r.confirmPasswordInput.value = sanitizedConfirmPassword;
     }
@@ -147,15 +146,46 @@ const registerModule = (() => {
             r.passwordInput.value.length >= r.minPasswordLen
         );
 
+        const userExists = handleRegister(r.nameInput.value);
+
         // Perform validation checks
-        const isValid = isUsernameValid && matchingPasswords && validationExpression;
+        const isValid = isUsernameValid && matchingPasswords && validationExpression && !userExists;
 
         if (!isValid) {
             event.preventDefault();
-            r.passwordIndex.textContent = "Invalid input, please check username and password."
+            r.passwordIndex.textContent = "Invalid input, please check username and password or try a different name."
         }
 
         return isValid;
+    }
+
+    function handleRegister(username) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                type: "POST",
+                url: "/operations_server_side",
+                data: {
+                    operation: "tryRegistering",
+                    username: username
+                },
+                success: function(data) {
+                    resolve(data);
+                    
+                    if (data.user_exists) {
+                        registerVarObject.passwordIndex.style.display = "block";
+                        registerVarObject.passwordIndex.textContent = "Invalid request. Please check your username and password.";
+
+                        return false
+                    } else {
+                        return true;
+                    }
+                },
+                error: function(error) {
+                    console.log(error);
+                    reject(error);
+                }
+            });
+        });
     }
 
     return {

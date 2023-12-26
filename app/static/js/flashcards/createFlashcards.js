@@ -33,6 +33,9 @@ const CreateFlashcardsModule = (function() {
     function hideDialog() {
         createFlashcardsVariablesObject.dialogOverlay.style.display = "none"; 
         createFlashcardsVariablesObject.flashcardDialog.style.display = "none";
+        createFlashcardsVariablesObject.topicInput.value = "";
+        createFlashcardsVariablesObject.questionInput.value = "";
+        createFlashcardsVariablesObject.answerInput.value = "";
     }
 
     function applyValidation(event) {
@@ -123,7 +126,6 @@ const CreateFlashcardsModule = (function() {
                 <div class="flashcard-answer" style="display: none;">${data.createdFlashcard.answer}</div>
                 <div class="d-flex w-100 justify-content-between">
                     <p class="mb-1 flashcard-topic">${data.createdFlashcard.topic}</p>
-                    <small class="time-ago">Last visited ${data.createdFlashcard.time_ago} days ago</small>
                 </div>
                 <h4 class="mb-1 flashcard-question">${data.createdFlashcard.question}</h4>
                 <small class="timestamp">${data.createdFlashcard.timestamp}</small>

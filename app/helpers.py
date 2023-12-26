@@ -104,6 +104,34 @@ def authenticate_user(username, password):
         return user_data[0]  # Return user_id
 
 
+def check_existing_user(username):
+    with get_db() as db:
+        cursor = db.cursor()
+        cursor.execute("SELECT username FROM users WHERE username = ?", username)
+        existing_username = cursor.fetchone()
+
+        if existing_username:
+            return True
+        
+        else:
+            return False
+
+
+def try_authenticate_user(username, password):
+    with get_db() as db:
+        cursor = db.cursor()
+        cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
+        user_data = cursor.fetchone()
+
+        if not user_data:
+            return None
+
+        if not check_password_hash(user_data[2], password):
+            return None
+
+        return True
+
+
 def check_user_password(user_id, password):
     with get_db() as db:
         cursor = db.cursor()
@@ -129,7 +157,7 @@ def delete_user_progress(user_id):
 
         for flashcard_id_tuple in flashcards_ids_list:
             flashcard_id = flashcard_id_tuple[0]
-            cursor.execute("DELETE FROM flashcards_rating WHERE flashcard_id = ?", (flashcard_id, ))
+            cursor.execute("DELETE FROM flashcards_rating WHERE flashcard_id = ?", (flashcard_id,))
 
         db.commit()
 
