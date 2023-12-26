@@ -146,45 +146,43 @@ const registerModule = (() => {
             r.passwordInput.value.length >= r.minPasswordLen
         );
 
-        const userExists = handleRegister(r.nameInput.value);
-
         // Perform validation checks
-        const isValid = isUsernameValid && matchingPasswords && validationExpression && !userExists;
+        const isValid = isUsernameValid && matchingPasswords && validationExpression;
 
         if (!isValid) {
             event.preventDefault();
             r.passwordIndex.textContent = "Invalid input, please check username and password or try a different name."
+        } else {
+            event.preventDefault();
+            handleRegister(r.nameInput.value, r.passwordInput.value, r.confirmPasswordInput.value)
         }
 
         return isValid;
     }
 
-    function handleRegister(username) {
-        return new Promise((resolve, reject) => {
-            $.ajax({
-                type: "POST",
-                url: "/operations_server_side",
-                data: {
-                    operation: "tryRegistering",
-                    username: username
-                },
-                success: function(data) {
-                    resolve(data);
-                    
-                    if (data.user_exists) {
-                        registerVarObject.passwordIndex.style.display = "block";
-                        registerVarObject.passwordIndex.textContent = "Invalid request. Please check your username and password.";
-
-                        return false
-                    } else {
-                        return true;
-                    }
-                },
-                error: function(error) {
-                    console.log(error);
-                    reject(error);
+    function handleRegister(username, password, confirmPassword) {
+        $.ajax({
+            type: "POST",
+            url: "/operations_no_login",
+            data: {
+                operation: "registerUser",
+                username: username,
+                password: password,
+                confirmPassword: confirmPassword
+            },
+            success: function(data) {                    
+                if (data.success === true) {
+                    window.location.href = "/login";
+                    return true
+                } else if (data.success === false) {
+                    registerVarObject.passwordIndex.style.display = "block";
+                    registerVarObject.passwordIndex.textContent = "Invalid request. Please check your username and password.";
+                    return false;
                 }
-            });
+            },
+            error: function(error) {
+                console.log(error);
+            }
         });
     }
 

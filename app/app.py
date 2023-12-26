@@ -44,31 +44,7 @@ def index():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
-        confirm_password = request.form.get("confirm_password")
-
-        is_valid_inputs = is_valid_paramether(username, password, confirm_password)
-
-        if not is_valid_inputs:
-            abort(400)
-
-        check_password = is_valid_password(password)
-        check_username = is_valid_username(username)
-
-        if not check_password or password != confirm_password or not check_username:
-            abort(400)
-
-        user_id = register_user(username, password)
-
-        if user_id is None:
-            abort(409)
-        
-        return redirect("/login")
-    
-    else:
-        return render_template("register.html")
+    return render_template("register.html")
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -81,6 +57,7 @@ def login():
 def logout():
     session.clear()
     return redirect("/")
+
 
 @app.errorhandler(Exception)
 def error(error):
@@ -177,6 +154,38 @@ def try_authentication():
         return jsonify({
             "success": True
         })
+    
+    elif operation == "registerUser":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        confirm_password = request.form.get("confirmPassword")
+
+        is_valid_inputs = is_valid_paramether(username, password, confirm_password)
+
+        if not is_valid_inputs:
+            return jsonify({
+                "success": False
+            })
+
+        check_password = is_valid_password(password)
+        check_username = is_valid_username(username)
+
+        if not check_password or password != confirm_password or not check_username:
+            return jsonify({
+                "success": False
+            })
+
+        user_id = register_user(username, password)
+
+        if user_id is None:
+            return jsonify({
+                "success": False
+            })
+        
+        else:
+            return jsonify({
+                "success": True
+            })
 
 
 @app.route("/operations_server_side", methods=["POST"])
@@ -280,22 +289,7 @@ def operations():
         return jsonify({
             "userData": user_data
         })
-    
-    elif operation == "tryRegistering":
-        username = request.form.get("username")
-
-        user_exists = check_existing_user(username)
-
-        if user_exists:
-            return jsonify({
-                "user_exists": True
-            })
         
-        else:
-            return jsonify({
-                "user_exists": False
-            })
-    
     elif operation == "checkUserPassword":
         password = request.form.get("password")
 
