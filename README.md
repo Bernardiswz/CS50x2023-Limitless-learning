@@ -1,6 +1,6 @@
 # Limitless Learning Project #
 
-## Video demo: https://youtu.be/ikUPQDcCCNI## 
+## Video demo: https://youtu.be/ikUPQDcCCNI ## 
 
 ## Content table ##
 + [Introduction](#introduction)
