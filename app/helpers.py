@@ -313,7 +313,7 @@ def get_flashcards(user_id):
 def get_flashcard_ratings(flashcard_id):
     with get_db() as db:
         cursor = db.cursor()
-        cursor.execute("SELECT rating FROM flashcards_rating WHERE flashcard_id = ?", (flashcard_id,))
+        cursor.execute("SELECT rating FROM flashcards_rating WHERE flashcard_id = ? ORDER BY timestamp DESC", (flashcard_id,))
         flashcard_ratings = cursor.fetchall()
 
         return flashcard_ratings
@@ -358,7 +358,7 @@ def rate_flashcard(flashcard_id, rating):
 def query_flashcard_ratings(flashcard_id):
     with get_db() as db:
         cursor = db.cursor()
-        cursor.execute("SELECT rating, timestamp FROM flashcards_rating WHERE flashcard_id = ?", (flashcard_id,))
+        cursor.execute("SELECT rating, timestamp FROM flashcards_rating WHERE flashcard_id = ? ORDER BY timestamp DESC", (flashcard_id,))
         ratings = cursor.fetchall()
         ratings_list = []
 

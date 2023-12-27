@@ -106,6 +106,7 @@ def history():
 
     user_data = query_user_data(user_id)
     format_user_data(user_data)
+    print(user_data)
 
     return render_template("history.html", user_data=user_data)
 
